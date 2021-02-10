@@ -1,0 +1,42 @@
+﻿@using ZP.SOOM.CursosVirtuales.Util
+@using System.Configuration
+@model ZP.SOOM.CursosVirtuales.PL.UI.Client.Models.MaterialModel
+@{
+    String TipoMaterial = null;
+
+    if (Model.TipoMaterial == Constants.Cursos.Material.TipoMaterial.VIDEO)
+    {
+        TipoMaterial = "ic-video";
+    }
+    else if (Model.TipoMaterial == Constants.Cursos.Material.TipoMaterial.DOCUMENTO)
+    //href="@Url.Content(Model.UrlArchivo)"
+    {
+        TipoMaterial = "ic-downolad";
+    }
+    else
+    {
+        TipoMaterial = "ic-enlace";
+    }
+}
+
+@if (Model.TipoMaterial == Constants.Cursos.Material.TipoMaterial.LINK)
+{
+    <a href="@Model.UrlArchivo" class="download-structure" target="_blank" onclick="registrarVista(@Model.IdMaterial);">
+        <label>@Model.Nombre</label>
+        <div class="@TipoMaterial"></div>
+    </a>
+}
+else if (Model.TipoMaterial == Constants.Cursos.Material.TipoMaterial.DOCUMENTO)
+{
+    <a href="@Url.Action("DescargarMaterialDocumento", "Mapa", new { UrlArchivo = Url.Content(Model.UrlArchivo), Archivo = Model.Archivo })" class="download-structure" onclick="registrarVista(@Model.IdMaterial);">
+    <label>@Model.Nombre</label>
+    <div class="@TipoMaterial"></div>
+    </a>
+}
+else
+{
+    <a class="download-structure" onclick="openVideo('@Url.Content(Model.UrlArchivo).Replace("'", "\\'")'); registrarVista(@Model.IdMaterial);">
+        <label>@Model.Nombre</label>
+        <div class="@TipoMaterial"></div>
+    </a>
+}

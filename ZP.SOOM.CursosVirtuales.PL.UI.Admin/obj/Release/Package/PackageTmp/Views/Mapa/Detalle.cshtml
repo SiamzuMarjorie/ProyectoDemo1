@@ -1,0 +1,145 @@
+﻿@model CursoSlotModel
+@{
+    List<CursoModel> lstCursos = ViewBag.ListaCurso;
+    SlotModel objSlotModel = ViewBag.SlotModel;
+    if (Model.IdCursoSlot == 0 )
+    {
+        Model.Ano = DateTimeHelper.PeruDateTime.Year;
+    }
+    ViewBag.Title = "Detalle";
+    ViewBag.Section = "Mapa";
+    int idCursoSlot = int.Parse(Request.QueryString["IdCursoSlot"]);
+
+    int idSlot = int.Parse(Request.QueryString["IdSlot"]);
+}
+<h1 class="subtitle">@(Model.IdCursoSlot == 0 ? "Asignar curso" : "Detalle del slot")</h1>
+<div class="h-line"></div>
+<div class="detalle-slot">
+    <div>
+        <form id="frmCursoSlot" onsubmit="return AjaxFormPost(this);" action="@Url.Action("GuardarCursoSlot","Mapa")" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="IdCursoSlot" value="@Model.IdCursoSlot" />
+            <input type="hidden" name="NombreSlot" value="@(objSlotModel != null ? objSlotModel.NombreSlot : "")" />
+            <input id="slotId" type="hidden" name="IdSlot" value="@(objSlotModel!=null?objSlotModel.IdSlot:0)" />
+            <div class="separacion-items">
+                <div style="margin-bottom:10px;">
+                    <label>Curso</label>
+                    <select name="IdCurso">
+                        @if (Model.IdCursoSlot == 0)
+                        {
+                            if (lstCursos.Count > 0)
+                            {
+                                <option selected disabled>--Seleccionar Curso--</option>
+                            
+                                foreach (CursoModel objCursoModel in lstCursos)
+                                {
+                                <option value="@(objCursoModel.IdCurso)" @(Model.IdCurso == objCursoModel.IdCurso ? "selected" : "")>@objCursoModel.Titulo</option>
+                                }
+                            }
+                            else
+                            {
+                                <option selected disabled>No hay cursos</option>
+                            }
+                        }
+                        else
+                        {
+                            <option selected value="@Model.IdCurso">@Model.TituloCurso</option>
+                        }
+                    </select>
+                </div>
+                <div class="align-right">
+                    <div class="year" style="margin-bottom:20px;">
+                        <label>Año</label>
+                        <select name="Ano">
+                            @for (int i = Model.Ano - 10; i <= Model.Ano + 10; i++)
+                            {
+                                <option @(i == Model.Ano ? "selected" : string.Empty)>@i</option>                                
+                            }
+                        </select>
+                    </div>
+                    @if (Model.Empezo && Model.EmiteCertificado == true)
+                    {
+                        <a href="@Url.Action("DescargarCertiticados", "Mapa", new { Codigo = Model.CodigoCurso, IdCursoSlot = Model.IdCursoSlot, TituloCurso = Model.TituloCurso, FechaInicio = Model.FechaHoraInicio, FechaFin = Model.FechaHoraFin })" @(Model.EmiteCertificado == null ? "" : (Model.EmiteCertificado != true ? "disabled" : "")) class="align-left button btn-color01 btn-icon-left ic-download-service">Descargar Certificados</a>
+                    }
+                </div>
+            </div>
+            <div class="h-line"></div>
+
+            <div class="columns columns-2">
+                <div class="col col-1">
+                    <div class="form-field">
+                        <label>Fecha de inicio</label><input type="text" id="FechaHoraInicio" class="required-fecha" name="FechaInicio" placeholder="Fecha de inicio" value="@(Model.FechaInicio == null ? "" : Model.FechaInicio)" />
+                    </div>
+                </div>
+                <div class="col col-1">
+                    <div class="form-field">
+                        <label>Fecha de fin</label><input style="margin-left:-10px" type="text" id="FechaHoraFin" class="required-fecha" name="FechaFin" placeholder="Fecha de fin" value="@(Model.FechaFin == null ? "" : Model.FechaFin)" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="columns columns-2">
+                <div class="col col-1">
+                    <div class="form-field">
+                        <label>Hora de inicio</label><input type="text" id="HoraInicio" class="required-fecha" name="HoraInicio" placeholder="Hora de inicio" value="@(Model.FechaHoraInicio == null ? "" : Model.HoraInicio)" />
+                    </div>
+                </div>
+                <div class="col col-1">
+                    <div class="form-field">
+                        <label>Hora de fin</label><input type="text" id="HoraFin" class="required-fecha" name="HoraFin" placeholder="Hora de fin" value="@(Model.FechaHoraFin == null ? "" : Model.HoraFin)" />
+                    </div>
+                </div>
+
+                <div class="col col-1">
+                    <div class="form-field">
+                        <label>Intentos</label>
+                        <input type="text" class="only-numbers" placeholder="Intentos" maxlength="25" name="Intentos" value="@(Model.Intentos == null ? null : Model.Intentos)" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="screen-actions-flex">
+        <a class="align-left button btn-color01 btn-icon-left ic-volver" onclick="history.back()">Volver</a>
+        <a onclick="guardarCursoSlot();" class="button btn-color02 btn-icon-right ic-confirmar">Guardar</a>
+    </div>
+</div>
+@section scripts{
+    <script>
+    var horaInicio = new TimePicker('HoraInicio');
+    var horaFin = new TimePicker('HoraFin');
+    var fechaInicio = new DatePicker('FechaHoraInicio');
+    var fechaFin = new DatePicker('FechaHoraFin');
+
+    function guardarCursoSlot() {
+        if (validateNotEmpty('required-fecha', '#e84d5c')) {
+            $('#frmCursoSlot').submit();
+        }
+    }
+
+    function AjaxFormPost(formData) {
+        var ajaxConfig = function () {
+            $.ajax({
+                type: formData.method,
+                url: formData.action,
+                data: new FormData(formData),
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    stopLoading();
+                    if (data.OK) {
+                        showMessage("Se asignó el curso de manera exitosa", function () {
+                            window.location = '@Url.Action("DetalleSlot", "Mapa", new { IdSlot = idSlot})';
+                        });
+                    } else {
+                        showMessage(data.Message, null);
+                    }
+                }
+            });
+        }
+        startLoading();
+        ajaxConfig();
+        return false;
+    }
+
+    </script>
+}

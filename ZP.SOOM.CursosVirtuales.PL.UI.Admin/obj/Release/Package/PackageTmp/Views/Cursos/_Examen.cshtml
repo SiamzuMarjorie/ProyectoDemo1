@@ -1,0 +1,12 @@
+﻿@using ZP.SOOM.CursosVirtuales.Util
+@model ZP.SOOM.CursosVirtuales.PL.UI.Admin.Models.CursoModel
+<tr>
+    <td class="align-center">
+        <label>@Model.UrlExamen</label>
+        @if (Model.IdCurso != 0)
+        {
+            <input type="file" class="hidden" name="Examen" />
+        }
+    </td>
+    <td class="align-center"><a href="@ConfigurationManager.AppSettings["UrlSOOM"]Cursos/@Model.Codigo/ExamenHtml5/@(Model.UrlExamen + "?t=" + DateTimeHelper.PeruDateTime.ToString("yyyyMMddHHmmss"))" target="_blank" class="button btn-color01 btn-icon-left ic-prev-view prev-view prev-view-exam @(Model.UrlExamen == null ? "disabled" : "")">Previsualizar examen</a></td>
+</tr>

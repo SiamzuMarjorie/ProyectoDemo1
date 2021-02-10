@@ -1,0 +1,450 @@
+﻿@using ZP.SOOM.CursosVirtuales.Util
+@using ZP.SOOM.CursosVirtuales.PL.UI.Client.Models
+@using ZP.SOOM.CursosVirtuales.PL.UI.Client.Controllers
+@using System.Configuration
+
+@{
+    UsuarioModel objUsuarioLogueado = UsuarioModel.FromString(User.Identity.Name);
+    PersonajeModel objPersonajeModel = (ViewContext.Controller as BaseController).ObtenerPersonaje();
+    List<CursoModel> lstCursoModel = (ViewContext.Controller as BaseController).ListarCursoSlotIngresados();
+    List<SlotModel> lstSlotModel = (ViewContext.Controller as BaseController).ListarSlotAsignados().OrderBy(s => s.NombreSlot).ToList();
+    double puntajeTrabajador = (ViewContext.Controller as BaseController).ObtenerSumaPuntajeTrabajador();
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta id="rootUrl" content="@string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))" />
+    <title>@ViewBag.Title | La Positiva</title>
+    <link href="~/Content/Site.css" rel="stylesheet">
+    <link href="~/Content/Enhanced.css" rel="stylesheet" media="screen and (min-width: 65em)">
+    <link rel="stylesheet" href='~/Scripts/plugins/export/export.css' type='text/css' media='all' />
+    <link rel="apple-touch-icon" sizes="57x57" href="~/Favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="~/Favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="~/Favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/Favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="~/Favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="~/Favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="~/Favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="~/Favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/Favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="~/Favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/Favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="~/Favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Favicon/favicon-16x16.png">
+    <link rel="manifest" href="~/Favicon/manifest.json">
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <header class="header">
+        <div class="header-game">
+            <div class="options-header">
+                <div id="score" class="score">
+                    <label id="maximunScore">@puntajeTrabajador.ToString("0")</label>
+                    <div class="star-score"><div class="ic-star"></div></div>
+                </div>
+                <div id="user" class="user">
+                    @if (objUsuarioLogueado.Foto != null)
+                    {
+                        <div id="userPhoto" class="user-photo" style="background-image:url('@Url.Content("~/Pictures/Usuarios/"+objUsuarioLogueado.Foto)')"></div>
+                    }
+                    else
+                    {
+                        <div id="userPhoto" class="user-photo" style="background-image:url(@Url.Content(objPersonajeModel.Avatar == Constants.Avatar.Genero.HOMBRE ? "~/Images/Usuarios/man_person.svg" : "~/Images/Usuarios/woman_person.svg"))"></div>
+                    }
+                    @*<div id="userPhoto" class="user-photo" style="background-image:url(@Url.Content(objPersonajeModel.Avatar == Constants.Avatar.Genero.HOMBRE ? "~/Images/Usuarios/man_person.svg" : "~/Images/Usuarios/woman_person.svg"))"></div>*@
+                    <div class="actions-user">
+                        <label id="aliasUsuario">¡Hola, @objPersonajeModel.Alias!</label>
+                        <a onclick="popupLogout.show();">Cerrar sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*<div id="goFast" class="setting-left">
+            <div class="icon ic-go-fast" onclick="showTopics();"></div>
+        </div>*@
+        <div class="setting-right">
+            <div id="audio" class="icon ic-audio-on intro" onclick="turnOffAudio();"></div>
+            <div id="goFast" class="icon ic-go-fast" onclick="showTopics();"></div>
+            <div id="help" class="icon ic-help intro" onclick="openInformes();"></div>
+            <div id="setting" class="icon ic-setting intro" onclick="showSettings();"></div>
+        </div>
+        <div id="topics" class="site-content topics">
+            <label>¿A dónde quieres ir?</label>
+            <div class="icon-small hidden" onmousedown="startScrollTopicsTop();" onmouseup="stopScrollTopicsTop();"></div>
+            <div class="windows-scroll">
+                <div id="topicsContent" class="topics-content">
+                    <div class="subject">
+                        @if (lstSlotModel.Count() > 0)
+                        {
+                            for (int i = 0; i < lstSlotModel.Count; i++)
+                            {
+                                SlotModel objSlotAsignadoModel = lstSlotModel[i];
+                                <a onclick="startGetTopicList(@objSlotAsignadoModel.IdSlot);">@objSlotAsignadoModel.NombreSlot</a>
+                            }
+                        }
+                        else
+                        {
+                            <label class="message-without-topics" style="color:#fff;">No tienes cursos asignados</label>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            <div class="icon-small hidden" onmousedown="startScrollTopicsBottom();" onmouseup="stopScrollTopicsBottom();"></div>
+        </div>
+        <div id="settings" class="site-content settings">
+            <a onclick="popupChangeAlias.show();">Cambiar alias</a>
+            <div class="line-settings"></div>
+            <a onclick="popupChangePassword.show(); clearInputs();">Cambiar contraseña</a>
+            <div class="line-settings"></div>
+            <a onclick="popupChangeImage.show(); avatarSeleccionado();">Cambiar personaje</a>
+        </div>
+
+        <section id="audio-juego" class="hidden">
+            <audio id="backgroundAudio" controls autoplay loop>
+                <source src="~/Audio/Música de Fondo.mp3" type="audio/mpeg"/>
+            </audio>
+        </section>
+
+    </header>
+    <div class="section-content">
+        @RenderBody()
+    </div>
+
+    <!--CAMBIAR ALIAS-->
+    <div class="popup" id="popupChangeAlias">
+        <div class="popup-box">
+            <a onclick="popupChangeAlias.hide(); clearInputsAlias();" class="close-popup" title="Cerrar"></a>
+            <h1 class="title">Cambiar alias</h1>
+            <div class="content-inputs">
+                <form id="frmChangeAlias" action="@Url.Action("RegistrarAlias", "Mapa")" method="post" enctype="multipart/form-data" onsubmit="return actualizarAlias(this);">
+                    <input type="text" id="newAlias" name="Alias" placeholder="Nuevo alias *" value="@objPersonajeModel.Alias" maxlength="100" />
+                </form>
+            </div>
+            <div class="form-actions">
+                <a class="button btn-icon-cancelar btn-icon-left" id="cancelar" name="cancelar" onclick="popupChangeAlias.hide(); clearInputsAlias();">Cancelar</a>
+                <a class="button btn-color02 btn-icon-left ic-confirmar" name="guardar" id="guardar" onclick="startActualizarAlias();">Confirmar</a>
+            </div>
+        </div>
+    </div>
+
+    <!--CAMBIAR CONTRASEÑA-->
+    <div class="popup" id="popupChangePassword">
+        <div class="popup-box">
+            <a onclick="popupChangePassword.hide(); clearInputs();" class="close-popup" title="Cerrar"></a>
+            <h1 class="title">Cambiar contraseña</h1>
+            <div class="content-inputs">
+                <form id="frmActualizarPassword" action="@Url.Action("ActualizarPassword", "Cuenta")" method="post" enctype="multipart/form-data" onsubmit="return actualizarPassword(this);">
+                    <input name="Password" type="password" id="passwordActual" placeholder="Contraseña actual *" maxlength="100" />
+                    <input name="NewPassword" type="password" id="passwordNueva" placeholder="Nueva contraseña *" maxlength="100" />
+                    <input name="RepeatPassword" type="password" id="confirmarPassword" placeholder="Repetir contraseña nueva *" maxlength="100" />
+                </form>
+            </div>
+            <div class="form-actions">
+                <a class="button btn-icon-cancelar btn-icon-left" id="cancelar" name="cancelar" onclick="popupChangePassword.hide(); clearInputs();">Cancelar</a>
+                <a class="button btn-color02 btn-icon-left ic-confirmar" name="guardar" id="guardar" onclick="startActualizarPassword();">Confirmar</a>
+            </div>
+        </div>
+    </div>
+
+    <!--CAMBIAR PERFIL-->
+    <div class="popup" id="popupChangeImage">
+        <div class="popup-box">
+            <a onclick="popupChangeImage.hide();" class="close-popup" title="Cerrar"></a>
+            <h1 class="title">Cambiar personaje</h1>
+            <div class="content-inputs">
+                <form id="frmActualizarAvatar" action="@Url.Action("ActualizarAvatar", "Mapa")" method="post" enctype="multipart/form-data" onsubmit="return actualizarAvatar(this);">
+                    <div class="charter">
+                        <label class="person-charter man-charter" for="manAvatar"></label>
+                        <label class="person-charter woman-charter" for="womanAvatar"></label>
+                    </div>
+                    <div class="person-mark">
+                        <input type="radio" id="manAvatar" name="Avatar" value="@Constants.Avatar.Genero.HOMBRE" />
+                        <input type="radio" id="womanAvatar" name="Avatar" value="@Constants.Avatar.Genero.MUJER" />
+                    </div>
+                </form>
+            </div>
+            <div class="form-actions">
+                <a class="button btn-icon-cancelar btn-icon-left" id="cancelar" name="cancelar" onclick="popupChangeImage.hide();">Cancelar</a>
+                <a class="button btn-color02 btn-icon-left ic-confirmar" name="guardar" id="guardar" onclick="startActualizarAvatar();">Guardar personaje</a>
+            </div>
+        </div>
+    </div>
+
+    <!--CERRAR SESION-->
+    <div class="popup" id="popupLogout">
+        <div class="popup-box">
+            <label>¿Estas seguro(a) de cerrar sesión?</label>
+            <div class="form-actions">
+                <a class="button btn-icon-cancelar" onclick="popupLogout.hide();">Cancelar</a>
+                <a href="@Url.Action("Logout", "Login")" class="button btn-color02">Confirmar</a>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    <script src="~/Scripts/optikoud.ajax.js" type="text/javascript"></script>
+    <script src="~/Scripts/optikoud.popup.js" type="text/javascript"></script>
+    <script src="~/Scripts/optikoud.message.js" type="text/javascript"></script>
+    <script src="~/Scripts/optikoud.validator.js" type="text/javascript"></script>
+    <script src="~/Scripts/optikoud.loading.js" type="text/javascript"></script>
+    <script>
+        $('input').attr('autocomplete', 'off');
+        $('textarea').attr('autocomplete', 'off');
+
+        $(document).ready(function () {
+            @if (ViewBag.Message != null)
+            {
+                <text>showMessage('@ViewBag.Message', null);</text>
+            }
+            
+        });
+
+        function getRootUrl() {
+            return $('#rootUrl').attr('content');
+        }
+    </script>
+    @RenderSection("scripts", required: false)
+    <script>
+
+        var popupChangeAlias = new Popup('popupChangeAlias');
+        var popupChangePassword = new Popup('popupChangePassword');
+        var popupChangeImage = new Popup('popupChangeImage');
+        var popupLogout = new Popup('popupLogout');
+
+        //VOLUMEN DEL AUDIO
+        document.getElementById("backgroundAudio").volume = 0.2;
+
+        //MOSTRAR CURSOS
+        function showTopics() {
+            if ($('#topics').hasClass('active')) {
+                $('#topics').removeClass('active');
+            }
+            else {
+                $('#topics').addClass('active');
+            }
+        }
+
+        //MOSTRAR AJUSTES
+        function showSettings() {
+            if ($('#settings').hasClass('active')) {
+                $('#settings').removeClass('active');
+            }
+            else {
+                $('#settings').addClass('active');
+            }
+        }
+
+        //APAGAR AUDIO
+        function turnOffAudio() {
+            if ($('#audio').hasClass('inactive')) {
+                $('#audio').removeClass('inactive');
+                document.getElementById("backgroundAudio").play();
+            }
+            else {
+                $('#audio').addClass('inactive');
+                document.getElementById("backgroundAudio").pause();
+            }
+        }
+
+        //LIMPIAR CAMPOS CONTRASEÑA
+        function clearInputs() {
+            $('#passwordActual').val('');
+            $('#passwordNueva').val('');
+            $('#confirmarPassword').val('');
+            $('#passwordActual').removeClass('error');
+            $('#passwordNueva').removeClass('error');
+            $('#confirmarPassword').removeClass('error');
+        }
+
+        //LIMPIAR CAMPOS ALIAS
+        function clearInputsAlias() {
+            $('#newAlias').val('');
+            $('#newAlias').removeClass('error');
+        }
+
+        $(document).ready(function () {
+            setValidations();
+        });
+
+        //VALIDATOR CONTRASEÑA
+        var validator = null;
+        var validatorAlias = null;
+        function setValidations() {
+            var fields = [
+                { selector: '#passwordActual', name: 'Contraseña actual', required: true },
+                { selector: '#passwordNueva', name: 'Nueva contraseña', required: true, minLength: 8 },
+                { selector: '#confirmarPassword', name: 'Repetir contraseña nueva', required: true }
+            ];
+            var fieldsAlias = [
+                { selector: '#newAlias', name: 'Alias', required: true }
+            ];
+
+            validator = new Validator(fields, 'error');
+            validatorAlias = new Validator(fieldsAlias, 'error');
+        }
+
+        //CAMBIAR CONTRASEÑA
+        function startActualizarPassword() {
+            var result = validator.validate();
+            if (result == null) {
+                var passwordNueva = $('#passwordNueva').val();
+                var repetirPassword = $('#confirmarPassword').val();
+                if (repetirPassword == passwordNueva)
+                    $('#frmActualizarPassword').submit();
+                else
+                    showMessage('Las contraseñas no coinciden.', null);
+            }
+            else
+                showMessage(result, null);
+        }
+
+        function actualizarPassword(formData) {
+            return ajaxPost(formData, function (data) {
+                showMessage('Contraseña actualizada correctamente', null);
+                popupChangePassword.hide();
+            }, function (data) {
+                showMessage(data.Message, null);
+            });
+        }
+
+        //CAMBIAR ALIAS
+        function startActualizarAlias() {
+            var result = validatorAlias.validate();
+            if (result == null) {
+                $('#frmChangeAlias').submit();
+            }
+            else
+                showMessage(result, null);
+        }
+
+        function actualizarAlias(formData) {
+            return ajaxPost(formData, function (data) {
+                showMessage('Alias actualizado correctamente', null);
+                popupChangeAlias.hide();
+                $('#aliasUsuario').html('Hola, ' + data.Data + '!');
+            }, function (data) {
+                showMessage(data.Message, null);
+            });
+        }
+
+        //PERSONAJE SELECCIONADO
+        var avatarActual = '@objPersonajeModel.Avatar';
+        function avatarSeleccionado() {
+            if (avatarActual == '@Constants.Avatar.Genero.HOMBRE') {
+                $('#manAvatar').attr('checked', true);
+                $('#manAvatar').click();
+            }
+            else {
+                $('#womanAvatar').attr('checked', true);
+                $('#womanAvatar').click();
+            }
+
+        }
+
+        //CAMBIAR AVATAR
+        function startActualizarAvatar() {
+            $('#frmActualizarAvatar').submit();
+        }
+
+        function actualizarAvatar(formData) {
+            return ajaxPost(formData, function (data) {
+                showMessage('Personaje actualizado correctamente', null);
+                popupChangeImage.hide();
+                $('#userPhoto').attr('style');
+                @if (objUsuarioLogueado.Foto==null)
+                {
+                    <text>
+                if (data.Data == '@Constants.Avatar.Genero.HOMBRE')
+                    $('#userPhoto').attr('style', 'background-image:url(' + getRootUrl() + '/Images/Usuarios/man_person.svg)');
+                else
+                    $('#userPhoto').attr('style', 'background-image:url(' + getRootUrl() + '/Images/Usuarios/woman_person.svg)');
+                </text>
+                }
+
+                avatarActual = data.Data;
+                personaje.setGenero(data.Data);
+            }, function (data) {
+                showMessage(data.Message, null);
+            });
+        }
+
+        //ANIMACION INTRO
+        $(window).load(function () {
+            animateIntro();
+        });
+
+        function animateIntro() {
+            setTimeout(function () {
+                $('#score').addClass('active');
+            }, 50);
+            setTimeout(function () {
+                $('#user').addClass('active');
+            }, 100);
+            setTimeout(function () {
+                $('#goFast').addClass('intro');
+            }, 150);
+            setTimeout(function () {
+                $('#audio').removeClass('intro');
+            }, 200);
+            setTimeout(function () {
+                $('#help').removeClass('intro');
+            }, 250);
+            setTimeout(function () {
+                $('#setting').removeClass('intro');
+            }, 300);
+        }
+
+        //$(window).load(function () {
+        //    //Set width
+        //    $('.windows-scroll').css("width", Math.ceil($('.topics-content').innerWidth() - 20));
+        //});
+
+        //SCROLL CURSOS
+        var scrollTopics = null;
+
+        function startScrollTopicsTop() {
+            scrollTopics = setInterval(function () {
+                $('.topics-content').scrollTop($('.topics-content').scrollTop() - 1);
+            }, 1);
+        }
+
+        function stopScrollTopicsTop() {
+            clearInterval(scrollTopics);
+        }
+
+        function startScrollTopicsBottom() {
+            scrollTopics = setInterval(function () {
+                $('.topics-content').scrollTop($('.topics-content').scrollTop() + 1);
+            }, 1);
+        }
+
+        function stopScrollTopicsBottom() {
+            clearInterval(scrollTopics);
+        }
+
+        $('.topics-content').scroll(function () {
+            var scroll = $('.topics-content').scrollTop();
+            if (scroll == 0) {
+                $('.arrow-up').addClass('hidden');
+                $('.arrow-down').addClass('hidden');
+            }
+            if (scroll > 1) {
+                $('.arrow-up').removeClass('hidden');
+                $('.arrow-down').removeClass('hidden');
+            }
+        });
+
+        $('.section-content').click(function () {
+            $('#topics').removeClass('active');
+        });
+
+        $('.section-content').click(function () {
+            $('#settings').removeClass('active');
+        });
+
+    </script>
+</body>
+</html>

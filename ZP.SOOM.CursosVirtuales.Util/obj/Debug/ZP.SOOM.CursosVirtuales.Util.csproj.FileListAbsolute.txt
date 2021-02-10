@@ -1,0 +1,11 @@
+C:\Clientes\SOOM - Juego Cursos Virtuales\Workspace\3. Desarrollo\SOOM Cursos Virtuales Web\ZP.SOOM.CursosVirtuales.Util\bin\Debug\ZP.SOOM.CursosVirtuales.Util.dll
+C:\Clientes\SOOM - Juego Cursos Virtuales\Workspace\3. Desarrollo\SOOM Cursos Virtuales Web\ZP.SOOM.CursosVirtuales.Util\bin\Debug\ZP.SOOM.CursosVirtuales.Util.pdb
+C:\Clientes\SOOM - Juego Cursos Virtuales\Workspace\3. Desarrollo\SOOM Cursos Virtuales Web\ZP.SOOM.CursosVirtuales.Util\obj\Debug\ZP.SOOM.CursosVirtuales.Util.csprojResolveAssemblyReference.cache
+C:\Clientes\SOOM - Juego Cursos Virtuales\Workspace\3. Desarrollo\SOOM Cursos Virtuales Web\ZP.SOOM.CursosVirtuales.Util\obj\Debug\ZP.SOOM.CursosVirtuales.Util.dll
+C:\Clientes\SOOM - Juego Cursos Virtuales\Workspace\3. Desarrollo\SOOM Cursos Virtuales Web\ZP.SOOM.CursosVirtuales.Util\obj\Debug\ZP.SOOM.CursosVirtuales.Util.pdb
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.Util\bin\Debug\ZP.SOOM.CursosVirtuales.Util.dll
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.Util\bin\Debug\ZP.SOOM.CursosVirtuales.Util.pdb
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.Util\obj\Debug\ZP.SOOM.CursosVirtuales.Util.csprojAssemblyReference.cache
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.Util\obj\Debug\ZP.SOOM.CursosVirtuales.Util.csproj.CoreCompileInputs.cache
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.Util\obj\Debug\ZP.SOOM.CursosVirtuales.Util.dll
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.Util\obj\Debug\ZP.SOOM.CursosVirtuales.Util.pdb

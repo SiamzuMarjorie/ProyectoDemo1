@@ -1,0 +1,100 @@
+﻿@model List<SlotModel>
+@{
+    ViewBag.Title = "Mapa";
+    ViewBag.Section = "Mapa";
+}
+
+<div class="slots">
+    <h1 class="subtitle">SLOTS</h1>
+    <div class="slots-cabecera">
+        <div class="screen-actions small-margin">
+            <a onclick="visualizarMapa();" class="button btn-color01 btn-icon-left ic-prev-view">Ver Mapa</a>
+        </div>
+
+        <div class="slots-contenido">
+            @foreach (SlotModel objSlotModel in Model)
+            {
+                <div class="slots-contenido-elementos">
+                    <h1 class="align-center subtitle">@objSlotModel.Nombre</h1>
+                    <a id="contentSlot" href="@Url.Action("DetalleSlot", "Mapa", new {IdSlot = objSlotModel.IdSlot})" class="fondo-box align-center" onclick="if ($(event.target).is('.edit')) event.preventDefault();">
+                        <div class="mapa-detalle">
+                            <span onclick="nombreSlot(@objSlotModel.IdSlot, '@objSlotModel.NombreSlot');" class="edit ic-pen"></span>
+                        </div>
+                        <label class="subtitle"><b>@objSlotModel.NombreSlot</b></label>
+                        @if (objSlotModel.Estado == Constants.Cursos.Estado.ACTIVO && objSlotModel.IdCurso != null)
+                        {
+                            <h1 class="cantidad-cursos">Cantidad de cursos: @objSlotModel.CantidadCursos</h1>
+                        }
+                        else
+                        {
+                            <h4 class="cantidad-cursos">Sin cursos asignados</h4>
+                        }
+                    </a>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+<div class="popup" id="popupMapa">
+    <div class="popup-container-mapa">
+        <img src="~/Images/MAPA - Previsualización de Administrador.svg" />
+        <div class="form-actions">
+            <a class="button btn-icon-cancelar btn-icon-left" id="cancelar" name="cancelar" onclick="popupVisualizarMapa.hide();">Cerrar</a>
+        </div>
+    </div>
+</div>
+
+<div class="popup" id="popupEditarNombreSlot">
+    <div class="popup-container-mapa">
+        <h1 class="title">EDITAR NOMBRE DEL SLOT</h1>
+        <input id="nombreSlot" class="new-name-slot required" type="text" value="" placeholder="Nombre para el slot *" maxlength="100" />
+        <input id="idSlot" type="hidden" value="0"/>
+        <div class="form-actions">
+            <a class="button btn-icon-cancelar btn-icon-left" onclick="popupEditarNombreSlot.hide();">Cerrar</a>
+            <a class="button btn-color01 btn-icon-cancelar btn-icon-left btn-icon-ok"onclick="GuardarNombre();">Guardar</a>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        var popupVisualizarMapa = new Popup('popupMapa');
+        var popupEditarNombreSlot = new Popup('popupEditarNombreSlot');
+
+        
+        function GuardarNombre() {
+            if (validateNotEmpty('required', '#e84d5c')) {
+                var nombreSlot = $('#nombreSlot').val();
+                var idSlot = $('#idSlot').val();
+                startLoading();
+                $.post("@Url.Action("GuardarSlot", "Mapa")", { IdSlot: idSlot, NombreSlot: nombreSlot }, function (data) {
+                    stopLoading();
+                    if (data.OK) {
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 400)
+                    } else {
+                        showMessage(data.Message, null);
+                    }
+                });
+            }
+            else {
+                showMessage('Debes completar todos los campos solicitados.');
+            }
+        }
+
+        var idSlot = '';
+        function nombreSlot(idSlot, nombreSlot) {
+            idSlot = idSlot;
+            popupEditarNombreSlot.show();
+            $("#idSlot").val(idSlot);
+            $("#nombreSlot").val(nombreSlot);
+        }
+
+
+        function visualizarMapa() {
+            popupVisualizarMapa.show();
+        }
+
+    </script>
+}

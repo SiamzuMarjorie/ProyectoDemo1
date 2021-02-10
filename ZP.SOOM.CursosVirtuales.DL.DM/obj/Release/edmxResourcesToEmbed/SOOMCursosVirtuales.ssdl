@@ -1,0 +1,667 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SOOMCursosVirtualesModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="ActividadUsuario">
+    <Key>
+      <PropertyRef Name="IdActividadUsuario" />
+    </Key>
+    <Property Name="IdActividadUsuario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdUsuario" Type="int" Nullable="false" />
+    <Property Name="FechaHora" Type="datetime" />
+    <Property Name="TipoActividad" Type="char" MaxLength="1" />
+    <Property Name="IdCursoSlot" Type="int" />
+  </EntityType>
+  <EntityType Name="Configuracion">
+    <Key>
+      <PropertyRef Name="IdConfiguracion" />
+    </Key>
+    <Property Name="IdConfiguracion" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" MaxLength="255" />
+    <Property Name="Valor" Type="varchar" MaxLength="1000" />
+  </EntityType>
+  <EntityType Name="ContenidoCurso">
+    <Key>
+      <PropertyRef Name="IdContenidoCurso" />
+    </Key>
+    <Property Name="IdContenidoCurso" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdCurso" Type="int" Nullable="false" />
+    <Property Name="Archivo" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="TipoArchivo" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" MaxLength="100" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ContenidoCursoInscripcion">
+    <Key>
+      <PropertyRef Name="IdContenidoCursoInscripcion" />
+    </Key>
+    <Property Name="IdContenidoCursoInscripcion" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdContenidoCurso" Type="int" Nullable="false" />
+    <Property Name="IdInscripcion" Type="int" Nullable="false" />
+    <Property Name="FechaHoraRevision" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Curso">
+    <Key>
+      <PropertyRef Name="IdCurso" />
+    </Key>
+    <Property Name="IdCurso" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Titulo" Type="varchar" MaxLength="50" />
+    <Property Name="Horas" Type="int" />
+    <Property Name="UrlExamen" Type="varchar" MaxLength="2048" />
+    <Property Name="Puntos" Type="int" />
+    <Property Name="Codigo" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="Descripcion" Type="varchar" MaxLength="1000" />
+    <Property Name="Imagen" Type="varchar" MaxLength="255" />
+    <Property Name="Estado" Type="char" MaxLength="1" />
+    <Property Name="EmiteCertificado" Type="bit" Nullable="false" />
+    <Property Name="TieneExamen" Type="bit" Nullable="false" />
+    <Property Name="Certificado" Type="varchar" MaxLength="255" />
+    <Property Name="Eliminado" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CursoSlot">
+    <Key>
+      <PropertyRef Name="IdCursoSlot" />
+    </Key>
+    <Property Name="IdCursoSlot" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdCurso" Type="int" />
+    <Property Name="IdSlot" Type="int" Nullable="false" />
+    <Property Name="FechaHoraInicio" Type="datetime" />
+    <Property Name="FechaHoraFin" Type="datetime" />
+    <Property Name="Intentos" Type="int" />
+    <Property Name="Visible" Type="bit" />
+    <Property Name="Estado" Type="char" MaxLength="1" />
+    <Property Name="Titulo" Type="varchar" MaxLength="50" />
+    <Property Name="Horas" Type="int" />
+    <Property Name="Puntos" Type="int" />
+    <Property Name="Codigo" Type="varchar" MaxLength="100" />
+    <Property Name="Descripcion" Type="varchar" MaxLength="1000" />
+    <Property Name="FechaHoraRegistro" Type="datetime" Nullable="false" />
+    <Property Name="FechaHoraUltimaActualizacion" Type="datetime" Nullable="false" />
+    <Property Name="Orden" Type="int" />
+    <Property Name="Ano" Type="int" Nullable="false" />
+    <Property Name="IdCursoSlotDependiente" Type="int" />
+    <Property Name="NombreSlot" Type="varchar" MaxLength="100" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Grupo">
+    <Key>
+      <PropertyRef Name="IdGrupo" />
+    </Key>
+    <Property Name="IdGrupo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="Descripcion" Type="varchar" MaxLength="300" />
+    <Property Name="Eliminado" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="GrupoCurso">
+    <Key>
+      <PropertyRef Name="IdGrupoCurso" />
+    </Key>
+    <Property Name="IdGrupoCurso" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdCurso" Type="int" Nullable="false" />
+    <Property Name="IdGrupo" Type="int" Nullable="false" />
+    <Property Name="FechaHoraRegistro" Type="datetime" Nullable="false" />
+    <Property Name="FechaHoraDesasignacion" Type="datetime" />
+  </EntityType>
+  <EntityType Name="GrupoOcupacional">
+    <Key>
+      <PropertyRef Name="IdGrupoOcupacional" />
+    </Key>
+    <Property Name="IdGrupoOcupacional" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" MaxLength="100" Nullable="false" />
+  </EntityType>
+  <EntityType Name="GrupoTrabajador">
+    <Key>
+      <PropertyRef Name="IdGrupoTrabajador" />
+    </Key>
+    <Property Name="IdGrupoTrabajador" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdTrabajador" Type="int" Nullable="false" />
+    <Property Name="IdGrupo" Type="int" Nullable="false" />
+    <Property Name="FechaHoraRegistro" Type="datetime" Nullable="false" />
+    <Property Name="FechaHoraDesasignacion" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Inscripcion">
+    <Key>
+      <PropertyRef Name="IdInscripcion" />
+    </Key>
+    <Property Name="IdInscripcion" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdCursoSlot" Type="int" Nullable="false" />
+    <Property Name="IdTrabajador" Type="int" Nullable="false" />
+    <Property Name="FechaHoraRegistro" Type="datetime" Nullable="false" />
+    <Property Name="FechaHoraUltimaActualizacion" Type="datetime" Nullable="false" />
+    <Property Name="Certificado" Type="varchar" MaxLength="255" />
+    <Property Name="FechaHoraAprobacion" Type="datetime" />
+    <Property Name="FechaHoraDescargaCertificado" Type="datetime" />
+    <Property Name="Puntaje" Type="float" />
+  </EntityType>
+  <EntityType Name="Intento">
+    <Key>
+      <PropertyRef Name="IdIntento" />
+    </Key>
+    <Property Name="IdIntento" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdInscripcion" Type="int" Nullable="false" />
+    <Property Name="NotaMaxima" Type="float" />
+    <Property Name="Puntaje" Type="float" />
+    <Property Name="Nota" Type="float" />
+    <Property Name="Aprobado" Type="bit" />
+    <Property Name="Certificado" Type="varchar" MaxLength="255" />
+    <Property Name="FechaHoraAprobacion" Type="datetime" />
+    <Property Name="FechaHoraRegistro" Type="datetime" />
+    <Property Name="FechaHoraUltimaActualizacion" Type="datetime" Nullable="false" />
+    <Property Name="Terminado" Type="bit" Nullable="false" />
+    <Property Name="FechaHoraCertificadoDescargado" Type="datetime" />
+    <Property Name="NumeroIntento" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Material">
+    <Key>
+      <PropertyRef Name="IdMaterial" />
+    </Key>
+    <Property Name="IdMaterial" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdCurso" Type="int" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" MaxLength="100" />
+    <Property Name="TipoMaterial" Type="char" MaxLength="1" />
+    <Property Name="Archivo" Type="varchar(max)" />
+    <Property Name="Obligatorio" Type="bit" />
+  </EntityType>
+  <EntityType Name="MaterialInscripcion">
+    <Key>
+      <PropertyRef Name="IdMaterialInscripcion" />
+    </Key>
+    <Property Name="IdMaterialInscripcion" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdMaterial" Type="int" />
+    <Property Name="IdInscripcion" Type="int" Nullable="false" />
+    <Property Name="Visto" Type="bit" />
+    <Property Name="IdCurso" Type="int" />
+    <Property Name="Nombre" Type="varchar" MaxLength="100" />
+    <Property Name="TipoMaterial" Type="char" MaxLength="1" />
+    <Property Name="Archivo" Type="varchar(max)" />
+    <Property Name="Obligatorio" Type="bit" />
+  </EntityType>
+  <EntityType Name="Personaje">
+    <Key>
+      <PropertyRef Name="IdPersonaje" />
+    </Key>
+    <Property Name="IdPersonaje" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdUsuario" Type="int" Nullable="false" />
+    <Property Name="Alias" Type="varchar" MaxLength="100" />
+    <Property Name="Avatar" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="PosicionX" Type="int" Nullable="false" />
+    <Property Name="PosicionY" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Pregunta">
+    <Key>
+      <PropertyRef Name="IdPregunta" />
+    </Key>
+    <Property Name="IdPregunta" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdCursoSlot" Type="int" Nullable="false" />
+    <Property Name="Contenido" Type="varchar" MaxLength="1000" />
+  </EntityType>
+  <EntityType Name="Respuesta">
+    <Key>
+      <PropertyRef Name="IdRespuesta" />
+    </Key>
+    <Property Name="IdRespuesta" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdPregunta" Type="int" Nullable="false" />
+    <Property Name="Contenido" Type="varchar" MaxLength="1000" />
+    <Property Name="Correcta" Type="bit" />
+    <Property Name="IdIntento" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Slot">
+    <Key>
+      <PropertyRef Name="IdSlot" />
+    </Key>
+    <Property Name="IdSlot" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nombre" Type="varchar" MaxLength="100" />
+    <Property Name="Codigo" Type="int" />
+    <Property Name="Izquierda" Type="float" />
+    <Property Name="Alto" Type="float" />
+    <Property Name="Ancho" Type="float" />
+    <Property Name="ColorText" Type="varchar" MaxLength="50" />
+    <Property Name="ColorBackground" Type="varchar" MaxLength="50" />
+    <Property Name="NombreSlot" Type="varchar" MaxLength="100" />
+    <Property Name="CursosDependientes" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SuscripcionNotificacion">
+    <Key>
+      <PropertyRef Name="IdSuscripcionNotificacion" />
+    </Key>
+    <Property Name="IdSuscripcionNotificacion" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdUsuario" Type="int" />
+    <Property Name="Endpoint" Type="varchar" MaxLength="1000" />
+    <Property Name="PS56DH" Type="varchar" MaxLength="1000" />
+    <Property Name="Auth" Type="varchar" MaxLength="1000" />
+  </EntityType>
+  <EntityType Name="Trabajador">
+    <Key>
+      <PropertyRef Name="IdTrabajador" />
+    </Key>
+    <Property Name="IdTrabajador" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdTrabajadorJefe" Type="int" />
+    <Property Name="Nombres" Type="varchar" MaxLength="100" />
+    <Property Name="PrimerApellido" Type="varchar" MaxLength="100" />
+    <Property Name="SegundoApellido" Type="varchar" MaxLength="100" />
+    <Property Name="Foto" Type="varchar" MaxLength="100" />
+    <Property Name="Puesto" Type="varchar" MaxLength="100" />
+    <Property Name="Celular" Type="varchar" MaxLength="20" />
+    <Property Name="Area" Type="varchar" MaxLength="100" />
+    <Property Name="Email" Type="varchar" MaxLength="100" />
+    <Property Name="FechaNacimiento" Type="date" />
+    <Property Name="Pais" Type="varchar" MaxLength="50" />
+    <Property Name="Estado" Type="char" MaxLength="1" />
+    <Property Name="Genero" Type="char" MaxLength="1" />
+    <Property Name="Eliminado" Type="bit" Nullable="false" />
+    <Property Name="Provincia" Type="varchar" MaxLength="50" />
+    <Property Name="Region" Type="varchar" MaxLength="50" />
+    <Property Name="FechaIngreso" Type="date" />
+    <Property Name="TipoContrato" Type="varchar" MaxLength="50" />
+    <Property Name="Nivel" Type="int" />
+    <Property Name="IdGrupoOcupacional" Type="int" />
+    <Property Name="DNI" Type="varchar" MaxLength="50" />
+    <Property Name="Sede" Type="varchar" MaxLength="50" />
+    <Property Name="Codigo" Type="varchar" MaxLength="100" />
+    <Property Name="AreaSuperior" Type="varchar" MaxLength="100" />
+    <Property Name="Gerencia" Type="varchar" MaxLength="100" />
+    <Property Name="Rol" Type="varchar" MaxLength="100" />
+    <Property Name="Compañia" Type="varchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="Usuario">
+    <Key>
+      <PropertyRef Name="IdUsuario" />
+    </Key>
+    <Property Name="IdUsuario" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IdTrabajador" Type="int" />
+    <Property Name="Username" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="Password" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="Eliminado" Type="bit" Nullable="false" />
+    <Property Name="Perfil" Type="char" MaxLength="1" />
+    <Property Name="UltimaActualizacion" Type="datetime" />
+    <Property Name="PasswordAntiguo" Type="varchar" MaxLength="100" />
+  </EntityType>
+  <Association Name="FK_ActividadUsuario_CursoSlot">
+    <End Role="CursoSlot" Type="Self.CursoSlot" Multiplicity="0..1" />
+    <End Role="ActividadUsuario" Type="Self.ActividadUsuario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CursoSlot">
+        <PropertyRef Name="IdCursoSlot" />
+      </Principal>
+      <Dependent Role="ActividadUsuario">
+        <PropertyRef Name="IdCursoSlot" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ActividadUsuario_Usuario">
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="1" />
+    <End Role="ActividadUsuario" Type="Self.ActividadUsuario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="IdUsuario" />
+      </Principal>
+      <Dependent Role="ActividadUsuario">
+        <PropertyRef Name="IdUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ContenidoCurso_Curso">
+    <End Role="Curso" Type="Self.Curso" Multiplicity="1" />
+    <End Role="ContenidoCurso" Type="Self.ContenidoCurso" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Curso">
+        <PropertyRef Name="IdCurso" />
+      </Principal>
+      <Dependent Role="ContenidoCurso">
+        <PropertyRef Name="IdCurso" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ContenidoCursoInscripcion_ContenidoCurso">
+    <End Role="ContenidoCurso" Type="Self.ContenidoCurso" Multiplicity="1" />
+    <End Role="ContenidoCursoInscripcion" Type="Self.ContenidoCursoInscripcion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ContenidoCurso">
+        <PropertyRef Name="IdContenidoCurso" />
+      </Principal>
+      <Dependent Role="ContenidoCursoInscripcion">
+        <PropertyRef Name="IdContenidoCurso" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ContenidoCursoInscripcion_Inscripcion">
+    <End Role="Inscripcion" Type="Self.Inscripcion" Multiplicity="1" />
+    <End Role="ContenidoCursoInscripcion" Type="Self.ContenidoCursoInscripcion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Inscripcion">
+        <PropertyRef Name="IdInscripcion" />
+      </Principal>
+      <Dependent Role="ContenidoCursoInscripcion">
+        <PropertyRef Name="IdInscripcion" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_GrupoCurso_Curso">
+    <End Role="Curso" Type="Self.Curso" Multiplicity="1" />
+    <End Role="GrupoCurso" Type="Self.GrupoCurso" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Curso">
+        <PropertyRef Name="IdCurso" />
+      </Principal>
+      <Dependent Role="GrupoCurso">
+        <PropertyRef Name="IdCurso" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_GrupoCurso_Grupo">
+    <End Role="Grupo" Type="Self.Grupo" Multiplicity="1" />
+    <End Role="GrupoCurso" Type="Self.GrupoCurso" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Grupo">
+        <PropertyRef Name="IdGrupo" />
+      </Principal>
+      <Dependent Role="GrupoCurso">
+        <PropertyRef Name="IdGrupo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_GrupoTrabajador_Grupo">
+    <End Role="Grupo" Type="Self.Grupo" Multiplicity="1" />
+    <End Role="GrupoTrabajador" Type="Self.GrupoTrabajador" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Grupo">
+        <PropertyRef Name="IdGrupo" />
+      </Principal>
+      <Dependent Role="GrupoTrabajador">
+        <PropertyRef Name="IdGrupo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_GrupoTrabajador_Trabajador">
+    <End Role="Trabajador" Type="Self.Trabajador" Multiplicity="1" />
+    <End Role="GrupoTrabajador" Type="Self.GrupoTrabajador" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Trabajador">
+        <PropertyRef Name="IdTrabajador" />
+      </Principal>
+      <Dependent Role="GrupoTrabajador">
+        <PropertyRef Name="IdTrabajador" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Inscripcion_CursoSlot">
+    <End Role="CursoSlot" Type="Self.CursoSlot" Multiplicity="1" />
+    <End Role="Inscripcion" Type="Self.Inscripcion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CursoSlot">
+        <PropertyRef Name="IdCursoSlot" />
+      </Principal>
+      <Dependent Role="Inscripcion">
+        <PropertyRef Name="IdCursoSlot" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Inscripcion_Trabajador">
+    <End Role="Trabajador" Type="Self.Trabajador" Multiplicity="1" />
+    <End Role="Inscripcion" Type="Self.Inscripcion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Trabajador">
+        <PropertyRef Name="IdTrabajador" />
+      </Principal>
+      <Dependent Role="Inscripcion">
+        <PropertyRef Name="IdTrabajador" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Intento_Inscripcion">
+    <End Role="Inscripcion" Type="Self.Inscripcion" Multiplicity="1" />
+    <End Role="Intento" Type="Self.Intento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Inscripcion">
+        <PropertyRef Name="IdInscripcion" />
+      </Principal>
+      <Dependent Role="Intento">
+        <PropertyRef Name="IdInscripcion" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Material_Curso">
+    <End Role="Curso" Type="Self.Curso" Multiplicity="1" />
+    <End Role="Material" Type="Self.Material" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Curso">
+        <PropertyRef Name="IdCurso" />
+      </Principal>
+      <Dependent Role="Material">
+        <PropertyRef Name="IdCurso" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MaterialInscripcion_Inscripcion">
+    <End Role="Inscripcion" Type="Self.Inscripcion" Multiplicity="1" />
+    <End Role="MaterialInscripcion" Type="Self.MaterialInscripcion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Inscripcion">
+        <PropertyRef Name="IdInscripcion" />
+      </Principal>
+      <Dependent Role="MaterialInscripcion">
+        <PropertyRef Name="IdInscripcion" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MaterialInscripcion_Material">
+    <End Role="Material" Type="Self.Material" Multiplicity="0..1" />
+    <End Role="MaterialInscripcion" Type="Self.MaterialInscripcion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Material">
+        <PropertyRef Name="IdMaterial" />
+      </Principal>
+      <Dependent Role="MaterialInscripcion">
+        <PropertyRef Name="IdMaterial" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Persona_Usuario">
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="1" />
+    <End Role="Personaje" Type="Self.Personaje" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="IdUsuario" />
+      </Principal>
+      <Dependent Role="Personaje">
+        <PropertyRef Name="IdUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Pregunta_CursoSlot">
+    <End Role="CursoSlot" Type="Self.CursoSlot" Multiplicity="1" />
+    <End Role="Pregunta" Type="Self.Pregunta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CursoSlot">
+        <PropertyRef Name="IdCursoSlot" />
+      </Principal>
+      <Dependent Role="Pregunta">
+        <PropertyRef Name="IdCursoSlot" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Respuesta_Intento">
+    <End Role="Intento" Type="Self.Intento" Multiplicity="1" />
+    <End Role="Respuesta" Type="Self.Respuesta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Intento">
+        <PropertyRef Name="IdIntento" />
+      </Principal>
+      <Dependent Role="Respuesta">
+        <PropertyRef Name="IdIntento" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Respuesta_Pregunta">
+    <End Role="Pregunta" Type="Self.Pregunta" Multiplicity="1" />
+    <End Role="Respuesta" Type="Self.Respuesta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Pregunta">
+        <PropertyRef Name="IdPregunta" />
+      </Principal>
+      <Dependent Role="Respuesta">
+        <PropertyRef Name="IdPregunta" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SuscripcionNotificacion_Usuario">
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
+    <End Role="SuscripcionNotificacion" Type="Self.SuscripcionNotificacion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="IdUsuario" />
+      </Principal>
+      <Dependent Role="SuscripcionNotificacion">
+        <PropertyRef Name="IdUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Trabajador_GrupoOcupacional">
+    <End Role="GrupoOcupacional" Type="Self.GrupoOcupacional" Multiplicity="0..1" />
+    <End Role="Trabajador" Type="Self.Trabajador" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="GrupoOcupacional">
+        <PropertyRef Name="IdGrupoOcupacional" />
+      </Principal>
+      <Dependent Role="Trabajador">
+        <PropertyRef Name="IdGrupoOcupacional" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Trabajador_TrabajadorJefe">
+    <End Role="Trabajador" Type="Self.Trabajador" Multiplicity="0..1" />
+    <End Role="Trabajador1" Type="Self.Trabajador" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Trabajador">
+        <PropertyRef Name="IdTrabajador" />
+      </Principal>
+      <Dependent Role="Trabajador1">
+        <PropertyRef Name="IdTrabajadorJefe" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Usuario_Trabajador">
+    <End Role="Trabajador" Type="Self.Trabajador" Multiplicity="0..1" />
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Trabajador">
+        <PropertyRef Name="IdTrabajador" />
+      </Principal>
+      <Dependent Role="Usuario">
+        <PropertyRef Name="IdTrabajador" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="DescargarBaseTrabajadores" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <EntityContainer Name="SOOMCursosVirtualesModelStoreContainer">
+    <EntitySet Name="ActividadUsuario" EntityType="Self.ActividadUsuario" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Configuracion" EntityType="Self.Configuracion" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ContenidoCurso" EntityType="Self.ContenidoCurso" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ContenidoCursoInscripcion" EntityType="Self.ContenidoCursoInscripcion" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Curso" EntityType="Self.Curso" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CursoSlot" EntityType="Self.CursoSlot" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Grupo" EntityType="Self.Grupo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="GrupoCurso" EntityType="Self.GrupoCurso" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="GrupoOcupacional" EntityType="Self.GrupoOcupacional" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="GrupoTrabajador" EntityType="Self.GrupoTrabajador" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Inscripcion" EntityType="Self.Inscripcion" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Intento" EntityType="Self.Intento" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Material" EntityType="Self.Material" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MaterialInscripcion" EntityType="Self.MaterialInscripcion" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Personaje" EntityType="Self.Personaje" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Pregunta" EntityType="Self.Pregunta" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Respuesta" EntityType="Self.Respuesta" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Slot" EntityType="Self.Slot" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SuscripcionNotificacion" EntityType="Self.SuscripcionNotificacion" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Trabajador" EntityType="Self.Trabajador" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_ActividadUsuario_CursoSlot" Association="Self.FK_ActividadUsuario_CursoSlot">
+      <End Role="CursoSlot" EntitySet="CursoSlot" />
+      <End Role="ActividadUsuario" EntitySet="ActividadUsuario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ActividadUsuario_Usuario" Association="Self.FK_ActividadUsuario_Usuario">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="ActividadUsuario" EntitySet="ActividadUsuario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ContenidoCurso_Curso" Association="Self.FK_ContenidoCurso_Curso">
+      <End Role="Curso" EntitySet="Curso" />
+      <End Role="ContenidoCurso" EntitySet="ContenidoCurso" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ContenidoCursoInscripcion_ContenidoCurso" Association="Self.FK_ContenidoCursoInscripcion_ContenidoCurso">
+      <End Role="ContenidoCurso" EntitySet="ContenidoCurso" />
+      <End Role="ContenidoCursoInscripcion" EntitySet="ContenidoCursoInscripcion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ContenidoCursoInscripcion_Inscripcion" Association="Self.FK_ContenidoCursoInscripcion_Inscripcion">
+      <End Role="Inscripcion" EntitySet="Inscripcion" />
+      <End Role="ContenidoCursoInscripcion" EntitySet="ContenidoCursoInscripcion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_GrupoCurso_Curso" Association="Self.FK_GrupoCurso_Curso">
+      <End Role="Curso" EntitySet="Curso" />
+      <End Role="GrupoCurso" EntitySet="GrupoCurso" />
+    </AssociationSet>
+    <AssociationSet Name="FK_GrupoCurso_Grupo" Association="Self.FK_GrupoCurso_Grupo">
+      <End Role="Grupo" EntitySet="Grupo" />
+      <End Role="GrupoCurso" EntitySet="GrupoCurso" />
+    </AssociationSet>
+    <AssociationSet Name="FK_GrupoTrabajador_Grupo" Association="Self.FK_GrupoTrabajador_Grupo">
+      <End Role="Grupo" EntitySet="Grupo" />
+      <End Role="GrupoTrabajador" EntitySet="GrupoTrabajador" />
+    </AssociationSet>
+    <AssociationSet Name="FK_GrupoTrabajador_Trabajador" Association="Self.FK_GrupoTrabajador_Trabajador">
+      <End Role="Trabajador" EntitySet="Trabajador" />
+      <End Role="GrupoTrabajador" EntitySet="GrupoTrabajador" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Inscripcion_CursoSlot" Association="Self.FK_Inscripcion_CursoSlot">
+      <End Role="CursoSlot" EntitySet="CursoSlot" />
+      <End Role="Inscripcion" EntitySet="Inscripcion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Inscripcion_Trabajador" Association="Self.FK_Inscripcion_Trabajador">
+      <End Role="Trabajador" EntitySet="Trabajador" />
+      <End Role="Inscripcion" EntitySet="Inscripcion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Intento_Inscripcion" Association="Self.FK_Intento_Inscripcion">
+      <End Role="Inscripcion" EntitySet="Inscripcion" />
+      <End Role="Intento" EntitySet="Intento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Material_Curso" Association="Self.FK_Material_Curso">
+      <End Role="Curso" EntitySet="Curso" />
+      <End Role="Material" EntitySet="Material" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MaterialInscripcion_Inscripcion" Association="Self.FK_MaterialInscripcion_Inscripcion">
+      <End Role="Inscripcion" EntitySet="Inscripcion" />
+      <End Role="MaterialInscripcion" EntitySet="MaterialInscripcion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MaterialInscripcion_Material" Association="Self.FK_MaterialInscripcion_Material">
+      <End Role="Material" EntitySet="Material" />
+      <End Role="MaterialInscripcion" EntitySet="MaterialInscripcion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Persona_Usuario" Association="Self.FK_Persona_Usuario">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="Personaje" EntitySet="Personaje" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Pregunta_CursoSlot" Association="Self.FK_Pregunta_CursoSlot">
+      <End Role="CursoSlot" EntitySet="CursoSlot" />
+      <End Role="Pregunta" EntitySet="Pregunta" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Respuesta_Intento" Association="Self.FK_Respuesta_Intento">
+      <End Role="Intento" EntitySet="Intento" />
+      <End Role="Respuesta" EntitySet="Respuesta" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Respuesta_Pregunta" Association="Self.FK_Respuesta_Pregunta">
+      <End Role="Pregunta" EntitySet="Pregunta" />
+      <End Role="Respuesta" EntitySet="Respuesta" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SuscripcionNotificacion_Usuario" Association="Self.FK_SuscripcionNotificacion_Usuario">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="SuscripcionNotificacion" EntitySet="SuscripcionNotificacion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Trabajador_GrupoOcupacional" Association="Self.FK_Trabajador_GrupoOcupacional">
+      <End Role="GrupoOcupacional" EntitySet="GrupoOcupacional" />
+      <End Role="Trabajador" EntitySet="Trabajador" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Trabajador_TrabajadorJefe" Association="Self.FK_Trabajador_TrabajadorJefe">
+      <End Role="Trabajador" EntitySet="Trabajador" />
+      <End Role="Trabajador1" EntitySet="Trabajador" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Usuario_Trabajador" Association="Self.FK_Usuario_Trabajador">
+      <End Role="Trabajador" EntitySet="Trabajador" />
+      <End Role="Usuario" EntitySet="Usuario" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

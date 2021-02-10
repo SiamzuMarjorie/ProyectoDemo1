@@ -1,0 +1,108 @@
+﻿@model List<string>
+@{
+    List<SlotModel> lstSlot = ViewBag.lstSlot;
+}
+<div class="tables">
+    <div class="table paged">
+        @if (Model != null || lstSlot != null)
+        {
+            <div class="table-container">
+                <table id="listausuario">
+                    <thead>
+                        <tr>
+                            <th style="width:50px"><input id="chkCabecera" type="checkbox" value="true" /></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (lstSlot != null)
+                        {
+
+                            for (int i = 0; i < lstSlot.Count; i++)
+                            {
+                                <tr>
+                                    <td><input id="slot-@i" type="checkbox" class="option-check option-check-parent" value="true" /></td>
+                                    <td>@lstSlot[i].NombreSlot.ToUpper()</td>
+                                </tr>
+                                foreach (CursoSlotModel objCursoSlotModel in lstSlot[i].CursoSlot)
+                                {
+                                    <tr style="background:#f2f2f2">
+                                        <td style="text-align:right">
+                                            <input type="checkbox" class="option-check curso-slot slot-@i" name="IdCursoSlot" value="@objCursoSlotModel.IdCursoSlot" />
+                                        </td>
+                                        <td style="text-transform:uppercase">@objCursoSlotModel.TituloCurso</td>
+                                    </tr>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (Model != null)
+                            {
+                                foreach (string objCampos in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="OpcionSeleccionada" class="option-check" value="@objCampos" />
+                                        </td>
+                                        <td style="text-transform:uppercase">@objCampos</td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@using (Html.BeginScriptContext())
+{
+    Html.AddScriptBlock(
+@<script>
+            var nombreSlot = null;
+            $('.option-check-parent').on('click', function () {
+                nombreSlot = $(this).attr('id');
+                if ($('#'+nombreSlot).is(':checked'))
+                    $('.' + nombreSlot).attr('checked', true);
+                else
+                    $('.' + nombreSlot).removeAttr('checked');
+            });
+
+
+            $('.curso-slot').click(function () {
+                var CursoSlot = $(this).parent().parent().siblings().find('input').attr('id');
+                var todosMarcados = true;
+                $('.' + CursoSlot).each(function (i, item) {
+                    if (!$(item).is(':checked')) {
+                        todosMarcados = false;
+                        return false;
+                    }
+                });
+
+                $('#' + CursoSlot).attr('checked', todosMarcados);
+            });
+
+        $('#chkCabecera').on('click', function () {
+            if ($(this).is(':checked'))
+                $('.option-check').attr('checked', true);
+            else {
+                $('.option-check').removeAttr('checked');
+            }
+        });
+
+    $('.option-check').click(function () {
+        var todosMarcados = true;
+        $('.option-check').each(function (i, item) {
+            if (!$(item).is(':checked')) {
+                todosMarcados = false;
+                return false;
+            }
+        });
+
+        $('#chkCabecera').attr('checked', todosMarcados);
+    });
+</script>
+, true);
+}

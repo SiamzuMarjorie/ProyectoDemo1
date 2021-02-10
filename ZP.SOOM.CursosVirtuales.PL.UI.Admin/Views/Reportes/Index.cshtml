@@ -1,0 +1,194 @@
+﻿@{
+    ViewBag.Title = "Reportes";
+    ViewBag.Section = "Reportes";
+    List<int> lstAno = ViewBag.ListarAno;
+}
+
+
+<section class="report">
+    <div>
+        <form id="frmReporteGeneral" action="@Url.Action("GenerarReporteGeneral", "Reportes")" onsubmit="return AjaxPost(this);" enctype="multipart/form-data" method="post">
+            <div class="content-report">
+                <div class="filter">
+                    <label>Asignación</label>
+                    <select id="ano" name="Ano" onchange="listarCampos();">
+                        @for (int i = 0; i < lstAno.Count; i++)
+                        {
+                            <option @(i == lstAno.Count - 1 ? "selected" : "")>@lstAno[i]</option>
+                        }
+                    </select>
+                </div>
+
+                <!--Estatus-->
+
+                <div class="filter">
+                    <label>Estatus</label>
+                    <select name="Estatus" multiple="multiple" id="Estatus">
+                        <option value="@Constants.ReporteGeneral.Estatus.ACTIVOS">Activos</option>
+                        <option value="@Constants.ReporteGeneral.Estatus.INACTIVOS">Inactivos</option>
+                        <option value="@Constants.ReporteGeneral.Estatus.CESADOS">Cesados</option>
+                    </select>
+                </div>
+
+
+                <div class="filter">
+                    <label>Campos</label>
+                    <select name="Intentos" multiple="multiple" id="Intentos">
+                        <option value="@Constants.ReporteGeneral.Intento.DESAPROBADOS">Desaprobados</option>
+                        <option value="@Constants.ReporteGeneral.Intento.PRIMERINTENTOAPROBADO">Primer intento aprobado</option>
+                        <option value="@Constants.ReporteGeneral.Intento.PRIMERINTENTOMAYORNOTA">Primer intento con mayor nota</option>
+                        <option value="@Constants.ReporteGeneral.Intento.ULTIMOINTENTOMAYORNOTA">Ultimo intento con la mayor nota</option>
+                        <option value="@Constants.ReporteGeneral.Intento.SININTENTO">Sin intentos</option>
+                    </select>
+                </div>
+                <div class="filter">
+                    <div>
+                        <input type="text" name="FechaInicio" id="fechaInicio" class="fechas" placeholder="Fecha inicio" maxlength="30" />
+                    </div>
+                    <div>
+                        <input type="text" name="FechaFin" id="fechaFin" class="fechas fecha-fin" placeholder="Fecha fin" maxlength="30" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="download-report">
+                <div class="trabajador-curso">
+                    <select id="camposReporte" name="NombreCampo" onchange="listarCampos();">
+                        <option selected value="">--Seleccionar--</option>
+                        <option value="@Constants.ReporteGeneral.Campos.COMPANIA">Compañía</option>
+                        <option value="@Constants.ReporteGeneral.Campos.SEDE">Sede</option>
+                        <option value="@Constants.ReporteGeneral.Campos.GERENCIA">Gerencia</option>
+                        <option value="@Constants.ReporteGeneral.Campos.CATEGORIA">Categoría de puesto</option>
+                        <option value="@Constants.ReporteGeneral.Campos.CURSOSLOT">Slot/Curso</option>
+                        <option value="@Constants.ReporteGeneral.Campos.SEGMENTO">Grupos</option>
+                    </select>
+                </div>
+                <a id="descargaReporteGeneral" class="button btn-color02 btn-icon-left ic-carga-masiva" onclick="CargarReporteGeneral();">Descargar reporte</a>
+            </div>
+            <div id="tablaReporte">
+                @Html.Partial("_TablaReporte")
+            </div>
+        </form>
+    </div>
+</section>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            //$('#Estatus').multipleSelect('checkAll');
+            $('#Estatus').multipleSelect({
+                width: '20%',
+                placeholder: 'Todos',
+                ellipsis: true,
+                minimumCountSelected: 3,
+                formatAllSelected: function () {
+                    return 'Todos'
+                },
+                formatSelectAll() {
+                    return 'Todos'
+                },
+                //formatCountSelected(count, total) {
+                //    return '已从 ' + total + ' 中选择 ' + count + ' 条记录'
+                //},
+                //formatNoMatchesFound() {
+                //    return '没有找到记录'
+                //},
+                onClick: function (row) {
+                    //console.log(row);
+                }
+
+            });
+
+
+            $('#Intentos').multipleSelect({
+                width: '50%',
+                placeholder: 'Todos',
+                ellipsis: true,
+                minimumCountSelected: 3,
+                formatAllSelected: function () {
+                    return 'Todos'
+                },
+                formatSelectAll() {
+                    return 'Todos'
+                },
+                onClick: function (row) {
+
+                }
+
+            });
+            $("input[data-name='selectAllEstatus']").hide();
+            $("input[data-name='selectAllIntentos']").hide();
+        });
+
+    </script>
+
+
+
+    <script>
+    new DatePicker('fechaInicio');
+    new DatePicker('fechaFin');
+
+    function listarCampos() {
+        var camposReporte = $('#camposReporte').val();
+        if (camposReporte != '') {
+            $.post('@Url.Action("ListaCampos", "Reportes")', { NombreCampo: camposReporte, Ano: $('#ano').val() }, function (data) {
+                $('#tablaReporte').html(data);
+            });
+        } else {
+            $('#tablaReporte').html('');
+        }
+
+    }
+
+    function CargarReporteGeneral() {
+        $('#frmReporteGeneral').submit();
+    }
+
+    function AjaxPost(formData) {
+        var ajaxConfig = {
+            type: "POST",
+            url: formData.action,
+            data: new FormData(formData),
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (data.OK) {
+                    var nameExcel = data.Data;
+                    var progressInterval = setInterval(function () {
+                        $.post('@Url.Action("GetProgress", "Reportes")', function (data) {
+                            if (data.OK) {
+                                setLoadingProgress(data.Data);
+                                if (data.Data >= 100) {
+                                    clearInterval(progressInterval);
+                                    window.location = '@ConfigurationManager.AppSettings["UrlSOOM"]/Reporte/' + nameExcel;
+                                    setTimeout(function () {
+                                        stopLoading();
+                                        showMessage('¡Se generó el reporte de manera exitosa!');
+                                    }, 300);
+                                }
+                            } else {
+                                clearInterval(progressInterval);
+                                setTimeout(function () {
+                                    stopLoading();
+                                }, 300);
+                                showMessage(data.Message);
+                            }
+                        });
+                    }, 400);
+                } else {
+                    stopLoading();
+                    showMessage('Error: ' + data.Message);
+                }
+            }
+        }
+        startLoading();
+        $.ajax(ajaxConfig);
+        return false;
+        }
+
+
+
+
+    </script>
+}

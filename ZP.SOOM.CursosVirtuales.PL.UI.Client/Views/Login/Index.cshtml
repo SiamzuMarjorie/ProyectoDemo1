@@ -1,0 +1,131 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout_No_Menu.cshtml";
+    ViewBag.Title = "Login";
+}
+
+<section class="login">
+    <div class="login-box">
+	<div class="logo"></div>
+        <div class="login-form">
+            <div class="login-content">
+                <form action="@Url.Action("Index")" id="frmLogin" method="post" onsubmit="startLoading();">
+                    <div class="content-input">
+                        <label class="input-name">Usuario:</label>
+                        <label class="login-input user"><input placeholder="Nombre de usuario" type="text" name="Username" autofocus value="@Request["Username"]" spellcheck="false" maxlength="100" /></label>
+                    </div>
+                    <div class="content-input">
+                        <label class="input-name">Contraseña:</label>
+                        <label class="login-input password"><input placeholder="Contraseña" type="password" name="Password" maxlength="100" /></label>
+                    </div>
+                    <input type="submit" class="hidden" />
+                </form>
+            </div>
+        </div>
+        <div class="login-actions">
+            <a class="button btn-color02" onclick="login();">INGRESAR</a>
+            <div class="change-password">
+                <label>¿No recuerdas tu contraseña?</label>
+                <div>
+                    <a class="new-password" onclick="popupRestorePassword.show();">Haz clic aquí</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="img-left">
+        <div class="man-img"></div>
+    </div>
+    <div class="img-right">
+        <div class="woman-img"></div>
+    </div>
+</section>
+
+<!--RECUPERAR CONTRASEÑA-->
+<div class="popup" id="popupRestorePassword">
+    <form action="@Url.Action("RestaurarPassword", "Login")" id="frmRestorePassword" method="post" enctype="multipart/form-data" onsubmit="return restorePassword(this);">
+        <div class="popup-box">
+            <a onclick="popupRestorePassword.hide();" class="close-popup"></a>
+            <h1 class="title">Restablecer contraseña</h1>
+            <label>Ingresa tu nombre de usuario o email para restaurar tu contraseña</label>
+            <div class="content-inputs">
+                <input id="userEmail" name="UsernameoCorreo" type="text" placeholder="Usuario o Email *" maxlength="100" />
+            </div>
+            <div class="form-actions">
+                <a class="button btn-icon-cancelar btn-icon-left" id="cancelar" name="cancelar" onclick="popupRestorePassword.hide();">Cancelar</a>
+                <a class="button btn-color02 btn-icon-left ic-confirmar" name="guardar" id="guardar" onclick="startRestorePassword();">Enviar</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section scripts {
+    <script>
+
+        var popupRestorePassword = new Popup('popupRestorePassword');
+
+        $(document).ready(function () {
+            setValidations();
+        });
+
+        $(window).load(function () {
+            animateIntro();
+        });
+
+    function login() {
+        localStorage.clear();
+        $('#frmLogin').submit();
+    }
+
+    function animateIntro() {
+        setTimeout(function () {
+            $('.logo').addClass('active');
+        }, 50);
+
+        setTimeout(function () {
+            $('.login-form').addClass('active');
+        }, 250);
+        setTimeout(function () {
+            $('.login-actions').addClass('active');
+        }, 250);
+        setTimeout(function () {
+            $('.man-img').addClass('active');
+            setTimeout(function () {
+                $('.man-img').addClass('rotate');
+            }, 1100);
+        }, 350);
+        setTimeout(function () {
+            $('.woman-img').addClass('active');
+            setTimeout(function () {
+                $('.woman-img').addClass('rotate');
+            },1500);
+        }, 350);
+    }
+
+    var validator = null;
+    function setValidations() {
+        var fields = [
+            { selector: '#userEmail', name: 'Usuario o Email', required: true }
+        ];
+
+        validator = new Validator(fields, 'error');
+    }
+
+    function startRestorePassword() {
+        var result = validator.validate();
+        if (result == null) {
+            $('#frmRestorePassword').submit();
+        }
+        else
+            showMessage(result, null);
+    }
+
+    function restorePassword(formData) {
+        return ajaxPost(formData, function (data) {
+            showMessage('Tú contraseña fue enviada a tu correo. Por favor vuelve a loguearte en el sistema.', null);
+            popupRestorePassword.hide();
+        }, function (data) {
+            showMessage(data.Message, null);
+        });
+    }
+
+</script>
+}

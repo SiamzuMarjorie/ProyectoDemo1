@@ -1,0 +1,126 @@
+﻿@model List<CursoSlotModel>
+@{
+    List<CursoModel> lstCursos = ViewBag.ListaCursos;
+    int idSlot = ViewBag.IdSlot;
+    ViewBag.Title = "Mapa";
+    ViewBag.Section = "Mapa";
+}
+
+<section class="slot-detail">
+    <div class="slot-header-detail">
+        <h1 class="subtitle">Detalle del slot</h1>
+        <label>@ViewBag.NombreSlot</label>
+    </div>
+    <div class="screen-actions">
+        <div class="curso-dependiente">
+            <label>Cursos dependientes</label><input type="checkbox" class="switch" name="CursosDependientes" value="true" @(ViewBag.Estado != true ? "" : "checked") onchange="cursoDependiente(@ViewBag.IdSlot, this);" />
+        </div>
+        <a class="button btn-color02 btn-icon-left btn-icon-agregar" href="@Url.Action("Detalle", "Mapa", new { IdCursoSlot = ViewBag.IdCursoSlot, IdSlot = idSlot })">Asignar curso</a>
+    </div>
+
+    <div id="topicList" class="topics-list">
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <div class="topic">
+                <div class="number-list">
+                    <label>@i+1</label>
+                </div>
+                <div class="topic-detail">
+                    <span id="eliminar-@Model[i].IdCursoSlot" onclick="CambiarEstadoCurso(@Model[i].IdCursoSlot)" class="delete ic-eliminar-green"></span>
+                    <label>Curso Asignado:</label>
+                    <label class="selected">@Model[i].TituloCurso</label>
+                    <div class="topic-state">
+                        <h5>Inactivo / Activo</h5>
+                        <input type="checkbox" class="switch" @(Model[i].Estado == Constants.Cursos.Estado.ACTIVO ? "checked" : "") style="margin-left:18px;" onchange="actualizarEstado(@Model[i].IdCursoSlot, this);" />
+                    </div>
+                    <a class="button btn-small btn-color01" href="@Url.Action("Detalle", "Mapa", new { IdCursoSlot = Model[i].IdCursoSlot, IdSlot = Model[i].IdSlot })">Editar detalle del curso</a>
+                </div>
+
+                <div class="arrows">
+                    <a class="left @(i > 0 ? "" : "inactive")" onclick="cambiarOrdenCursoSlot(@Model[i].IdCursoSlot, @i, @(i > 0 ? Model[i - 1].IdCursoSlot : 0));"></a>
+                    <a class="right @(i < Model.Count - 1 ? "" : "inactive")" onclick="cambiarOrdenCursoSlot(@Model[i].IdCursoSlot, @i+2, @(i < Model.Count -1 ? Model[i + 1].IdCursoSlot : 0));"></a>
+                </div>
+            </div>
+        }
+
+    </div>
+    <div style="margin-top:50px;">
+        <a href="@Url.Action("Mapa", "Mapa")" class="button  btn-color01 btn-icon-left ic-volver">Volver</a>
+    </div>
+
+</section>
+@section scripts{
+    
+    <script>
+
+    $(document).ready(function () {
+        renombrarNumeroCurso();
+    });
+    
+    //RENOMBRAR NUEMERO CURSO
+    function renombrarNumeroCurso() {
+        $('.topic .number-list').each(function (i, item) {
+            $(item).find('label').html(i + 1);
+        });
+    }
+
+    function CambiarEstadoCurso(idCursoSlot) {
+        showConfirmation('¿Deseas pasar el curso al historial?', 'Aceptar', 'btn-color01', function () {
+            startLoading();
+            $.post("@Url.Action("CambiarEstadoCursoSlot", "Mapa")", { IdCursoSlot: idCursoSlot }, function (data) {
+                stopLoading();
+                if (data.OK) {
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 400);
+                    renombrarNumeroCurso();
+
+                } else {
+                    showMessage(data.Message, null);
+                }
+            });
+        });
+    }
+
+    function actualizarEstado(idCursoSlot, element) {
+        var checked = element.checked;
+        $.post('@Url.Action("ActualizarEstadoCurso", "Mapa")', { IdCursoSlot: idCursoSlot, Estado: checked },
+            function (data) {
+                if (data.OK) {
+                    window.location.reload();
+                } else {
+                    showMessage(data.Message, null);
+                }
+            });
+        }
+
+        function cursoDependiente(idSlot, element) {
+            var checked = element.checked;
+            $.post('@Url.Action("CursoDependiente", "Mapa")', { IdSlot: idSlot, CursosDependientes: checked },
+                function (data) {
+                    if (data.OK) {
+                        window.location.reload();
+                    } else {
+                        showMessage(data.Message, null);
+                    }
+                });
+        }
+
+        function cambiarOrdenCursoSlot(idCursoSlot, numeroOrden, ordenIdCursoSlot) {
+            if (typeof ordenIdCursoSlot != 'undefined' && ordenIdCursoSlot != 0) {
+                startLoading();
+                $.post('@Url.Action("CambiarOrdenCursoSlot", "Mapa")', { IdCursoSlot: idCursoSlot, NumeroOrden: numeroOrden, OrdenIdCursoSlot: ordenIdCursoSlot },
+                function (data) {
+                    stopLoading();
+                    if (data.OK) {
+                        window.location.reload();
+                    } else {
+                        showMessage(data.Message, null);
+                    }
+                });
+            }
+        }
+
+    </script>
+
+}

@@ -1,0 +1,85 @@
+﻿/*  COLORS
+------------------------------------
+    COLOR 1: #da291c
+    COLOR 2: #00cec5
+    COLOR NEUTRO: #989898
+*/
+
+/*SUPPORT*/
+.desktop-only {display: initial !important;}
+.mobile-only {display: none !important;}
+
+
+/***********************************************************************************************************************************************************************************/
+
+
+/*LOGIN*/
+section.login .login-box {width: 370px;}
+section.login .login-box .logo {height: 130px; margin-bottom:15px; background-size: cover;}
+section.login .login-box {top: 50%; left: 50%; transform: translate(-50%, -50%); -webkit-transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%); -o-transform: translate(-50%, -50%);}
+section.login .login-box .login-form .login-content{background:#7077b9; border-radius:20px 50px; padding:20px 70px;}
+section.login .login-box .login-form .login-content .content-input input{width:100%;}
+section.login .img-left .man-img{background-image:url(../Images/Login/man.svg); width:30%; height:60%; left: calc((35% - 185px) / 2);background-size:contain; background-position:center;}
+section.login .img-right .woman-img{background-image:url(../Images/Login/woman.svg); width:30%; height:60%; right: calc((35% - 185px) / 2); background-size:contain; background-position:center;}
+
+
+/*MAPA HEADER*/
+.header-game .options-header .score{width:220px; border-radius:0 0 55px 55px;  margin-left:0px; top:0px; left:50%; transform:translate(-50%, -200%); -webkit-transform: translate(-50%, -200%); -ms-transform: translate(-50%, -200%); -ms-transform: translate(-50%, -200%); -o-transform: translate(-50%, -200%);}
+.header-game .options-header .score.active{transform: translate(-50%, 0); -webkit-transform: translate(-50%, 0); -ms-transform: translate(-50%, 0); -ms-transform: translate(-50%, 0); -o-transform: translate(-50%, 0);}
+.header-game .options-header .score .star-score{left:5px;}
+
+/*MAPA SITES*/
+.setting-left{position:fixed; top:26px; left:62px;}
+.setting-right{position:fixed; top:130px; right:50px;}
+.site-content.topics{top:235px; padding-right:0; right:75px}
+.site-content.settings{top:335px; right:75px;}
+
+/*CURSOS*/
+.cursos .popup-topic .score{left:12%; margin-bottom:20px; padding:0 10px; height:50px; border-radius:0 0 30px 30px; transform:translateX(-15%); -webkit-transform:translateX(-15%); -ms-transform:translateX(-15%); -moz-transform:translateX(-15%); -o-transform:translateX(-15%);}
+.cursos .popup-topic .content-inputs{margin-top:55px;}
+.cursos .popup-topic .content-inputs .topic-info{position:absolute; top:15px; right:45px;}
+.cursos .popup-topic .title{margin:0px -30px; word-break:break-word;}
+.cursos .popup-topic .body-topic .go-topic{width:30%; margin:20px 0 0px 0;}
+.cursos .popup-topic .body-topic .topic-multimedia{margin-bottom:0; height:233px;}
+.cursos .popup-topic .body-topic .topic-multimedia .file-topic{height:202px;}
+.cursos .popup-topic .body-topic {display: flex; flex-direction: row-reverse; min-width:760px; margin:0; margin-top:30px;}
+.cursos .popup-topic .body-topic > *{flex-basis: 50%;}
+.cursos .popup-topic .body-topic > *:first-child {margin-left: 20px;}
+.cursos .popup-topic .body-topic .tabs{margin:12px 0 0 -32px;}
+.cursos .popup-topic .body-topic .description, .cursos .popup-topic .body-topic .download-files{height: 170px; width: 350px; overflow: auto;}
+.cursos .popup-topic .footer-topic{position:relative;}
+.cursos .popup-topic .footer-topic .certificate{position:absolute; top:0px; right:0px; margin: 10px 0;}
+.cursos .popup-topic .body-topic .download-files .download-structure label{width:320px;}
+.site-content .topics-content a{width:250px; margin-right:10px;}
+
+/*INFORMES*/
+.informes .popup-informes .popup-box{overflow-x:hidden;}
+.informes .popup-informes .elements .content-info{height:200px; overflow:auto; width:100%;}
+.informes .popup-informes .elements .content-info a{width:410px; word-break: break-word;}
+.informes .popup-informes .content-inputs{margin-right:100px;}
+.informes .popup-informes .inform-person{width:200px; height:350px; pointer-events:none; position:absolute; bottom:0px; right:-43px; background-image:url(../Images/juego/informes_person.svg); background-repeat:no-repeat; background-position:center;}
+
+/*CONTENIDO VIDEO*/
+.popup-video video{width:100%; height:500px}
+
+/*ELEGIR PERSONAJE*/
+.choose-person .person-mark input:first-child{margin-left:40px;}
+
+/*POPUP DE LISTA DE CURSOS*/
+.popup-lista-cursos .popup-box{min-width: 300px;}
+.popup-lista-cursos .popup-box .topic-list .topic .number-topic{padding:5px 7px; font-weight:bold;}
+.popup-lista-cursos .popup-box .topic-list .topic .name-topic{width:calc(100% - 98px); padding:10px 15px; font-size:0.85em;}
+
+/*POPUP DE VARIOS DOCUMENTOS*/
+.popup-lot-topic .content {width:650px;}
+.popup-lot-topic .content .title-topic:after{width:742px; border-radius: 56%; top:-10px; height: 166px;}
+.popup-lot-topic .content h2{font-size:2.2em;}
+.popup-lot-topic .content .content-topic p{font-size:1.0em; text-align:left;}
+.popup-lot-topic .person-contenido-curso{width:325px; height:600px; position:absolute;left:600px; top:-2px; background-image:url(../Images/Usuarios/PersonajeContedidoCurso.svg); background-repeat:no-repeat; background-position:center;}
+@media only screen and (min-width:75em){
+.popup-lot-topic{padding: 40px 40px 0px 100px;}
+.popup-lot-topic .content .title-topic:after{left:55px;}
+.popup-lot-topic .person-contenido-curso{width:505px; height:900px; left:750px; top:14px;}
+}
+
+.end-topic.state{float:right; margin-top:0!important;}

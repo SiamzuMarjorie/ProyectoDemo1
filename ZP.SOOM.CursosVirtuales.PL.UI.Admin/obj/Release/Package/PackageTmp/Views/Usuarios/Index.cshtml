@@ -1,0 +1,474 @@
+﻿@using ZP.SOOM.CursosVirtuales.Util
+@using ZP.SOOM.CursosVirtuales.PL.UI.Admin.Models
+@model List<UsuarioModel>
+@{
+    ViewBag.Title = "Usuarios";
+    ViewBag.Section = "Usuarios";
+    List<UsuarioModel> lstTrabajadores = ViewBag.Trabajadores;
+    List<UsuarioModel> lstUsuarios = ViewBag.Usuarios;
+    int Pages = (int)ViewBag.Pages;
+    int CurrentPage = Request["Page"] == null ? 1 : Int32.Parse(Request["Page"]);
+}
+
+<div class="usuarios">
+    <div class="acciones-usuario">
+        <div class="screen-actions">
+            <a id="cargarReporte" class="help-carga-masiva button btn-color01 btn-icon-left ic-carga-masiva">Carga masiva</a>
+            <a href="@Url.Action("DownloadPlantillaCargaMasiva", "Usuarios")" class="button btn-color04 btn-icon-left ic-descargar-reporte">Descargar plantilla</a>
+            <a class="button btn-color03 btn-icon-left ic-descargar-reporte" onclick="generarReporteTrabajadores();">Descargar usuarios</a>
+            <a href="@Url.Action("NuevoUsuario", "Usuarios")" class="button btn-color02 btn-icon-left btn-icon-agregar" name="nuevoUsuario">Nuevo usuario</a>
+        </div>
+        <form id="frmMasivoUsuario" action="@Url.Action("CargaMasivaUsuarios", "Usuarios")" onsubmit="return AjaxPost(this);" enctype="multipart/form-data" method="post">
+            <input type="file" id="upReport" class="hidden" accept=".xls,.xlsx" name="FileMasivoUsuarios" value="Carga masiva" onchange="CargarMasivoExcelUsuario();" />
+        </form>
+    </div>
+    <div class="h-line"></div>
+    <div class="search-panel">
+        <form action="@Url.Action("Index")" method="get" id="frmSearch">
+            <select name="Tipo">
+                <option class="label" value="Nombre" name="Tipo" @(Request["Tipo"] == "Nombre" ? "Selected" : "")>Nombres y apellidos</option>
+                <option class="label" value="Codigo" name="Tipo" @(Request["Tipo"] == "Codigo" ? "Selected" : "")>Código</option>
+                <option class="label" value="Puesto" name="Tipo" @(Request["Tipo"] == "Puesto" ? "Selected" : "")>Puesto</option>
+                <option class="label" value="Area" name="Tipo" @(Request["Tipo"] == "Area" ? "Selected" : "")>Área</option>
+                <option class="label" value="GrupoOcupacional" name="Tipo" @(Request["Tipo"] == "GrupoOcupacional" ? "Selected" : "")>Categoría</option>
+            </select>
+            <input type="text" name="__Valor" id="buscar" class="search required ic-buscar icon-input" placeholder="Buscar" value="@Request["__Valor"]" />
+        </form>
+    </div>
+    <div class="screen-actions">
+        <a href="@Url.Action("", "Usuarios")" class="volver-usuarios" name="volver-usuarios">Limpiar búsqueda</a>
+    </div>
+    <div class="table paged">
+        <div class="table-container">
+            <table id="listausuario">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombres</th>
+                        <th>1er apellido</th>
+                        <th>2do apellido</th>
+                        <th>Puesto</th>
+                        <th>Área</th>
+                        <th>Grupo ocupacional</th>
+                        <th>Perfil</th>
+                        <th>Estado</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var objUsuarioModel in Model)
+                    {
+                        <tr id="usuario-@objUsuarioModel.IdUsuario">
+
+                            <td>@objUsuarioModel.Codigo</td>
+                            <td>@objUsuarioModel.Nombres</td>
+                            <td>@objUsuarioModel.PrimerApellido</td>
+                            <td>@objUsuarioModel.SegundoApellido</td>
+                            <td>@objUsuarioModel.Puesto</td>
+                            <td>@objUsuarioModel.Area</td>
+                            <td>@objUsuarioModel.GrupoOcupacional</td>
+                            <td>@(objUsuarioModel.Perfil == Constants.Usuario.Perfil.ADMINISTRADOR ? "Administrador" : "Usuario")</td>
+                            <td><input type="checkbox" class="switch" @(objUsuarioModel.Estado == Constants.Trabajador.Estado.ACTIVO ? "checked" : "") onchange="actualizarEstado(@objUsuarioModel.IdTrabajador, this);" /></td>
+                            <td class="align-center">
+                                @if (objUsuarioModel.Username != Constants.Usuario.MASTER_USER)
+                                {
+                                    <a class="ic-eliminar-green" onclick="eliminar(@objUsuarioModel.IdUsuario,@objUsuarioModel.CantidadSubordinados,@(objUsuarioModel.IdJefe != null ? objUsuarioModel.IdJefe.Value : 0),'@objUsuarioModel.Jefe',@(objUsuarioModel.Nivel !=null ?objUsuarioModel.Nivel: 0),@objUsuarioModel.TieneSubordinados);"></a>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                    @if (Model.Count == 0)
+                    {
+                        <tr class="estado"><td colspan="11"><center>No hay usuarios que coincidan con los criterios de búsqueda</center></td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (Pages > 1)
+        {
+            <div class="pages">
+                @if (CurrentPage > 2)
+                {
+                    <a class="ic-first" href="@Url.Action("Index", "Usuarios", new { Page = 1 })"></a>
+                }
+                @if (CurrentPage > 1)
+                {
+                    <a class="ic-prev" href="@Url.Action("Index", "Usuarios", new { Page = CurrentPage - 1 })"></a>
+                }
+                <div class="numbers">
+                    @for (int i = CurrentPage - 1; i <= CurrentPage + 1; i++)
+                    {
+                        var index = i;
+                        if (CurrentPage == 1)
+                        {
+                            index++;
+                        }
+                        else if (CurrentPage == Pages)
+                        {
+                            index--;
+                        }
+
+                        if (index > 0 && index <= Pages)
+                        {
+                            <a class="@(index == CurrentPage ? "active" : "")" href="@Url.Action("Index", "Usuarios", new { Page = index })">@(index > 1 && i == CurrentPage - 1 ? "..." : "")@index.ToString()@(i == CurrentPage + 1 && index < Pages ? "..." : "")</a>
+                        }
+                    }
+                </div>
+                @if (CurrentPage < Pages)
+                {
+                    <a class="ic-next" href="@Url.Action("Index", "Usuarios", new { Page = CurrentPage + 1 })"></a>
+                }
+                @if (CurrentPage < Pages - 1)
+                {
+                    <a class="ic-last" href="@Url.Action("Index", "Usuarios", new { Page = Pages })"></a>
+                }
+            </div>
+        }
+    </div>
+</div>
+<div class="popup" id="popupEliminarUsuario">
+    <div class="popup-container">
+        <div class="delete-user-types">
+            <label class="">Este usuario tiene</label>
+            <div class="worker-number"><label> <span id="cantidadsubordinados"> </span> Subordinados</label></div>
+            <label>Eliga uno de los siguentes pasos.</label>
+            <div class="eliminar-sin-reemplazar form-actions" id="solositienejefe">
+                <a class="button btn-color01 btn-icon-left btn-icon-cancelar" name="eliminar" id="eliminarsinreemplazo">Eliminar sin reemplazar</a>
+            </div>
+            <div class="reemplazar-usuario form-actions">
+                <a class="button btn-color02 btn-icon-left ic-guardar-blanco" name="eliminar" id="eliminarconexistente" ;">Reemplazar por existente</a>
+            </div>
+            <div class="reemplazar-usuario-nuevo form-actions">
+                <input type="hidden" name="usuarioNuevo" id="usuarioNuevo" value="" />
+                <input type="hidden" name="jefe" id="jefe" value="" />
+                <input type="hidden" name="nivel" id="nivel" value="" />
+                <a class="button btn-color02 btn-icon-left ic-guardar-blanco" name="eliminar" id="eliminarnuevo">Reemplazar por nuevo</a>
+            </div>
+            <div class="form-actions">
+                <a class="button btn-icon-cancelar btn-icon-left" id="cancelar" name="cancelar" onclick="popupEliminarUsuario.hide();">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="popup" id="popupUsuarioExistente">
+    <div class="popup-container">
+        <div id="trabajadorExistente"></div>
+        <input type="hidden" name="usuarioExistente" id="usuarioExistente" value="" />
+        <div class="form-actions">
+            <a class="button btn-icon-cancelar btn-icon-left" id="cancelar" name="cancelar" onclick="popupUsuarioExistente.hide();">Cancelar</a>
+            <a class="button btn-color02 btn-icon-left ic-confirmar" name="guardar" id="guardar">Confirmar</a>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+
+    var popupEliminarUsuario = new Popup('popupEliminarUsuario');
+    var popupUsuarioExistente = new Popup('popupUsuarioExistente');
+
+    var idtrabajador = 0;
+    var nivel = 0;
+    var jefe = "";
+    var searchInput = new SearchInput('trabajadorExistente', function (id, text) {
+        $('#trabajadorExistente input').val(text);
+        $('#usuarioExistente').val(id);
+    });
+
+    new ButtonInput('buscar', buscarUsuarios);
+
+    function clearInputs() {
+        document.getElementById("buscar").value = "";
+    }
+
+    function buscarUsuarios() {
+        $('#frmSearch').submit();
+    }
+
+    function detalle(id) {
+        if ($(event.target).is('input') || $(event.target).is('a'))
+            return;
+
+        window.location = '@Url.Action("Detalle", "Usuarios")/' + id;
+    }
+
+
+    $('#eliminarnuevo').click(function () {
+        var IdUsuarioEliminado = $('#usuarioNuevo').val();
+
+        window.location = '@Url.Action("NuevoUsuario", "Usuarios", new { id = "" })/' + IdUsuarioEliminado;
+    });
+
+
+    $('#eliminarsinreemplazo').click(function () {
+        var IdUsuarioEliminado = $('#usuarioNuevo').val();
+        var Jefe = $('#jefe').val();
+        EliminarsinReemplazo(IdUsuarioEliminado, Jefe);
+    });
+
+    $('#eliminarconexistente').click(function () {
+        var IdUsuarioEliminado = $('#usuarioNuevo').val();
+        var Nivel = $('#nivel').val();
+
+        listarusuarios(IdUsuarioEliminado, Nivel);
+        popupUsuarioExistente.show();
+    });
+
+    $('#guardar').click(function () {
+        var usuarioExistente = $('#usuarioExistente').val();
+        var IdUsuarioEliminado = $('#usuarioNuevo').val();
+        EliminarconReemplazoExistente(IdUsuarioEliminado, usuarioExistente);
+    });
+    function eliminar(id, cantidadsubordinado, idjefe, jefe, nivel, tienesubordinado) {
+        idtrabajador = id;
+        nivel = nivel;
+        jefe = jefe;
+        if (idjefe == 0)
+            $('#solositienejefe').addClass('hidden');
+
+        else
+            $('#solositienejefe').removeClass('hidden');
+
+        if (tienesubordinado) {
+            $('#jefe').val(jefe);
+            $('#cantidadsubordinados').html(cantidadsubordinado);
+            $('#usuarioNuevo').val(idtrabajador);
+            $('#nivel').val(nivel);
+            popupEliminarUsuario.show();
+
+        } else {
+            showConfirmation('¿Estás seguro(a) de que deseas eliminar este usuario?', 'Eliminar', 'btn-color01', function () {
+                startLoading();
+                $.post('@Url.Action("EliminarUsuario", "Usuarios")', { IdUsuario: id },
+                    function (data) {
+                        if (data.OK) {
+                            showMessage('¡El usuario ha sido eliminado satisfactoriamente!', function () {
+                                window.location = '@Url.Action("Index", "Usuarios")';
+                            });
+                        }
+                        else {
+                            showMessage('Ocurrió un error al eliminar el usuario, inténtelo nuevamente.', null);
+                        }
+                        stopLoading();
+                    });
+            });
+        }
+    }
+
+    function EliminarconReemplazoExistente(idEliminado, idreemplazante) {
+        alert(idEliminado);
+        alert(idreemplazante);
+        showConfirmation('¿Estás seguro(a) de que deseas reemplazar a este usuario?', 'Eliminar', 'btn-color01', function () {
+            startLoading();
+            $.post('@Url.Action("EliminarconReemplazoExistente", "Usuarios")', { IdUsuarioEliminado: idEliminado, IdUsuarioReemplazante: idreemplazante },
+                function (data) {
+                    if (data.OK) {
+                        showMessage('¡El usuario ha sido eliminado satisfactoriamente!', function () {
+                            window.location = '@Url.Action("Index", "Usuarios")';
+                        });
+                    }
+                    else {
+                        showMessage('Ocurrió un error al eliminar el usuario, inténtelo nuevamente.', null);
+                    }
+                    stopLoading();
+                });
+        });
+    }
+    function EliminarsinReemplazo(idEliminado, jefe) {
+        idtrabajador = idEliminado;
+        jefe = jefe;
+        showConfirmation('¿Estás seguro(a) de que deseas eliminar este usuario y ( ' + jefe + ' sera el nuevo jefe directo de los subordinados )?', 'Eliminar', 'btn-color01', function () {
+            startLoading();
+            $.post('@Url.Action("EliminarSinReemplazo", "Usuarios")', { IdUsuarioEliminado: idtrabajador },
+                function (data) {
+                    if (data.OK) {
+                        showMessage('¡El usuario ha sido eliminado satisfactoriamente!', function () {
+                            window.location = '@Url.Action("Index", "Usuarios")';
+                        });
+                    }
+                    else {
+                        showMessage('Ocurrió un error al eliminar el usuario, inténtelo nuevamente.', null);
+                    }
+                    stopLoading();
+                });
+        });
+    }
+
+
+    function actualizarEstado(id, element) {
+        var checked = element.checked;
+        startLoading();
+        $.post('@Url.Action("ActualizarEstado", "Usuarios")', { IdTrabajador: id, Estado: checked },
+                    function (data) {
+                        if (!data.OK) {
+                            showMessage('Ocurrió un error al actualizar el estado del usuario', null);
+                        }
+                        stopLoading();
+                    });
+    }
+    function listarusuarios(id, nivel) {
+        nivel = nivel;
+        idTrabajador = id;
+        listIdExistentes = [];
+        $.post('@Url.Action("ListarUsuarios")', { Nivel: nivel },
+            function (data) {
+                if (data.OK) {
+                    var lstusuarios = data.Data;
+                    for (var i = 0; i < lstusuarios.length; i++) {
+                        var usuarios = lstusuarios[i];
+
+                        if (usuarios.IdUsuario != idtrabajador)
+                            searchInput.addDataSourceItem(usuarios.IdUsuario, usuarios.Nombres + " " + usuarios.PrimerApellido + " " + usuarios.SegundoApellido);
+
+                    }
+                } else {
+
+                    showMessage(data.Message, null);
+                }
+            });
+    }
+
+
+    $("#listausuario tbody tr:not(.estado)").mouseup(function () {
+        var posicionxactual = event.x;
+        var posicionyactual = event.y;
+
+        if (posicionxini + 5 > posicionxactual &&
+            posicionxini - 5 < posicionxactual &&
+            posicionyini + 5 > posicionyactual &&
+            posicionyini - 5 < posicionyactual) {
+
+            var id = $(this).attr('id').replace("usuario-", "");
+            detalle(id);
+        }
+    });
+
+
+    var posicionxini;
+    var posicionyini;
+    $("#listausuario tbody tr:not(.estado)").mousedown(function () {
+        posicionxini = event.x;
+        posicionyini = event.y;
+
+    });
+
+    function generarReporteTrabajadores() {
+        startLoading();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GenerarReporteTrabajadores", "Usuarios")',
+            success: function (data) {
+                if (data.OK) {
+                    var nameExcel = data.Data;
+                    var progressInterval = setInterval(function () {
+                        $.post('@Url.Action("GetProgress", "Usuarios")', function (data) {
+                                if (data.OK) {
+                                    var porcentaje = data.Data;
+                                    setLoadingProgress(porcentaje);
+                                    if (porcentaje >= 100) {
+                                        clearInterval(progressInterval);
+                                        window.location = '@ConfigurationManager.AppSettings["UrlSOOM"]/Reporte/' + nameExcel;
+                                        setTimeout(function (data) {
+                                            stopLoading();
+                                            showMessage('¡El reporte fue generado satisfactoriamente!');
+                                    }, 300);
+                                }
+                            }
+                            else
+                                clearInterval(progressInterval);
+                        });
+                    }, 400);
+                } else {
+                    showMessage(data.Message, null);
+                }
+            },
+            datatype: "json",
+            traditional: true
+        });
+    }
+
+
+    //CARGA MASIVA
+    var subirCargaMasiva = $('#cargarReporte');
+    var seleccionarArchivo = $('#upReport');
+    subirCargaMasiva.click(function () {
+        seleccionarArchivo.click();
+    });
+
+
+    function CargarMasivoExcelUsuario() {
+        $('#frmMasivoUsuario').submit();
+    }
+
+    function AjaxPost(formData) {
+        var ajaxConfig = {
+            type: "POST",
+            url: formData.action,
+            data: new FormData(formData),
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (data.OK) {
+                    var progressInterval = setInterval(function () {
+                        $.post('@Url.Action("GetProgressCargaMasiva", "Usuarios")', function (data) {
+                            if (data.OK) {
+                                setLoadingProgress(data.Data);
+
+                                if (data.Data == -1) {
+                                    clearInterval(progressInterval);
+                                    stopLoading();
+                                    setTimeout(function () {
+                                        showMessage('Verificar que todos los campos obligatorios estén completos.');
+                                        limpiarArchivoExcel();
+                                    }, 400);
+                                }
+                                if (data.Data >= 100) {
+                                    clearInterval(progressInterval);
+                                    if (data.Message === null) {
+                                        setTimeout(function () {
+                                            stopLoading();
+                                            showMessage('¡Se hizo la carga de usuarios de manera exitosa!');
+                                            limpiarArchivoExcel();
+                                            setTimeout(function () {
+                                                window.location.reload();
+                                            }, 450)
+                                        }, 300);
+                                    } else {
+                                        stopLoading();
+                                        limpiarArchivoExcel();
+                                        showMessage(data.Message, function () {
+                                            window.location.reload();
+                                        });
+                                    }
+                                }
+                            } else {
+                                clearInterval(progressInterval);
+                                setTimeout(function () {
+                                    stopLoading();
+                                }, 300);
+                                showMessage(data.Message);
+                                limpiarArchivoExcel();
+                            }
+                        });
+                    }, 400);
+                } else {
+                    stopLoading();
+                    showMessage('Error: ' + data.Message);
+                    limpiarArchivoExcel();
+                }
+            }
+        }
+        startLoading();
+        $.ajax(ajaxConfig);
+        return false;
+    }
+
+    function limpiarArchivoExcel() {
+        $('#upReport').val('');
+    }
+
+
+    </script>
+}
+
+

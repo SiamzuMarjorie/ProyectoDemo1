@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{56F6B0F4-2CB0-4B42-9C97-E3EFA4B8C17B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ZP.SOOM.CursosVirtuales.DL.DA</RootNamespace>
+    <AssemblyName>ZP.SOOM.CursosVirtuales.DL.DA</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper, Version=1.40.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActividadUsuarioDA.cs" />
+    <Compile Include="CargaMasivaDA.cs" />
+    <Compile Include="CertificadoDA.cs" />
+    <Compile Include="ConfiguracionDA.cs" />
+    <Compile Include="ContenidoCursoDA.cs" />
+    <Compile Include="ContenidoCursoInscripcionDA.cs" />
+    <Compile Include="CursoDA.cs" />
+    <Compile Include="CursoSlotDA.cs" />
+    <Compile Include="GrupoCursoDA.cs" />
+    <Compile Include="GrupoDA.cs" />
+    <Compile Include="GrupoOcupacionalDA.cs" />
+    <Compile Include="GrupoTrabajadorDA.cs" />
+    <Compile Include="InscripcionDA.cs" />
+    <Compile Include="IntentoDA.cs" />
+    <Compile Include="MaterialDA.cs" />
+    <Compile Include="MaterialInscripcionDA.cs" />
+    <Compile Include="PersonajeDA.cs" />
+    <Compile Include="PreguntaDA.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReporteDA.cs" />
+    <Compile Include="RespuestaDA.cs" />
+    <Compile Include="SlotDA.cs" />
+    <Compile Include="SuscripcionNotificacionDA.cs" />
+    <Compile Include="TrabajadorDA.cs" />
+    <Compile Include="UsuarioDA.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZP.SOOM.CursosVirtuales.BL.BE\ZP.SOOM.CursosVirtuales.BL.BE.csproj">
+      <Project>{2b203013-f7ae-429a-bc7d-320e33423c94}</Project>
+      <Name>ZP.SOOM.CursosVirtuales.BL.BE</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZP.SOOM.CursosVirtuales.DL.DM\ZP.SOOM.CursosVirtuales.DL.DM.csproj">
+      <Project>{b5d837f9-5777-4bb4-9143-0d3a32351463}</Project>
+      <Name>ZP.SOOM.CursosVirtuales.DL.DM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZP.SOOM.CursosVirtuales.Util\ZP.SOOM.CursosVirtuales.Util.csproj">
+      <Project>{827e0e69-4b45-4e0f-80fc-dbd637c04f71}</Project>
+      <Name>ZP.SOOM.CursosVirtuales.Util</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

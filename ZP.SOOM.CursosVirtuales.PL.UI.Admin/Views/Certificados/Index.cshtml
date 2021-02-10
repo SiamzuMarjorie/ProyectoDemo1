@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "Certificados";
+    ViewBag.Section = "Certificados";
+    List<int> lstAno = ViewBag.ListarAno;
+}
+
+<section class="Certificados">
+
+    <div>
+        <form id="frmCertificadoxfiltros" enctype="multipart/form-data" action="@Url.Action("DescargarCertiticados1","Certificados")" method="post">
+
+            <div class="content-certificados">
+                <div class="filter">
+                    <label>Asignación</label>
+                    <select id="ano" name="Ano" onchange="listaFiltros();">
+                        @for (int i = 0; i < lstAno.Count; i++)
+                        {
+                            <option @(i == lstAno.Count - 1 ? "selected" : "")>@lstAno[i]</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <br />
+            <div class="slot-detail">
+                <div class="slot-detaill">
+                    <div class="slot-header-detai">
+                        <select id="camposFiltro" name="NombreCampo" onchange="listaFiltros();">
+                            <option selected value="">--Seleccionar--</option>
+                            <option value="@Constants.ReporteGeneral.Campos.COMPANIA">Compañía</option>
+                            <option value="@Constants.ReporteGeneral.Campos.SEDE">Sede</option>
+                            <option value="@Constants.ReporteGeneral.Campos.GERENCIA">Gerencia</option>
+                            <option value="@Constants.ReporteGeneral.Campos.CATEGORIA">Categoría de puesto</option>
+                            <option value="@Constants.ReporteGeneral.Campos.CURSOSLOT">Slot/Curso</option>
+                            <option value="@Constants.ReporteGeneral.Campos.SEGMENTO">Grupos</option>
+                        </select>
+                    </div>
+                    <div class="screen-actions">
+                        <input type="submit" name="name" value="DescargarCertiticados" class="align-left button btn-color02 btn-icon-left ic-carga-masiva" />
+                    </div>
+                    <br>
+                </div>
+            </div>
+            <div id="tablaFiltro">
+                @Html.Partial("_TablaReporte")
+            </div>
+        </form>
+    </div>
+</section>
+
+@section scripts{
+    <script>
+
+        function listaFiltros() {
+            var camposFiltro = $('#camposFiltro').val();
+            if (camposFiltro != '') {
+                $.post('@Url.Action("ListaCampos", "Certificados")', { NombreCampo: camposFiltro, Ano: $('#ano').val() }, function (data) {
+                $('#tablaFiltro').html(data);
+            });
+        } else {
+                $('#tablaFiltro').html('');
+        }
+
+    }
+
+    </script>
+}

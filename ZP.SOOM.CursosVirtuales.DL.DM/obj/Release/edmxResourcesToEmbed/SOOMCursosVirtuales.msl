@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="SOOMCursosVirtualesModelStoreContainer" CdmEntityContainer="SOOMCursosVirtualesEntities">
+    <EntitySetMapping Name="ActividadUsuario">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.ActividadUsuario">
+        <MappingFragment StoreEntitySet="ActividadUsuario">
+          <ScalarProperty Name="IdActividadUsuario" ColumnName="IdActividadUsuario" />
+          <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+          <ScalarProperty Name="FechaHora" ColumnName="FechaHora" />
+          <ScalarProperty Name="TipoActividad" ColumnName="TipoActividad" />
+          <ScalarProperty Name="IdCursoSlot" ColumnName="IdCursoSlot" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Configuracion">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.Configuracion">
+        <MappingFragment StoreEntitySet="Configuracion">
+          <ScalarProperty Name="IdConfiguracion" ColumnName="IdConfiguracion" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="Valor" ColumnName="Valor" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ContenidoCurso">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.ContenidoCurso">
+        <MappingFragment StoreEntitySet="ContenidoCurso">
+          <ScalarProperty Name="IdContenidoCurso" ColumnName="IdContenidoCurso" />
+          <ScalarProperty Name="IdCurso" ColumnName="IdCurso" />
+          <ScalarProperty Name="Archivo" ColumnName="Archivo" />
+          <ScalarProperty Name="TipoArchivo" ColumnName="TipoArchivo" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Curso">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.Curso">
+        <MappingFragment StoreEntitySet="Curso">
+          <ScalarProperty Name="Eliminado" ColumnName="Eliminado" />
+          <ScalarProperty Name="Certificado" ColumnName="Certificado" />
+          <ScalarProperty Name="UrlExamen" ColumnName="UrlExamen" />
+          <ScalarProperty Name="IdCurso" ColumnName="IdCurso" />
+          <ScalarProperty Name="Titulo" ColumnName="Titulo" />
+          <ScalarProperty Name="Horas" ColumnName="Horas" />
+          <ScalarProperty Name="Puntos" ColumnName="Puntos" />
+          <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+          <ScalarProperty Name="Imagen" ColumnName="Imagen" />
+          <ScalarProperty Name="Estado" ColumnName="Estado" />
+          <ScalarProperty Name="EmiteCertificado" ColumnName="EmiteCertificado" />
+          <ScalarProperty Name="TieneExamen" ColumnName="TieneExamen" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CursoSlot">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.CursoSlot">
+        <MappingFragment StoreEntitySet="CursoSlot">
+          <ScalarProperty Name="NombreSlot" ColumnName="NombreSlot" />
+          <ScalarProperty Name="IdCursoSlotDependiente" ColumnName="IdCursoSlotDependiente" />
+          <ScalarProperty Name="IdCursoSlot" ColumnName="IdCursoSlot" />
+          <ScalarProperty Name="IdCurso" ColumnName="IdCurso" />
+          <ScalarProperty Name="IdSlot" ColumnName="IdSlot" />
+          <ScalarProperty Name="FechaHoraInicio" ColumnName="FechaHoraInicio" />
+          <ScalarProperty Name="FechaHoraFin" ColumnName="FechaHoraFin" />
+          <ScalarProperty Name="Intentos" ColumnName="Intentos" />
+          <ScalarProperty Name="Visible" ColumnName="Visible" />
+          <ScalarProperty Name="Estado" ColumnName="Estado" />
+          <ScalarProperty Name="Titulo" ColumnName="Titulo" />
+          <ScalarProperty Name="Horas" ColumnName="Horas" />
+          <ScalarProperty Name="Puntos" ColumnName="Puntos" />
+          <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+          <ScalarProperty Name="FechaHoraRegistro" ColumnName="FechaHoraRegistro" />
+          <ScalarProperty Name="FechaHoraUltimaActualizacion" ColumnName="FechaHoraUltimaActualizacion" />
+          <ScalarProperty Name="Orden" ColumnName="Orden" />
+          <ScalarProperty Name="Ano" ColumnName="Ano" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GrupoOcupacional">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.GrupoOcupacional">
+        <MappingFragment StoreEntitySet="GrupoOcupacional">
+          <ScalarProperty Name="IdGrupoOcupacional" ColumnName="IdGrupoOcupacional" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Inscripcion">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.Inscripcion">
+        <MappingFragment StoreEntitySet="Inscripcion">
+          <ScalarProperty Name="Puntaje" ColumnName="Puntaje" />
+          <ScalarProperty Name="FechaHoraDescargaCertificado" ColumnName="FechaHoraDescargaCertificado" />
+          <ScalarProperty Name="FechaHoraAprobacion" ColumnName="FechaHoraAprobacion" />
+          <ScalarProperty Name="Certificado" ColumnName="Certificado" />
+          <ScalarProperty Name="IdInscripcion" ColumnName="IdInscripcion" />
+          <ScalarProperty Name="IdCursoSlot" ColumnName="IdCursoSlot" />
+          <ScalarProperty Name="IdTrabajador" ColumnName="IdTrabajador" />
+          <ScalarProperty Name="FechaHoraRegistro" ColumnName="FechaHoraRegistro" />
+          <ScalarProperty Name="FechaHoraUltimaActualizacion" ColumnName="FechaHoraUltimaActualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Intento">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.Intento">
+        <MappingFragment StoreEntitySet="Intento">
+          <ScalarProperty Name="NumeroIntento" ColumnName="NumeroIntento" />
+          <ScalarProperty Name="FechaHoraCertificadoDescargado" ColumnName="FechaHoraCertificadoDescargado" />
+          <ScalarProperty Name="Terminado" ColumnName="Terminado" />
+          <ScalarProperty Name="IdIntento" ColumnName="IdIntento" />
+          <ScalarProperty Name="IdInscripcion" ColumnName="IdInscripcion" />
+          <ScalarProperty Name="NotaMaxima" ColumnName="NotaMaxima" />
+          <ScalarProperty Name="Puntaje" ColumnName="Puntaje" />
+          <ScalarProperty Name="Nota" ColumnName="Nota" />
+          <ScalarProperty Name="Aprobado" ColumnName="Aprobado" />
+          <ScalarProperty Name="Certificado" ColumnName="Certificado" />
+          <ScalarProperty Name="FechaHoraAprobacion" ColumnName="FechaHoraAprobacion" />
+          <ScalarProperty Name="FechaHoraRegistro" ColumnName="FechaHoraRegistro" />
+          <ScalarProperty Name="FechaHoraUltimaActualizacion" ColumnName="FechaHoraUltimaActualizacion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Material">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.Material">
+        <MappingFragment StoreEntitySet="Material">
+          <ScalarProperty Name="IdMaterial" ColumnName="IdMaterial" />
+          <ScalarProperty Name="IdCurso" ColumnName="IdCurso" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="TipoMaterial" ColumnName="TipoMaterial" />
+          <ScalarProperty Name="Archivo" ColumnName="Archivo" />
+          <ScalarProperty Name="Obligatorio" ColumnName="Obligatorio" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MaterialInscripcion">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.MaterialInscripcion">
+        <MappingFragment StoreEntitySet="MaterialInscripcion">
+          <ScalarProperty Name="IdMaterialInscripcion" ColumnName="IdMaterialInscripcion" />
+          <ScalarProperty Name="IdMaterial" ColumnName="IdMaterial" />
+          <ScalarProperty Name="IdInscripcion" ColumnName="IdInscripcion" />
+          <ScalarProperty Name="Visto" ColumnName="Visto" />
+          <ScalarProperty Name="IdCurso" ColumnName="IdCurso" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="TipoMaterial" ColumnName="TipoMaterial" />
+          <ScalarProperty Name="Archivo" ColumnName="Archivo" />
+          <ScalarProperty Name="Obligatorio" ColumnName="Obligatorio" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Personaje">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.Personaje">
+        <MappingFragment StoreEntitySet="Personaje">
+          <ScalarProperty Name="IdPersonaje" ColumnName="IdPersonaje" />
+          <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+          <ScalarProperty Name="Alias" ColumnName="Alias" />
+          <ScalarProperty Name="Avatar" ColumnName="Avatar" />
+          <ScalarProperty Name="PosicionX" ColumnName="PosicionX" />
+          <ScalarProperty Name="PosicionY" ColumnName="PosicionY" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Pregunta">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.Pregunta">
+        <MappingFragment StoreEntitySet="Pregunta">
+          <ScalarProperty Name="IdPregunta" ColumnName="IdPregunta" />
+          <ScalarProperty Name="IdCursoSlot" ColumnName="IdCursoSlot" />
+          <ScalarProperty Name="Contenido" ColumnName="Contenido" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Respuesta">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.Respuesta">
+        <MappingFragment StoreEntitySet="Respuesta">
+          <ScalarProperty Name="IdRespuesta" ColumnName="IdRespuesta" />
+          <ScalarProperty Name="IdPregunta" ColumnName="IdPregunta" />
+          <ScalarProperty Name="IdIntento" ColumnName="IdIntento" />
+          <ScalarProperty Name="Contenido" ColumnName="Contenido" />
+          <ScalarProperty Name="Correcta" ColumnName="Correcta" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Slot">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.Slot">
+        <MappingFragment StoreEntitySet="Slot">
+          <ScalarProperty Name="IdSlot" ColumnName="IdSlot" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+          <ScalarProperty Name="Izquierda" ColumnName="Izquierda" />
+          <ScalarProperty Name="Alto" ColumnName="Alto" />
+          <ScalarProperty Name="Ancho" ColumnName="Ancho" />
+          <ScalarProperty Name="ColorText" ColumnName="ColorText" />
+          <ScalarProperty Name="ColorBackground" ColumnName="ColorBackground" />
+          <ScalarProperty Name="NombreSlot" ColumnName="NombreSlot" />
+          <ScalarProperty Name="CursosDependientes" ColumnName="CursosDependientes" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SuscripcionNotificacion">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.SuscripcionNotificacion">
+        <MappingFragment StoreEntitySet="SuscripcionNotificacion">
+          <ScalarProperty Name="IdSuscripcionNotificacion" ColumnName="IdSuscripcionNotificacion" />
+          <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+          <ScalarProperty Name="Endpoint" ColumnName="Endpoint" />
+          <ScalarProperty Name="PS56DH" ColumnName="PS56DH" />
+          <ScalarProperty Name="Auth" ColumnName="Auth" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Trabajador">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.Trabajador">
+        <MappingFragment StoreEntitySet="Trabajador">
+          <ScalarProperty Name="IdTrabajador" ColumnName="IdTrabajador" />
+          <ScalarProperty Name="IdTrabajadorJefe" ColumnName="IdTrabajadorJefe" />
+          <ScalarProperty Name="Nombres" ColumnName="Nombres" />
+          <ScalarProperty Name="PrimerApellido" ColumnName="PrimerApellido" />
+          <ScalarProperty Name="SegundoApellido" ColumnName="SegundoApellido" />
+          <ScalarProperty Name="Foto" ColumnName="Foto" />
+          <ScalarProperty Name="Puesto" ColumnName="Puesto" />
+          <ScalarProperty Name="Celular" ColumnName="Celular" />
+          <ScalarProperty Name="Area" ColumnName="Area" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="FechaNacimiento" ColumnName="FechaNacimiento" />
+          <ScalarProperty Name="Pais" ColumnName="Pais" />
+          <ScalarProperty Name="Estado" ColumnName="Estado" />
+          <ScalarProperty Name="Genero" ColumnName="Genero" />
+          <ScalarProperty Name="Eliminado" ColumnName="Eliminado" />
+          <ScalarProperty Name="Provincia" ColumnName="Provincia" />
+          <ScalarProperty Name="Region" ColumnName="Region" />
+          <ScalarProperty Name="FechaIngreso" ColumnName="FechaIngreso" />
+          <ScalarProperty Name="TipoContrato" ColumnName="TipoContrato" />
+          <ScalarProperty Name="Nivel" ColumnName="Nivel" />
+          <ScalarProperty Name="IdGrupoOcupacional" ColumnName="IdGrupoOcupacional" />
+          <ScalarProperty Name="DNI" ColumnName="DNI" />
+          <ScalarProperty Name="Sede" ColumnName="Sede" />
+          <ScalarProperty Name="Codigo" ColumnName="Codigo" />
+          <ScalarProperty Name="AreaSuperior" ColumnName="AreaSuperior" />
+          <ScalarProperty Name="Gerencia" ColumnName="Gerencia" />
+          <ScalarProperty Name="Rol" ColumnName="Rol" />
+          <ScalarProperty Name="Compañia" ColumnName="Compañia" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Usuario">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.Usuario">
+        <MappingFragment StoreEntitySet="Usuario">
+          <ScalarProperty Name="IdUsuario" ColumnName="IdUsuario" />
+          <ScalarProperty Name="IdTrabajador" ColumnName="IdTrabajador" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="Eliminado" ColumnName="Eliminado" />
+          <ScalarProperty Name="Perfil" ColumnName="Perfil" />
+          <ScalarProperty Name="UltimaActualizacion" ColumnName="UltimaActualizacion" />
+          <ScalarProperty Name="PasswordAntiguo" ColumnName="PasswordAntiguo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ContenidoCursoInscripcion">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.ContenidoCursoInscripcion">
+        <MappingFragment StoreEntitySet="ContenidoCursoInscripcion">
+          <ScalarProperty Name="FechaHoraRevision" ColumnName="FechaHoraRevision" />
+          <ScalarProperty Name="IdInscripcion" ColumnName="IdInscripcion" />
+          <ScalarProperty Name="IdContenidoCurso" ColumnName="IdContenidoCurso" />
+          <ScalarProperty Name="IdContenidoCursoInscripcion" ColumnName="IdContenidoCursoInscripcion" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="DescargarBaseTrabajadores" FunctionName="SOOMCursosVirtualesModel.Store.DescargarBaseTrabajadores">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="SOOMCursosVirtualesModel.DescargarBaseTrabajadores_Result">
+          <ScalarProperty Name="CÓDIGO" ColumnName="CÓDIGO" />
+          <ScalarProperty Name="DNI_C_E_" ColumnName="DNI/C.E." />
+          <ScalarProperty Name="NOMBRES" ColumnName="NOMBRES" />
+          <ScalarProperty Name="PRIMER_APELLIDO" ColumnName="PRIMER APELLIDO" />
+          <ScalarProperty Name="SEGUNDO_APELLIDO" ColumnName="SEGUNDO APELLIDO" />
+          <ScalarProperty Name="FECHA_DE_NACIMIENTO" ColumnName="FECHA DE NACIMIENTO" />
+          <ScalarProperty Name="GÉNERO" ColumnName="GÉNERO" />
+          <ScalarProperty Name="CORREO_ELECTRÓNICO" ColumnName="CORREO ELECTRÓNICO" />
+          <ScalarProperty Name="CELULAR" ColumnName="CELULAR" />
+          <ScalarProperty Name="SEDE" ColumnName="SEDE" />
+          <ScalarProperty Name="PROVINCIA" ColumnName="PROVINCIA" />
+          <ScalarProperty Name="REGIÓN" ColumnName="REGIÓN" />
+          <ScalarProperty Name="PAIS" ColumnName="PAIS" />
+          <ScalarProperty Name="FECHA_DE_INGRESO" ColumnName="FECHA DE INGRESO" />
+          <ScalarProperty Name="GERENCIA" ColumnName="GERENCIA" />
+          <ScalarProperty Name="ÁREA" ColumnName="ÁREA" />
+          <ScalarProperty Name="CÓDIGO_JEFE_DIRECTO" ColumnName="CÓDIGO JEFE DIRECTO" />
+          <ScalarProperty Name="JEFE_DIRECTO" ColumnName="JEFE DIRECTO" />
+          <ScalarProperty Name="CATEGORÍA" ColumnName="CATEGORÍA" />
+          <ScalarProperty Name="ROL" ColumnName="ROL" />
+          <ScalarProperty Name="COMPAÑIA" ColumnName="COMPAÑIA" />
+          <ScalarProperty Name="PUESTO" ColumnName="PUESTO" />
+          <ScalarProperty Name="TIPO_DE_CONTRATO" ColumnName="TIPO DE CONTRATO" />
+          <ScalarProperty Name="NIVEL" ColumnName="NIVEL" />
+          <ScalarProperty Name="ETIQUETA" ColumnName="ETIQUETA" />
+          <ScalarProperty Name="USUARIO" ColumnName="USUARIO" />
+          <ScalarProperty Name="CONTRASEÑA" ColumnName="CONTRASEÑA" />
+          <ScalarProperty Name="INACTIVO" ColumnName="INACTIVO" />
+          <ScalarProperty Name="ELIMINAR" ColumnName="ELIMINAR" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <EntitySetMapping Name="Grupo">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.Grupo">
+        <MappingFragment StoreEntitySet="Grupo">
+          <ScalarProperty Name="Eliminado" ColumnName="Eliminado" />
+          <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+          <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+          <ScalarProperty Name="IdGrupo" ColumnName="IdGrupo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GrupoCurso">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.GrupoCurso">
+        <MappingFragment StoreEntitySet="GrupoCurso">
+          <ScalarProperty Name="FechaHoraDesasignacion" ColumnName="FechaHoraDesasignacion" />
+          <ScalarProperty Name="FechaHoraRegistro" ColumnName="FechaHoraRegistro" />
+          <ScalarProperty Name="IdGrupo" ColumnName="IdGrupo" />
+          <ScalarProperty Name="IdCurso" ColumnName="IdCurso" />
+          <ScalarProperty Name="IdGrupoCurso" ColumnName="IdGrupoCurso" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="GrupoTrabajador">
+      <EntityTypeMapping TypeName="SOOMCursosVirtualesModel.GrupoTrabajador">
+        <MappingFragment StoreEntitySet="GrupoTrabajador">
+          <ScalarProperty Name="FechaHoraDesasignacion" ColumnName="FechaHoraDesasignacion" />
+          <ScalarProperty Name="FechaHoraRegistro" ColumnName="FechaHoraRegistro" />
+          <ScalarProperty Name="IdGrupo" ColumnName="IdGrupo" />
+          <ScalarProperty Name="IdTrabajador" ColumnName="IdTrabajador" />
+          <ScalarProperty Name="IdGrupoTrabajador" ColumnName="IdGrupoTrabajador" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

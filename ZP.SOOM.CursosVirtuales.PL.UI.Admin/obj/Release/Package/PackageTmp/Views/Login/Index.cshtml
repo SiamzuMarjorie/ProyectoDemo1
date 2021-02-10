@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout_No_Menu.cshtml";
+}
+
+<div class="login">
+    <form action="@Url.Action("Index")" id="frmLogin" method="post">
+        <div class="background"></div>
+        <div class="panel">
+            <img class="logo" src="~/Images/logo_vertical.svg" alt="SOOMMetrix Performance" />
+            <input type="text" name="Username" class="required" placeholder="Usuario" value="@Request["Username"]" />
+            <input type="password" name="Password" class="required icon-input ic-ojo-gris" onclick="mostrarContrasena();" placeholder="Contraseña" id="password" />
+            <input type="hidden" name="ReturnUrl" value="@Request["ReturnUrl"]" />
+            <label id="error" class="error @(String.IsNullOrWhiteSpace(ViewBag.Msg) ? "hidden" : "")">@ViewBag.Msg</label>
+            <input type="submit" class="hidden" value="Login" />
+            <a class="button btn-color01" id="btnLogin">Ingresar</a>
+            <label class="forget-password">¿No recuerdas tu contraseña?</label>
+            <a href="@Url.Action("RestablecerPassword", "Login")" id="newPassword" class="new-password">Haz clic aquí</a>
+        </div>
+    </form>
+</div>
+
+@section scripts {
+    <script>
+        $('#btnLogin').click(function () {
+            if (validateNotEmpty('required', '#e84d5c')) {
+                $('#frmLogin').submit();
+            }
+            else {
+                $('#error').removeClass('hidden');
+                $('#error').html('Debes completar todos los campos.');
+            }
+        });
+    </script>
+
+    <script>
+        new ButtonInput('password', function () {
+
+            var tipo = document.getElementById("password");
+            if (tipo.type == "password") {
+                tipo.type = "text";
+                $('.ic-ojo-gris').addClass('inactive');
+            } else {
+                tipo.type = "password";
+                $('.ic-ojo-gris').removeClass('inactive');
+            }
+        });
+    </script>
+}

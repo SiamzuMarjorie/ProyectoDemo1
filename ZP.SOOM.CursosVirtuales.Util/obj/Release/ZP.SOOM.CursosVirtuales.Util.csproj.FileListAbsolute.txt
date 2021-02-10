@@ -1,0 +1,6 @@
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.Util\bin\Release\ZP.SOOM.CursosVirtuales.Util.dll
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.Util\bin\Release\ZP.SOOM.CursosVirtuales.Util.pdb
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.Util\obj\Release\ZP.SOOM.CursosVirtuales.Util.csprojAssemblyReference.cache
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.Util\obj\Release\ZP.SOOM.CursosVirtuales.Util.csproj.CoreCompileInputs.cache
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.Util\obj\Release\ZP.SOOM.CursosVirtuales.Util.dll
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.Util\obj\Release\ZP.SOOM.CursosVirtuales.Util.pdb

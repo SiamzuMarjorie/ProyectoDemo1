@@ -1,0 +1,53 @@
+﻿<div>
+    <div class="h-line"></div>
+    <div class="nuevo-curso">
+        <h1 class="subtitle">Nuevo Curso</h1>        
+        <div class="form-actions-curso">
+            <div class="form-field-curso">
+                <label class="label" for="codigo">Código</label>
+                <input type="text" name="codigo" id="codigo" placeholder="Código" />
+            </div>
+            <div class="form-field-curso">
+                <label class="label" for="titulo">Título</label>
+                <input type="text" name="titulo" id="titulo" placeholder="Título" />
+            </div>
+            <div class="form-field-curso">
+                <label class="label" for="horas">Horas</label>
+                <input type="text" name="titulo" id="horas" placeholder="Horas" />
+            </div>
+            <div class="form-field-curso">
+                <label class="label" for="puntos">Puntos</label>
+                <input type="text" name="puntos" id="puntos" placeholder="Puntos" />
+            </div>
+            <div class="">
+                <label class="label" for="cursohtml5">Curso HTML5</label>
+                <input type="text" name="titulo" id="cursohtml5" placeholder="Curso HTML5" />
+            </div>
+        </div>
+        <div class="table paged">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Recurso</th>
+                            <th>Obligatorio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < 4; i++)
+                        {
+                            <tr>
+                                <td>datos</td>
+                                <td><input type="checkbox"/></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="screen-actions-cursos">
+            <a onclick="history.back();" class="align-left button btn-color01 btn-icon-left ic-volver">Volver</a>
+            <a onclick="history.back();" class="button btn-color02 btn-icon-right btn-icon-agregar">Guardar</a>
+        </div>
+    </div>
+</div>

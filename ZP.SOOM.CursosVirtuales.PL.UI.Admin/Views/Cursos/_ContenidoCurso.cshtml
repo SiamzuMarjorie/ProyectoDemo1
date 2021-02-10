@@ -1,0 +1,14 @@
+﻿@using ZP.SOOM.CursosVirtuales.Util
+@model ZP.SOOM.CursosVirtuales.PL.UI.Admin.Models.ContenidoCursoModel
+<tr>
+    <td class="align-center">
+        <input name="NombreContenido" type="text" class="required-curso" value="@Model.Nombre" maxlength="100" />
+        @if (Model.IdContenidoCurso != 0)
+        {
+            <input type="file" class="hidden" name="Contenido" />
+        }
+    </td>
+    <td class="align-center"><input class="hidden" name="TipoContenido" value="@Model.TipoArchivo" />@Model.Archivo</td>
+    <td class="align-center"><a href="@ConfigurationManager.AppSettings["UrlSOOM"]Cursos/@Model.CodigoCurso/ContenidoCurso/@(Model.Archivo + "?t=" + DateTimeHelper.PeruDateTime.ToString("yyyyMMddHHmmss"))" target="_blank" class="button btn-color01 btn-icon-left ic-prev-view prev-view prev-view-contenido @(Model.Archivo == null ? "disabled": "")">Previsualizar <span class="desktop-only">contenido</span></a></td>
+    <td class="align-center"><input type="hidden" name="IdContenido" value="@Model.IdContenidoCurso" /><a onclick="eliminarContenido(this, '@Model.IdContenidoCurso')" class="ic-eliminar-green"></a></td>
+</tr>

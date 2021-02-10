@@ -1,0 +1,547 @@
+﻿@using ZP.SOOM.CursosVirtuales.PL.UI.Admin.Models
+@using ZP.SOOM.CursosVirtuales.Util
+@model UsuarioModel
+@{
+    ViewBag.Title = Model == null ? "Nuevo usuario" : Model.Nombres + " " + Model.PrimerApellido + " " + Model.SegundoApellido;
+    ViewBag.Section = "Usuarios";
+    var IdUsuario = ViewBag.Usuario;
+    ViewBag.Breadcrumb = new String[][] {
+        new String[] {"Usuarios" , "Index", "Usuarios"}
+    };
+    List<string> lstArea = ViewBag.listarArea;
+    List<GrupoOcupacionalModel> lstGrupoOcupacionalUsuario = ViewBag.ListaGrupoOcupacional;
+    List<UsuarioModel> lstJefeDirecto = ViewBag.Jefes;
+    UsuarioModel jefedirecto = ViewBag.jefe;
+    List<GrupoModel> lstGrupos = ViewBag.Grupos;
+}
+<div class="detalle-usuario">
+    <form action="@Url.Action("GuardarUsuario")" method="post" enctype="multipart/form-data" onsubmit="return AjaxPost(this)" id="saveUsuario">
+        <div class=" columns columns-2">
+            <div class="col col-1">
+                <div class="user-content">
+                    <div id="ic-cargar" class="cargar-imagen">
+                        <div class="ic-cargar cargar-width position-center">
+                        </div>
+                    </div>
+                    <input class="hidden" value="@IdUsuario" name="IdUsuarioEliminar" />
+                    <input type="file" id="subir-imagen" style="display: none;" value="@(Model != null ? Model.Foto : "")" onchange="mostrarFoto();" name="UploadImage" />
+                    <input value="@(Model != null ? Model.IdUsuario : 0)" hidden name="IdUsuario" />
+                    <input value="@(Model != null ? Model.IdTrabajador : 0)" hidden name="IdTrabajador" />
+                    <input value="@(Model != null ? Model.IdJefe : 0)" id="IdJefe" hidden name="IdJefe" />
+                    @*<input value="@(Model != null ? Model.IdGrupoOcupacional : 0)" hidden name="IdGrupoOcupacional" />*@
+                    <div class="action-perfil">
+                        <div>
+                            @if (Model != null && Model.Username != Constants.Usuario.MASTER_USER)
+                            {
+                                <a href="#" class="button btn-color01 btn-icon-left btn-icon-cancelar btn-small" name="eliminar" onclick="eliminar(@Model.IdUsuario,@Model.CantidadSubordinados,@(Model.IdJefe != null ? Model.IdJefe.Value : 0),'@Model.Jefe',@(Model.Nivel != null ? Model.Nivel : 0),@Model.TieneSubordinados);">Eliminar</a>
+                            }
+                        </div>
+                        <div class="detail-checkbox">
+                            <label class="label checkbox" for="eliminar">Estado</label>
+                            <input class="switch" type="checkbox" name="Estado" id="estado" @( Model == null || Model.Estado == "A" ? "checked" : "")>
+                        </div>
+                    </div>
+                    <div class="h-line mobile-only"></div>
+                    <h1 class="subtitle">Datos personales</h1>
+                    <div>
+                        <div class="form-field">
+                            <label class="label" for="codigo">Código *</label>
+                            <input type="text" class="required" name="Codigo" id="codigo" placeholder="Codigo" value="@(Model != null ? Model.Codigo  : "")" maxlength="50" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="dni">DNI / C.E *</label>
+                            <input type="text" class="required" name="DNI" id="dni" placeholder="DNI" value="@(Model != null ? Model.DNI:"")" maxlength="50" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="nombre">Nombres *</label>
+                            <input type="text" name="Nombres" id="nombre" class="required" placeholder="Nombres" value="@(Model != null ? Model.Nombres: "")" maxlength="100" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="primerApellido">Primer apellido *</label>
+                            <input type="text" name="PrimerApellido" id="primerApellido" class="required" placeholder="Primer apellido" value="@(Model != null ? Model.PrimerApellido : "")" maxlength="100" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="SegundoApellido">Segundo apellido *</label>
+                            <input type="text" name="SegundoApellido" id="segundoApellido" class="required" placeholder="Segundo apellido" value="@(Model != null ? Model.SegundoApellido : "")" maxlength="100" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="FechaNacimiento">Fecha nacimiento</label>
+                            <input type="text" name="FechaNacimiento" id="FechaNacimiento" placeholder="Fecha nacimiento" value="@(Model!=null ? Model.FechaNacimiento: "")" maxlength="30" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="genero">Género</label>
+                            <select id="genero" name="genero">
+                                <option value="@(Model!=null?Model.Genero:"")" disabled>--Seleccionar--</option>
+                                <option value="@Constants.Trabajador.Genero.MASCULINO" @( Model != null && Model.Genero == Constants.Trabajador.Genero.MASCULINO ? "selected" : "")>Hombre</option>
+                                <option value="@Constants.Trabajador.Genero.FEMENINO" @( Model != null && Model.Genero == Constants.Trabajador.Genero.FEMENINO ? "selected" : "")>Mujer</option>
+                                <option value="@Constants.Trabajador.Genero.OTROS" @( Model != null && Model.Genero == Constants.Trabajador.Genero.OTROS ? "selected" : "")>Otro</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="email">Correo electrónico *</label>
+                            <input type="email" name="Email" id="email" class="required" placeholder="Correo electrónico" value="@(Model != null ? Model.Email : "")" maxlength="100" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="celular">Celular</label>
+                            <input type="text" name="celular" id="celular" placeholder="Celular" value="@(Model != null ? Model.Celular : "")" maxlength="20" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="sede">Sede</label>
+                            <input type="text" name="sede" id="sede" placeholder="Sede" value="@(Model!=null? Model.Sede:"")" maxlength="50" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="provincia">Provincia</label>
+                            <input type="text" name="provincia" id="provincia" placeholder="Provincia" value="@(Model!=null?Model.Provincia:"")" maxlength="50" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="region">Región</label>
+                            <input type="text" name="region" id="region" placeholder="Región" value="@(Model!=null?Model.Region:"")" maxlength="50" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="pais">País</label>
+                            <input type="text" name="pais" id="pais" placeholder="País" value="@(Model!=null?Model.Pais:"")" maxlength="50" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="h-line mobile-only"></div>
+            <div class="col col-1">
+                <div class="user-content">
+                    <div>
+                        <h1 class="subtitle">Datos laborales</h1>
+                        <div class="form-field">
+                            <label class="label" for="FechaIngreso">Fecha ingreso</label>
+                            <input type="text" name="FechaIngreso" id="FechaIngreso" placeholder="Fecha ingreso" value="@(Model != null ? Model.FechaIngreso : "")" maxlength="30" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="area">Área *</label>
+                            <div id="buscarArea"></div>
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="Gerencia">Gerencia</label>
+                            <input type="text" name="Gerencia" id="Gerencia" placeholder="Gerencia" value="@(Model != null? Model.Gerencia : "")" maxlength="100" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="jefeDirecto">Jefe directo</label>
+                            <div id="buscarJefeDirecto"></div>
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="grupoOcupacional">Categoría *</label>
+                            <div id="buscarGrupoOcupacional"></div>
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="puesto">Puesto</label>
+                            <input type="text" name="Puesto" id="puesto" placeholder="Puesto" value="@(Model != null? Model.Puesto : "")" maxlength="100" />
+                        </div>
+                        @*<div class="form-field">
+                            <label class="label" for="areaSuperior">Área superior</label>
+                            <input type="text" name="AreaSuperior" id="areaSuperior" placeholder="Área superior" value="@(Model != null ? Model.AreaSuperior: "")" maxlength="100" disabled />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="grupoOcupacional">Tipo de contrato</label>
+                            <input type="text" name="tipoContrato" id="tipoContrato" placeholder="Tipo de contrato" value="@(Model != null ? Model.TipoContrato : "")" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="nivel">Nivel</label>
+                            <input type="text" name="nivel" id="nivel" placeholder="Nivel" value="@(Model != null ? Model.Nivel: 0)" class="only-decimal-numbers" maxlength="100" />
+                        </div>*@
+                        <div class="form-field">
+                            <label class="label" for="rol">Rol</label>
+                            <input type="text" name="rol" id="rol" placeholder="Rol" value="@(Model != null ? Model.Rol : null)" maxlength="100" />
+                        </div><div class="form-field">
+                            <label class="label" for="compañia">Compañia *</label>
+                            <input type="text" name="compañia" id="compañia" placeholder="Compañia" value="@(Model != null ? Model.Compañia : null)" class="required" maxlength="100" />
+                        </div>
+                    </div>
+                    <div class="h-line"></div>
+                    <div>
+                        <h1 class="subtitle">Datos de la cuenta</h1>
+                        <div class="form-field">
+                            <label class="label" for="perfil">Perfil</label>
+                            <select id="perfil" name="Perfil">
+                                <option value="" @( Model != null ? Model.Perfil : "") disabled>-- Seleccionar --</option>
+                                <option value="@Constants.Usuario.Perfil.USUARIO" @( Model != null && Model.Perfil == Constants.Usuario.Perfil.USUARIO ? "selected" : "")>Usuario</option>
+                                <option value="@Constants.Usuario.Perfil.ADMINISTRADOR" @( Model != null && Model.Perfil == Constants.Usuario.Perfil.ADMINISTRADOR ? "selected" : "")>Administrador</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="nombreUsuario">Nombre de usuario *</label>
+                            <input type="text" name="Username" id="nombreUsuario" class="required" placeholder="Nombre de usuario" value="@(Model != null ? Model.Username : "")" maxlength="100" />
+                        </div>
+                        <div class="form-field">
+                            <label class="label" for="password">Contraseña *</label>
+                            <input type="password" name="Password" id="password" class="@(Model == null ? "required" : "") password icon-input ic-ojo-gris" placeholder="Contraseña" maxlength="100" />
+                        </div>
+                    </div>
+                    @if (lstGrupos.Count > 0)
+                    {
+                        <div class="h-line"></div>
+                        <div>
+                            <h1 class="subtitle">Gestión de grupos</h1>
+                            <div>
+                                <ul class="list-group">
+                                    @foreach (GrupoModel objGrupo in lstGrupos)
+                                    {
+                                        <li>
+                                            <input type="checkbox" value="@objGrupo.IdGrupo" class="option-group" @(objGrupo.GrupoTrabajador == true ? "checked" : "") name="IdGrupo" />
+                                            <label class="label"> @objGrupo.Nombre </label>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    }
+                    
+                </div>
+            </div>
+        </div>
+        <div class="form-actions">
+            <a class="button btn-icon-cancelar btn-icon-left" name="cancelar" onclick="history.back();">Cancelar</a>
+            @if (Model == null || Model.Username != Constants.Usuario.MASTER_USER)
+            {
+                <a class="button btn-color02 btn-icon-left btn-icon-refresh" name="guardar" onclick="guardarUsuario();">Guardar cambios</a>
+            }
+        </div>
+    </form>
+</div>
+<div class="popup" id="popupEliminarUsuario">
+    <div class="popup-container">
+        <div class="delete-user-types">
+            <label class="">Este usuario tiene</label>
+            <div class="worker-number"><label> <span id="cantidadsubordinados"> </span> Subordinados</label></div>
+            <div class="eliminar-sin-reemplazar form-actions" id="solositienejefe">
+
+                <a class="button btn-color01 btn-icon-left btn-icon-cancelar" name="eliminar" id="eliminarsinreemplazo">Eliminar sin reemplazar</a>
+            </div>
+            <div class="reemplazar-usuario form-actions">
+                <a class="button btn-color02 btn-icon-left ic-guardar-blanco" name="eliminar" id="eliminarconexistente" ;">Reemplazar por existente</a>
+            </div>
+            <div class="reemplazar-usuario-nuevo form-actions">
+                <input type="hidden" name="usuarioNuevo" id="usuarioNuevo" value="" />
+                <input type="hidden" name="jefe" id="jefe" value="" />
+                <input type="hidden" name="nivel" id="nivel" value="" />
+                <a class="button btn-color02 btn-icon-left ic-guardar-blanco" name="eliminar" id="eliminarnuevo">Reemplazar por nuevo</a>
+            </div>
+            <div class="form-actions">
+                <a class="button btn-icon-cancelar btn-icon-left" id="cancelar" name="cancelar" onclick="popupEliminarUsuario.hide();">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="popup" id="popupUsuarioExistente">
+    <div class="popup-container">
+        <div id="trabajadorExistente"></div>
+        <input type="hidden" name="usuarioExistente" id="usuarioExistente" value="" />
+        <div class="form-actions">
+            <a class="button btn-icon-cancelar btn-icon-left" id="cancelar" name="cancelar" onclick="popupUsuarioExistente.hide();">Cancelar</a>
+            <a class="button btn-color02 btn-icon-left ic-confirmar" name="guardar" id="guardar" onclick="guardarUsuarioExistente();">Confirmar</a>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+
+        new DatePicker('FechaNacimiento');
+        new DatePicker('FechaIngreso');
+
+        var tagsUsuario = new TypeTagInput('etiquetas', 'etiqueta');
+
+        @{
+            if (Model != null && !string.IsNullOrEmpty(Model.Etiqueta))
+            {
+                String[] Tags = Model.Etiqueta.Split(',');
+                foreach (String Tag in Tags)
+                {
+                    <text>
+        tagsUsuario.addTag('@Tag');
+        </text>
+                }
+            }
+        }
+
+        new ButtonInput('password', function () {
+            var tipo = document.getElementById("password");
+            if (tipo.type == "password") {
+                tipo.type = "text";
+                $('.ic-ojo-gris').addClass('inactive');
+            } else {
+                tipo.type = "password";
+                $('.ic-ojo-gris').removeClass('inactive');
+            }
+        });
+
+        var popupGuardarUsuario = new Popup('popupGuardarUsuario');
+
+        var subirImagen = $('#ic-cargar');
+        var seleccionarImagen = $('#subir-imagen');
+        subirImagen.click(function () {
+            seleccionarImagen.click();
+        });
+
+        function loadAreaSuperior(element) {
+            var areaSuperior = $(element).children(':selected').attr('title');
+            $('#areaSuperior').val(areaSuperior);
+        }
+
+        function clearInputs() {
+            document.getElementById("subir-imagen").value = "";
+            document.getElementById("codigo").value = "";
+            document.getElementById("dni").value = "";
+            document.getElementById("nombre").value = "";
+            document.getElementById("primerApellido").value = "";
+            document.getElementById("segundorApellido").value = "";
+            document.getElementById("puesto").value = "";
+            document.getElementById("area").value = "";
+            document.getElementById("nombreUsuario").value = "";
+            document.getElementById("password").value = "";
+        }
+
+        function guardarUsuario() {
+            if (validateNotEmpty('required', '#e84d5c')) {
+                var password = $('#password').val();
+                if (password == '' || password.length >= 8) {
+                    showConfirmation('¿Estás seguro de que deseas guardar al usuario?', 'Guardar', 'btn-color02', function () {
+                        $('#saveUsuario').submit();
+                    });
+                }
+                else {
+                    showMessage('La contraseña debe tener al menos 8 caracteres.');
+                }
+            }
+            else {
+                showMessage('Debes completar todos los campos solicitados.');
+            }
+        }
+
+
+        function AjaxPost(formData) {
+            var etiqueta = $('#etiqueta').val(tagsUsuario.getTags());
+            var area=$('#buscarArea input').val();
+
+            var ajaxConfig = {
+                type: "POST",
+                url: '@Url.Action("GuardarUsuario", "Usuarios")',
+                data: new FormData(formData),
+                success: function (data) {
+                    if (data.OK) {
+                        showMessage('¡El usuario se ha guardado con éxito!', function () {
+                            window.location = '@Url.Action("Index", "Usuarios")';
+                        });
+                    }
+                    else {
+                        showMessage(data.Message, null);
+                    }
+                    stopLoading();
+                }
+            }
+            if ($(formData).attr('enctype') == "multipart/form-data") {
+                ajaxConfig["contentType"] = false;
+                ajaxConfig["processData"] = false;
+            }
+            startLoading();
+            $.ajax(ajaxConfig);
+            return false;
+        }
+
+        // LISTA AREAS
+
+        var searchInput = new SearchInput('buscarArea', function (id, text) {
+            var area=$('#buscarArea input').val(text);
+        }, 'Area');
+        $('#buscarArea input').css('width', '100%');
+        $('#buscarArea input').addClass('required');
+        @for (var i = 0; i < lstArea.Count; i++)
+        {
+           var objarea=lstArea[i];
+           <text>searchInput.addDataSourceItem(@i, '@Html.Raw(objarea)');</text>
+        }
+        $('#buscarArea input').val('@Html.Raw((Model != null ? Model.Area : ""))');
+
+        //LISTA GRUPO OCUPACIONAL
+        var searchInput = new SearchInput('buscarGrupoOcupacional', function (id, text) {
+            var grupoOcupacional = $('#buscarGrupoOcupacional input').val(text);
+            $('#IdGrupoOcupacional').val(id);
+        }, 'GrupoOcupacionalNombre');
+        $('#buscarGrupoOcupacional input').css('width', '100%');
+        $('#buscarGrupoOcupacional input').addClass('required');
+        @for (var i = 0; i < lstGrupoOcupacionalUsuario.Count; i++)
+            {
+                var objgrupoOcupacional = lstGrupoOcupacionalUsuario[i];
+            <text>searchInput.addDataSourceItem(@objgrupoOcupacional.IdGrupoOcupacional, '@Html.Raw(objgrupoOcupacional.Nombre)');</text>
+        }
+        $('#buscarGrupoOcupacional input').val('@Html.Raw((Model != null ? Model.GrupoOcupacional : ""))');
+        $('#buscarGrupoOcupacional input').change(function() {
+            $('#IdGrupoOcupacional').val(0);
+        });
+
+        //LISTA JEFE DIRECTO
+
+        var searchInput = new SearchInput('buscarJefeDirecto', function (id, text) {
+            var jefeDirecto = $('#buscarJefeDirecto input').val(text);
+            $('#IdJefe').val(id);
+        }, 'Jefe');
+        $('#buscarJefeDirecto input').css('width', '100%');
+        @for (var i = 0; i < lstJefeDirecto.Count; i++)
+        {
+                var objJefeDirecto = lstJefeDirecto[i];
+                <text>searchInput.addDataSourceItem(@objJefeDirecto.IdTrabajador, '@Html.Raw(objJefeDirecto.Nombres + " " + objJefeDirecto.PrimerApellido + " " + objJefeDirecto.SegundoApellido)');</text>
+            }
+        $('#buscarJefeDirecto input').val('@Html.Raw((Model != null ? Model.Jefe : ""))');
+
+
+    </script>
+    <script>
+
+        $(document).ready(function () {
+            @if (Model != null && Model.Foto != null) {
+                <text>
+            $('#ic-cargar').attr('style', 'background-image: url("../../Images/Usuarios/@Model.Foto");');
+            $('#ic-cargar .ic-cargar').addClass('hidden');
+            </text>
+            }
+
+            loadAreaSuperior(document.getElementById('jefeDirecto'));
+        });
+
+        function mostrarFoto() {
+            var file = document.getElementById('subir-imagen').files[0];
+            var imageUrl = window.URL.createObjectURL(file);
+            $('#ic-cargar').attr('style', 'background-image: url("' + imageUrl + '");');
+            $('#ic-cargar .ic-cargar').addClass('hidden');
+        }
+        var popupEliminarUsuario = new Popup('popupEliminarUsuario');
+        var popupUsuarioExistente = new Popup('popupUsuarioExistente');
+
+        var idtrabajador = 0;
+        var nivel = 0;
+        var jefe = "";
+        var searchInput = new SearchInput('trabajadorExistente', function (id, text) {
+            $('#trabajadorExistente input').val(text);
+            $('#usuarioExistente').val(id);
+        });
+
+        $('#eliminarnuevo').click(function () {
+            var IdUsuarioEliminado = $('#usuarioNuevo').val();
+
+            window.location = '@Url.Action("NuevoUsuario", "Usuarios", new { id = "" })/' + IdUsuarioEliminado;
+        });
+
+
+        $('#eliminarsinreemplazo').click(function () {
+            var IdUsuarioEliminado = $('#usuarioNuevo').val();
+            var Jefe = $('#jefe').val();
+            EliminarsinReemplazo(IdUsuarioEliminado, Jefe);
+        });
+
+
+        $('#eliminarconexistente').click(function () {
+            var IdUsuarioEliminado = $('#usuarioNuevo').val();
+            var Nivel = $('#nivel').val();
+            listarusuarios(IdUsuarioEliminado, Nivel);
+            popupUsuarioExistente.show();
+        });
+
+        $('#guardar').click(function () {
+            var usuarioExistente = $('#usuarioExistente').val();
+            var IdUsuarioEliminado = $('#usuarioNuevo').val();
+            EliminarconReemplazoExistente(IdUsuarioEliminado, usuarioExistente);
+        });
+        function eliminar(id, cantidadsubordinado, idjefe, jefe, nivel, tienesubordinado) {
+            idtrabajador = id;
+            nivel = nivel;
+            jefe = jefe;
+            if (idjefe == 0)
+                $('#solositienejefe').addClass('hidden');
+
+            else
+                $('#solositienejefe').removeClass('hidden');
+
+            if (tienesubordinado) {
+                $('#jefe').val(jefe);
+                $('#cantidadsubordinados').html(cantidadsubordinado);
+                $('#usuarioNuevo').val(idtrabajador);
+                $('#nivel').val(nivel);
+                popupEliminarUsuario.show();
+
+            } else {
+                showConfirmation('¿Estás seguro(a) de que deseas eliminar este usuario?', 'Eliminar', 'btn-color01', function () {
+                    startLoading();
+                    $.post('@Url.Action("EliminarUsuario", "Usuarios")', { IdUsuario: id },
+                        function (data) {
+                            if (data.OK) {
+                                showMessage('¡El usuario ha sido eliminado satisfactoriamente!', function () {
+                                    window.location = '@Url.Action("Index", "Usuarios")';
+                                });
+                            }
+                            else {
+                                showMessage('Ocurrió un error al eliminar el usuario, inténtelo nuevamente.', null);
+                            }
+                            stopLoading();
+                        });
+                });
+            }
+        }
+
+        function EliminarconReemplazoExistente(idEliminado, idreemplazante) {
+            showConfirmation('¿Estás seguro(a) de que deseas reemplazar a este usuario?', 'Eliminar', 'btn-color01', function () {
+                startLoading();
+                $.post('@Url.Action("EliminarconReemplazoExistente", "Usuarios")', { IdUsuario: id, IdUsuario: idreemplazante },
+                    function (data) {
+                        if (data.OK) {
+                            showMessage('¡El usuario ha sido eliminado satisfactoriamente!', function () {
+                                window.location = '@Url.Action("Index", "Usuarios")';
+                            });
+                        }
+                        else {
+                            showMessage('Ocurrió un error al eliminar el usuario, inténtelo nuevamente.', null);
+                        }
+                        stopLoading();
+                    });
+            });
+        }
+        function EliminarsinReemplazo(idEliminado, jefe) {
+            idtrabajador = idEliminado;
+            jefe = jefe;
+            showConfirmation('¿Estás seguro(a) de que deseas eliminar este usuario y ( ' + jefe + ' sera el nuevo de los subordinados )?', 'Eliminar', 'btn-color01', function () {
+                startLoading();
+                $.post('@Url.Action("EliminarSinReemplazo", "Usuarios")', { IdUsuarioEliminado: idtrabajador },
+                    function (data) {
+                        if (data.OK) {
+                            showMessage('¡El usuario ha sido eliminado satisfactoriamente!', function () {
+                                window.location = '@Url.Action("Index", "Usuarios")';
+                            });
+                        }
+                        else {
+                            showMessage('Ocurrió un error al eliminar el usuario, inténtelo nuevamente.', null);
+                        }
+                        stopLoading();
+                    });
+            });
+        }
+
+        function listarusuarios(id, nivel) {
+            nivel = nivel;
+            idTrabajador = id;
+            listIdExistentes = [];
+            $.post('@Url.Action("ListarUsuarios")', { Nivel: nivel },
+                function (data) {
+                    if (data.OK) {
+                        var lstusuarios = data.Data;
+                        for (var i = 0; i < lstusuarios.length; i++) {
+                            var usuarios = lstusuarios[i];
+
+                            if (usuarios.IdUsuario != idtrabajador)
+                                searchInput.addDataSourceItem(usuarios.IdUsuario, usuarios.Nombres + " " + usuarios.PrimerApellido + " " + usuarios.SegundoApellido);
+
+                        }
+                    } else {
+
+                        showMessage(data.Message, null);
+                    }
+                });
+        }
+
+
+
+    </script>
+}

@@ -1,0 +1,12 @@
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.BL.BE\bin\Release\ZP.SOOM.CursosVirtuales.BL.BE.dll
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.BL.BE\bin\Release\ZP.SOOM.CursosVirtuales.BL.BE.pdb
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.BL.BE\bin\Release\ZP.SOOM.CursosVirtuales.DL.DM.dll
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.BL.BE\bin\Release\EntityFramework.dll
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.BL.BE\bin\Release\ZP.SOOM.CursosVirtuales.DL.DM.pdb
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.BL.BE\bin\Release\ZP.SOOM.CursosVirtuales.DL.DM.dll.config
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.BL.BE\bin\Release\EntityFramework.xml
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.BL.BE\obj\Release\ZP.SOOM.CursosVirtuales.BL.BE.csprojAssemblyReference.cache
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.BL.BE\obj\Release\ZP.SOOM.CursosVirtuales.BL.BE.csproj.CoreCompileInputs.cache
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.BL.BE\obj\Release\ZP.SOOM.CursosVirtuales.BL.BE.csproj.CopyComplete
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.BL.BE\obj\Release\ZP.SOOM.CursosVirtuales.BL.BE.dll
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.BL.BE\obj\Release\ZP.SOOM.CursosVirtuales.BL.BE.pdb

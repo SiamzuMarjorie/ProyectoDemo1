@@ -1,0 +1,12 @@
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.DL.DM\bin\Release\ZP.SOOM.CursosVirtuales.DL.DM.dll.config
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.DL.DM\bin\Release\ZP.SOOM.CursosVirtuales.DL.DM.dll
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.DL.DM\bin\Release\ZP.SOOM.CursosVirtuales.DL.DM.pdb
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.DL.DM\bin\Release\EntityFramework.dll
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.DL.DM\bin\Release\EntityFramework.SqlServer.dll
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.DL.DM\bin\Release\EntityFramework.xml
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.DL.DM\bin\Release\EntityFramework.SqlServer.xml
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.DL.DM\obj\Release\ZP.SOOM.CursosVirtuales.DL.DM.csprojAssemblyReference.cache
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.DL.DM\obj\Release\ZP.SOOM.CursosVirtuales.DL.DM.csproj.CoreCompileInputs.cache
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.DL.DM\obj\Release\ZP.SOOM.CursosVirtuales.DL.DM.csproj.CopyComplete
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.DL.DM\obj\Release\ZP.SOOM.CursosVirtuales.DL.DM.dll
+D:\[Ciudad Positiva] Código fuente\Visual Studio Solution\ZP.SOOM.CursosVirtuales.DL.DM\obj\Release\ZP.SOOM.CursosVirtuales.DL.DM.pdb

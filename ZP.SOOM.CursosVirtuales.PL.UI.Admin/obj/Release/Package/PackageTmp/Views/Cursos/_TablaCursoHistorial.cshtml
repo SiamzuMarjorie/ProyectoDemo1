@@ -1,0 +1,46 @@
+﻿@model List<CursoSlotModel>
+<div class="table paged">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th class="align-center">Código</th>
+                    <th class="align-center">Título</th>
+                    <th class="align-center">Horas</th>
+                    <th class="align-center">Puntaje</th>
+                    <th class="align-center">Última Publicación</th>
+                    <th class="align-center">Slot</th>
+                    <th class="align-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (Model != null && Model.Count > 0)
+                {
+                    foreach (CursoSlotModel objCursoSlotModel in Model)
+                    {
+                        <tr>
+                            <td class="align-center">@objCursoSlotModel.CodigoCurso</td>
+                            <td class="align-center">@objCursoSlotModel.TituloCurso</td>
+                            <td class="align-center">@objCursoSlotModel.HorasCurso</td>
+                            <td class="align-center">@objCursoSlotModel.PuntajeCurso</td>
+                            <td class="align-center">@objCursoSlotModel.UltimaPublicacion</td>
+                            <td class="align-center">@objCursoSlotModel.SlotCurso</td>
+                            <td class="separacion-items">
+                                @if (objCursoSlotModel.IdCurso != null)
+                                {
+                                    <a style="margin:0 auto" href="@Url.Action("Detalle", "Cursos", new { IdCurso = objCursoSlotModel.IdCurso })" class="ic-ojo-gris"></a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="8" class="align-center">No hay datos</td></tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>

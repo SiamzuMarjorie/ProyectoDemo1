@@ -1,0 +1,27 @@
+﻿@{
+    Layout = null;
+    int IdUsuario = ViewBag.IdUsuario;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>restaurar</title>
+    <link href="~/Content/Site.css" rel="stylesheet">
+    <link href="~/Content/Enhanced.css" rel="stylesheet" media="screen and (min-width: 65em)">
+</head>
+<body>
+    <div class="system-error">
+        <div class="detalle-sistema">
+            <h1>¡Listo!</h1>
+            <p>
+                Su contraseña fue restablecida satisfactoriamente.
+                <span>Por favor vuelva a loguearse en el sistema nuevamente.</span>
+            </p>
+            <a href="@Url.Action("PasswordRegenerado", "Login", new {Id = IdUsuario })" class="button btn-color01 btn-icon-left ic-volver">Ir al LogIn</a>
+        </div>
+        <div class="logo-empresa"></div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+﻿@model List<CursoModel>
+<div class="table paged">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Título</th>
+                    <th>Horas</th>
+                    <th>Puntaje</th>
+                    <th>Última Publicación</th>
+                    <th>Estado</th>
+                    <th>Slot</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (Model != null && Model.Count > 0)
+                {
+                    foreach (CursoModel objCursoModel in Model)
+                    {
+                        <tr>
+                            <td>@objCursoModel.Codigo</td>
+                            <td>@objCursoModel.Titulo</td>
+                            <td class="align-center">@objCursoModel.Horas</td>
+                            <td class="align-center">@objCursoModel.Puntos</td>
+                            <td class="align-center">@objCursoModel.UltimaPublicacion</td>
+                            <td class="align-center">@(objCursoModel.FechaHoraFin == null ? (objCursoModel.Estado == Constants.Cursos.Estado.INACTIVO ? "Inactivo" : "Activo") : (objCursoModel.FechaHoraFin < DateTimeHelper.PeruDateTime ? "Inactivo" : ((objCursoModel.Estado == Constants.Cursos.Estado.INACTIVO ? "Inactivo" : "Activo"))))</td>
+                            <td>@objCursoModel.Slot</td>
+                            <td class="separacion-items align-center">
+                                <a href="@Url.Action("Detalle", "Cursos", new { IdCurso = objCursoModel.IdCurso })" class="ic-ojo-gris"></a>
+                                @if (!string.IsNullOrEmpty(objCursoModel.Estado) && objCursoModel.Estado != Constants.Cursos.Estado.ACTIVO)
+                                {
+                                    <a onclick="archivarCurso(@objCursoModel.IdCurso)" class="ic-archive"></a>
+                                }
+                                <a onclick="eliminarCurso(@objCursoModel.IdCurso)" class="ic-eliminar-green"></a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="8" class="align-center">No hay datos</td></tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>

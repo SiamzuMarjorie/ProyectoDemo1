@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="5eb9bf09828c4a47bc675e83eb4aae5a" Name="Diagram1" ZoomLevel="60">
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.ActividadUsuario" Width="1.5" PointX="7.5" PointY="13.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.Configuracion" Width="1.5" PointX="9.75" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.ContenidoCurso" Width="1.5" PointX="3" PointY="17.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.Curso" Width="1.5" PointX="0.5" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.CursoSlot" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.GrupoOcupacional" Width="1.5" PointX="0.5" PointY="12.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.Inscripcion" Width="1.5" PointX="5.25" PointY="11.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.Intento" Width="1.5" PointX="7.5" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.Material" Width="1.5" PointX="8.25" PointY="23.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.MaterialInscripcion" Width="1.5" PointX="10.5" PointY="13.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.Personaje" Width="1.5" PointX="7.5" PointY="17.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.Pregunta" Width="1.5" PointX="7.5" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.Respuesta" Width="1.5" PointX="9.75" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.Slot" Width="1.5" PointX="0.75" PointY="14.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.SuscripcionNotificacion" Width="1.5" PointX="7.5" PointY="20.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.Trabajador" Width="1.5" PointX="3" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.Usuario" Width="1.5" PointX="5.25" PointY="15.125" IsExpanded="true" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_ActividadUsuario_CursoSlot" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_ActividadUsuario_Usuario" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_ContenidoCurso_Curso" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_CursoSlot_Curso" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_Material_Curso" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_CursoSlot_Slot" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_Inscripcion_CursoSlot" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_Pregunta_CursoSlot" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_Trabajador_GrupoOcupacional" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_Inscripcion_Trabajador" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_Intento_Inscripcion" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_MaterialInscripcion_Inscripcion" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_Respuesta_Intento" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_MaterialInscripcion_Material" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_Persona_Usuario" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_Respuesta_Pregunta" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_SuscripcionNotificacion_Usuario" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_Trabajador_TrabajadorJefe" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_Usuario_Trabajador" ManuallyRouted="false" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_Respuesta_Pregunta1" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.ContenidoCursoInscripcion" Width="1.5" PointX="10.5" PointY="17.75" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_ContenidoCursoInscripcion_ContenidoCurso" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_ContenidoCursoInscripcion_Inscripcion" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.GrupoxCurso1" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.GrupoxTrabajador1" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.Grupo" Width="1.5" PointX="3" PointY="21.125" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.GrupoCurso" Width="1.5" PointX="5.25" PointY="20.125" />
+        <EntityTypeShape EntityType="SOOMCursosVirtualesModel.GrupoTrabajador" Width="1.5" PointX="11.25" PointY="21.125" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_GrupoCurso_Curso" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_GrupoCurso_Grupo" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_GrupoTrabajador_Grupo" />
+        <AssociationConnector Association="SOOMCursosVirtualesModel.FK_GrupoTrabajador_Trabajador" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

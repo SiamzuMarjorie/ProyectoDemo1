@@ -1,0 +1,276 @@
+﻿@using ZP.SOOM.CursosVirtuales.Util
+@using ZP.SOOM.CursosVirtuales.PL.UI.Admin.Models
+@model List<UsuarioModel>
+@{
+    ViewBag.Title = "Detalle Grupo";
+    ViewBag.Section = "Grupos";
+    int Pages = (int)ViewBag.Pages;
+    int CurrentPage = Request["Page"] == null ? 1 : Int32.Parse(Request["Page"]);
+}
+
+<section class="group-detail">
+    <div class="group-section" style="position:relative;">
+        <div class="group">
+            <a class="group-image"></a>
+            <div class="date-group">
+                <label>@ViewBag.NombreGrupo</label>
+            </div>
+            <p>@ViewBag.DescripcionGrupo</p>
+        </div>
+        @if (ViewBag.NombreGrupo != "Todos")
+        {
+            <div class="acciones-usuario">
+                <div class="screen-actions">
+                    <a id="asignacionMasiva" class="button btn-color02 btn-icon-left ic-carga-masiva" onclick="popupNewGroup.show()">Asignación masiva</a>
+                    <a class="button btn-color01" onclick="deleteAllWorkerGroup(@ViewBag.IdGrupo)">Desasignar todos los usuarios</a>
+                    <form id="frmMasivoGrupo" action="@Url.Action("AsignacionMasivaUsuarios", "Grupos")" onsubmit="return AjaxPost(this);" enctype="multipart/form-data" method="post">
+                        <input type="hidden" value="@ViewBag.IdGrupo" name="IdGrupo" />
+                        <input type="file" id="upAsignacionMasiva" class="hidden" accept=".xls,.xlsx" name="FileMasivoGrupo" value="Carga masiva" onchange="asignacionMasiva();" />
+                    </form>
+                </div>
+            </div>
+        }
+        
+    </div>
+
+    <div class="h-line"></div>
+    <div class="user-section usuarios">
+        <div class="search-panel">
+            <form action="@Url.Action("DetalleGrupo")" method="get" id="frmSearchTrabajadorGrupo">
+                <select name="Tipo">
+                    <option class="label" value="Nombre" name="Tipo" @(Request["Tipo"] == "Nombre" ? "Selected" : "")>Nombres y apellidos</option>
+                    <option class="label" value="Codigo" name="Tipo" @(Request["Tipo"] == "Codigo" ? "Selected" : "")>Código</option>
+                    <option class="label" value="Puesto" name="Tipo" @(Request["Tipo"] == "Puesto" ? "Selected" : "")>Puesto</option>
+                    <option class="label" value="Area" name="Tipo" @(Request["Tipo"] == "Area" ? "Selected" : "")>Área</option>
+                    <option class="label" value="GrupoOcupacional" name="Tipo" @(Request["Tipo"] == "GrupoOcupacional" ? "Selected" : "")>Categoría</option>
+                </select>
+                <input type="hidden" value="@ViewBag.IdGrupo" name="IdGrupo" />
+                <input type="text" name="__Valor" id="buscarTrabajadorGrupo" class="search required ic-buscar icon-input" placeholder="Buscar" value="@Request["__Valor"]" />
+            </form>
+        </div>
+        <div class="screen-actions">
+            <a href="@Url.Action("DetalleGrupo", "Grupos", new { IdGrupo = ViewBag.IdGrupo })" class="volver-usuarios" name="volver-usuarios">Limpiar búsqueda</a>
+        </div>
+        <div class="table paged">
+            <div class="table-container">
+                <table id="listausuario">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombres</th>
+                            <th>1er apellido</th>
+                            <th>2do apellido</th>
+                            <th>Gerencia</th>
+                            <th>Área</th>
+                            <th>Categoría</th>
+                            <th>Puesto</th>
+                            @if (ViewBag.NombreGrupo != "Todos")
+                            {
+                                <th>Desasignar</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var objUsuarioModel in Model)
+                        {
+                            <tr id="usuario">
+                                <td>@objUsuarioModel.Codigo</td>
+                                <td>@objUsuarioModel.Nombres</td>
+                                <td>@objUsuarioModel.PrimerApellido</td>
+                                <td>@objUsuarioModel.SegundoApellido</td>
+                                <td>@objUsuarioModel.Puesto</td>
+                                <td>@objUsuarioModel.Area</td>
+                                <td>@objUsuarioModel.GrupoOcupacional</td>
+                                <td>@objUsuarioModel.Puesto</td>
+                                @if (ViewBag.NombreGrupo != "Todos")
+                                {
+                                    <td class="align-center">
+                                        <a class="ic-eliminar-green" onclick="deleteOneWorkerGroup(@ViewBag.IdGrupo, @objUsuarioModel.IdTrabajador);"></a>
+                                    </td>
+                                }
+                                
+                            </tr>
+                        }
+                        
+                        @if (Model.Count == 0 && (Request["_Valor"] == "" || Request["_Valor"] == null))
+                        {
+                            <tr class="estado"><td colspan="11"><center>No hay usuarios asignados a este grupo.</center></td></tr>
+                        }
+                        else if (Model.Count == 0 )
+                        {
+                            <tr class="estado"><td colspan="11"><center>No hay usuarios que coincidan con los criterios de búsqueda.</center></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (Pages > 1)
+            {
+                <div class="pages">
+                    @if (CurrentPage > 2)
+                    {
+                        <a class="ic-first" href="@Url.Action("DetalleGrupo", "Grupos", new { IdGrupo = ViewBag.IdGrupo, Page = 1 })"></a>
+                    }
+                    @if (CurrentPage > 1)
+                    {
+                        <a class="ic-prev" href="@Url.Action("DetalleGrupo", "Grupos", new { IdGrupo = ViewBag.IdGrupo, Page = CurrentPage - 1 })"></a>
+                    }
+                    <div class="numbers">
+                        @for (int i = CurrentPage - 1; i <= CurrentPage + 1; i++)
+                        {
+                            var index = i;
+                            if (CurrentPage == 1)
+                            {
+                                index++;
+                            }
+                            else if (CurrentPage == Pages)
+                            {
+                                index--;
+                            }
+
+                            if (index > 0 && index <= Pages)
+                            {
+                                <a class="@(index == CurrentPage ? "active" : "")" href="@Url.Action("DetalleGrupo", "Grupos", new { IdGrupo = ViewBag.IdGrupo, Page = index })">@(index > 1 && i == CurrentPage - 1 ? "..." : "")@index.ToString()@(i == CurrentPage + 1 && index < Pages ? "..." : "")</a>
+                            }
+                        }
+                    </div>
+                    @if (CurrentPage < Pages)
+                    {
+                        <a class="ic-next" href="@Url.Action("DetalleGrupo", "Grupos", new { IdGrupo = ViewBag.IdGrupo, Page = CurrentPage + 1 })"></a>
+                    }
+                    @if (CurrentPage < Pages - 1)
+                    {
+                        <a class="ic-last" href="@Url.Action("DetalleGrupo", "Grupos", new { IdGrupo = ViewBag.IdGrupo, Page = Pages })"></a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+    <div class="screen-actions-flex">
+        <a href="@Url.Action("Index","Grupos")" class="align-left button btn-color01 btn-icon-left ic-volver">Volver</a>
+    </div>
+</section>
+@section scripts{
+    <script>
+        new ButtonInput('buscarTrabajadorGrupo', buscarTrabajadorGrupo);
+
+    function buscarTrabajadorGrupo() {
+        $('#frmSearchTrabajadorGrupo').submit();
+    }
+
+    function deleteAllWorkerGroup(idGrupo){
+        showConfirmation('¿Estás seguro de desasignar a todos los usuarios de este grupo?', 'Aceptar', 'btn-color01', function () {
+            startLoading();
+            $.post("@Url.Action("EliminarTrabajadoresGrupo", "Grupos")", { IdGrupo: idGrupo }, function (data) {
+                    stopLoading();
+                    if (data.OK) {
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 400);
+                        renombrarNumeroCurso();
+
+                    } else {
+                        showMessage(data.Message, null);
+                    }
+                });
+            });
+        }
+
+        function deleteOneWorkerGroup(idGrupo, idTrabajador){
+            showConfirmation('¿Estás seguro de que deseas desasignar a este usuario del grupo?', 'Aceptar', 'btn-color01', function () {
+                startLoading();
+                $.post("@Url.Action("EliminarTrabajadorGrupo", "Grupos")", { IdGrupo: idGrupo, IdTrabajador: idTrabajador }, function (data) {
+                    stopLoading();
+                    if (data.OK) {
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 400);
+                        renombrarNumeroCurso();
+
+                    } else {
+                        showMessage(data.Message, null);
+                    }
+                });
+            });
+        }
+
+        //CARGA MASIVA
+        var subirCargaMasiva = $('#asignacionMasiva');
+        var seleccionarArchivo = $('#upAsignacionMasiva');
+        subirCargaMasiva.click(function () {
+            seleccionarArchivo.click();
+        });
+
+
+        function asignacionMasiva() {
+            $('#frmMasivoGrupo').submit();
+        }
+
+        function AjaxPost(formData) {
+            var ajaxConfig = {
+                type: "POST",
+                url: formData.action,
+                data: new FormData(formData),
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.OK) {
+                        var progressInterval = setInterval(function () {
+                            $.post('@Url.Action("GetProgress", "Grupos")', function (data) {
+                                if (data.OK) {
+                                    setLoadingProgress(data.Data);
+
+                                    if (data.Data == -1) {
+                                        clearInterval(progressInterval);
+                                        stopLoading();
+                                        setTimeout(function () {
+                                            showMessage('Verificar que todos los campos obligatorios estén completos.');
+                                            limpiarArchivoExcelGrupos();
+                                        }, 400);
+                                    }
+                                    if (data.Data >= 100) {
+                                        clearInterval(progressInterval);
+                                        if (data.Message === null) {
+                                            setTimeout(function () {
+                                                stopLoading();
+                                                showMessage('¡Se hizo la carga de usuarios al grupo de manera exitosa!');
+                                                limpiarArchivoExcelGrupos();
+                                                setTimeout(function () {
+                                                    window.location.reload();
+                                                }, 450)
+                                            }, 300);
+                                        } else {
+                                            stopLoading();
+                                            limpiarArchivoExcelGrupos();
+                                            showMessage(data.Message, function () {
+                                                window.location.reload();
+                                            });
+                                        }
+                                    }
+                                } else {
+                                    clearInterval(progressInterval);
+                                    setTimeout(function () {
+                                        stopLoading();
+                                    }, 300);
+                                    showMessage(data.Message);
+                                    limpiarArchivoExcelGrupos();
+                                }
+                            });
+                        }, 400);
+                    } else {
+                        stopLoading();
+                        showMessage('Error: ' + data.Message);
+                        limpiarArchivoExcelGrupos();
+                    }
+                }
+            }
+            startLoading();
+            $.ajax(ajaxConfig);
+            return false;
+        }
+
+        function limpiarArchivoExcelGrupos() {
+            $('#upAsignacionMasiva').val('');
+        }
+
+    </script>
+}

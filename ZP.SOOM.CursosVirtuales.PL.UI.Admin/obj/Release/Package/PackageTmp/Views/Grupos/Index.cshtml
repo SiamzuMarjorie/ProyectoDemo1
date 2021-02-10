@@ -1,0 +1,129 @@
+﻿@model List<GrupoModel>
+@{
+    ViewBag.Title = "Grupos";
+    ViewBag.Section = "Grupos";
+}
+
+<section class="groups">
+    <div class="acciones-usuario">
+        <div class="screen-actions">
+            <a class="button btn-color02 btn-icon-left btn-icon-agregar" onclick="clearInputs(); popupNewGroup.show(); cambiarNombrePopup();">Nuevo grupo</a>
+        </div>
+    </div>
+    <div class="h-line"></div>
+    <div class="groups-content">
+        <div class="group">
+            <a href="@Url.Action("DetalleGrupo", "Grupos", new { IdGrupo = Model.FirstOrDefault(g => g.Nombre == "Todos").IdGrupo })" class="group-image"></a>
+            <div class="date-group">
+                <label>Todos</label>
+            </div>
+        </div>
+        @foreach (GrupoModel objGrupoModel in Model.Where(g => g.Nombre != "Todos"))
+        {
+            <div class="group">
+                <a href="@Url.Action("DetalleGrupo", "Grupos", new { IdGrupo = objGrupoModel.IdGrupo })" class="group-image" onclick="if ($(event.target).is('.delete')) event.preventDefault();">
+                    <span class="delete ic-eliminar-green" onclick="deleteGroup(@objGrupoModel.IdGrupo);"></span>
+                    
+                </a>
+                <div class="date-group">
+                    <label>@objGrupoModel.Nombre</label>
+                    <a class="edit ic-pen" onclick="editGroup(@objGrupoModel.IdGrupo, '@objGrupoModel.Nombre', '@objGrupoModel.Descripcion');"></a>
+                </div>
+            </div>
+        }
+        
+    </div>
+</section>
+<div class="popup" id="popupNewGroup">
+    <div class="popup-container">
+        <h1 class="group-name">NUEVO GRUPO</h1>
+        <div>
+            <input id="nombreGroup" class="required" type="text" placeholder="Nombre del grupo*" maxlength="100" />
+            <textarea id="descriptionGroup" style="height:100px; resize:none" placeholder="Descripción" maxlength="300"></textarea>
+            <input id="idGrupo" type="hidden" value="0" />
+            <label class="error"></label>
+        </div>
+        <label id="error" class="error hidden"></label>
+        <div class="form-actions">
+            <a class="button btn-icon-cancelar btn-icon-left" id="cancelar" name="cancelar" onclick="popupNewGroup.hide();">Cancelar</a>
+            <a class="button btn-color02 btn-icon-left ic-confirmar" name="guardar" id="guardar" onclick="saveGroup();">Guardar</a>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var popupNewGroup = new Popup('popupNewGroup');
+
+        function clearInputs() {
+            document.getElementById("nombreGroup").value = "";
+            document.getElementById("descriptionGroup").value = "";
+            $('#nombreGroup').css('border-color', '#e5e5e5');
+            $('#popupNewGroup .error').addClass('hidden');
+        }
+
+        function saveGroup() {
+            if (validateNotEmpty('required', '#e84d5c')) {
+                startLoading();
+                $.post('@Url.Action("GuardarGrupo","Grupos")', {
+                    IdGrupo: $('#idGrupo').val(),
+                    Nombre: $('#nombreGroup').val(),
+                    Descripcion: $('#descriptionGroup').val()
+                },
+                    function (data) {
+                        if (data.OK) {
+                            popupNewGroup.hide();
+                            $('#popupNewGroup .group-name').html('');
+                            showConfirmation('¡Se ha guardado el grupo exitosamente!', 'Aceptar', 'btn-color01', function () {
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 400)
+                            });
+                        }
+                        else {
+                            $('#error').removeClass('hidden');
+                            $('#error').html(data.Message);
+                        }
+                        stopLoading();
+                    });
+            }
+            else {
+                $('#error').removeClass('hidden');
+                $('#error').html('Debes completar todos los campos solicitados.');
+            }
+        }
+
+        var idGrupo = '';
+        function editGroup(idGrupo, nameGroup, descriptionGroup) {
+            $('#popupNewGroup .group-name').html('EDITAR GRUPO');
+            idGrupo = idGrupo;
+            popupNewGroup.show();
+            $("#idGrupo").val(idGrupo);
+            $("#nombreGroup").val(nameGroup);
+            $('#descriptionGroup').val(descriptionGroup);
+        }
+
+        function cambiarNombrePopup() {
+            $('#popupNewGroup .group-name').html('NUEVO GRUPO');
+        }
+
+        function deleteGroup(idGrupo){
+            showConfirmation('¿Estás seguro de que deseas eliminar este grupo de la plataforma?', 'Aceptar', 'btn-color01', function () {
+                startLoading();
+                $.post("@Url.Action("EliminarGrupo", "Grupos")", { IdGrupo: idGrupo }, function (data) {
+                    stopLoading();
+                    if (data.OK) {
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 400);
+                        renombrarNumeroCurso();
+
+                    } else {
+                        showMessage(data.Message, null);
+                    }
+                });
+            });
+        }
+
+    </script>
+}

@@ -1,0 +1,87 @@
+﻿@using ZP.SOOM.CursosVirtuales.Util
+@using ZP.SOOM.CursosVirtuales.PL.UI.Client.Controllers
+@{
+    ViewBag.Title = "Personaje";
+    Layout = "~/Views/Shared/_Layout_No_Menu.cshtml";
+}
+
+<section class="login choose-person">
+    <div class="login-box">
+        <div class="welcome">
+            <div class="content-welcome">
+                <label>¡Bienvenido!</label>
+                <label>Elige tu alias y tu personaje</label>
+            </div>
+        </div>
+        <div class="login-form">
+            <div class="login-content">
+                <form action="@Url.Action("ActualizarPersonaje", "Mapa")" id="frmPersonaje" method="post" onsubmit="startLoading();">
+                    <div class="content-input">
+                        <label class="login-input user"><input type="text" id="newAlias" name="Alias" placeholder="Escribe un alias *" maxlength="100" /></label>
+                    </div>
+                    <div class="content-avatar">
+                        <div class="charter">
+                            <label class="person-charter man-charter" for="manAvatar"></label>
+                            <label class="person-charter woman-charter" for="womanAvatar"></label>
+                        </div>
+                        <div class="person-mark">
+                            <input type="radio" id="manAvatar" name="Avatar" value="@Constants.Avatar.Genero.HOMBRE" checked/>
+                            <input type="radio" id="womanAvatar" name="Avatar" value="@Constants.Avatar.Genero.MUJER" />
+                        </div>
+                    </div>
+                    <input type="submit" class="hidden" />
+                </form>
+            </div>
+        </div>
+        <div class="login-actions">
+            <a class="button btn-color02" onclick="elegirPersonaje();">ACEPTAR</a>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+
+    <script>
+
+        $(document).ready(function () {
+            setValidations();
+        });
+
+        $(window).load(function () {
+            animateIntro();
+        });
+
+        function animateIntro() {
+            setTimeout(function () {
+                $('.logo').addClass('active');
+            }, 50);
+
+            setTimeout(function () {
+                $('.login-form').addClass('active');
+            }, 250);
+            setTimeout(function () {
+                $('.login-actions').addClass('active');
+            }, 250);
+            
+        }
+
+        var validator = null;
+        function setValidations() {
+            var fields = [
+                { selector: '#newAlias', name: 'Alias', required: true }
+            ];
+
+            validator = new Validator(fields, 'error');
+        }
+
+        function elegirPersonaje() {
+            var result = validator.validate();
+            if (result == null) {
+                $('#frmPersonaje').submit();
+            }
+            else
+                showMessage(result, null);
+        }
+    </script>
+
+}

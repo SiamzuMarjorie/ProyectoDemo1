@@ -1,0 +1,11 @@
+﻿@model ZP.SOOM.CursosVirtuales.PL.UI.Admin.Models.CursoModel
+<tr>
+    <td class="align-center">
+        <label>@Model.Certificado</label>
+        @if (Model.IdCurso != 0)
+        {
+            <input type="hidden" name="NombreCertificado" value="@Model.Certificado" />
+        }
+    </td>
+    <td class="align-center"><a href="@ConfigurationManager.AppSettings["UrlSOOM"]Cursos/@Model.Codigo/PlantillaCertificado/@Model.Certificado" class="button btn-color01 btn-icon-left ic-prev-view prev-view download-certificate @(Model.Certificado == null ? "disabled" : "")">Descargar plantilla</a></td>
+</tr>

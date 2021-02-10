@@ -1,0 +1,360 @@
+﻿@using ZP.SOOM.CursosVirtuales.Util
+@model ZP.SOOM.CursosVirtuales.PL.UI.Admin.Models.UsuarioModel
+@{
+    ViewBag.Title = "Mi Cuenta";
+    ViewBag.Section = "Usuarios";
+    List<GrupoModel> lstGrupos = ViewBag.MisGrupos;
+}
+
+<div class="detalle-usuario">
+    <div class="columns columns-2">
+        <div class="col col-1">
+            <div class="user-content">
+                @if (Model.Username != Constants.Usuario.MASTER_USER)
+                {
+                    <div id="ic-cargar" class="cargar-imagen">
+                        <div class="ic-cargar cargar-width position-center">
+                        </div>
+                    </div>
+                    <form id="addImage" method="post" enctype="multipart/form-data" onsubmit="return AjaxPost(this)">
+                        <input type="file" name="UploadImage" id="subir-imagen" style="display:none;" onchange="mostrarfoto(); subirImagen();" />
+                        <input value="@Model.IdTrabajador" hidden name="Idtrabajador" />
+                    </form>
+                }
+                <h1 class="subtitle">Datos Personales</h1>
+                <div>
+                    <div class="form-field">
+                        <label class="label" for="codigo">Código</label>
+                        <input type="text" name="codigo" id="codigo" placeholder="Codigo" value="@Model.Codigo" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="dni">DNI / C.E</label>
+                        <input type="text" name="dni" id="dni" placeholder="DNI" value="@Model.DNI" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="nombre">Nombres</label>
+                        <input type="text" name="nombre" id="nombre" placeholder="Nombres" value="@Model.Nombres" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="primerApellido">Primer Apellido</label>
+                        <input type="text" name="primerApellido" id="primerApellido" placeholder="Primer apellido" value="@Model.PrimerApellido" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="segundorApellido">Segundo Apellido</label>
+                        <input type="text" name="segundorApellido" id="segundorApellido" placeholder="Segundo apellido" value="@Model.SegundoApellido" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="fechaNacimiento">Fecha Nacimiento</label>
+                        <input type="text" name="fechaNacimiento" id="fechaNacimiento" placeholder="Fecha nacimiento" value="@Model.FechaNacimiento" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="jefeDirecto">Género</label>
+                        <select id="genero" name="genero" disabled>
+                            <option value="">--Seleccionar--</option>
+                            <option value="" @(Model.Genero == Constants.Trabajador.Genero.MASCULINO ? "selected" : "")>Hombre</option>
+                            <option value="" @(Model.Genero == Constants.Trabajador.Genero.FEMENINO ? "selected" : "")>Mujer</option>
+                            <option value="" @(Model.Genero == Constants.Trabajador.Genero.OTROS ? "selected" : "")>Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="email">Correo Electrónico</label>
+                        <input type="text" name="email" id="email" placeholder="Correo electrónico" value="@Model.Email" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="celular">Celular</label>
+                        <input type="text" name="celular" id="celular" placeholder="Celular" value="@Model.Celular" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="sede">Sede</label>
+                        <input type="text" name="sede" id="sede" placeholder="Sede" value="@Model.Sede" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="provincia">Provincia</label>
+                        <input type="text" name="provincia" id="provincia" placeholder="Provincia" value="@Model.Provincia" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="region">Región</label>
+                        <input type="text" name="region" id="region" placeholder="Región" value="@Model.Region" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="pais">País</label>
+                        <input type="text" name="pais" id="pais" placeholder="País" value="@Model.Pais" disabled />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="h-line mobile-only"></div>
+        <div class="col col-1">
+            <div class="user-content">
+                <div>
+                    <h1 class="subtitle">Datos Laborales</h1>
+                    <div class="form-field">
+                        <label class="label" for="fechaIngreso">Fecha Ingreso</label>
+                        <input type="text" name="fechaIngreso" id="fechaIngreso" placeholder="Fecha ingreso" value="@Model.FechaIngreso" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="area">Área</label>
+                        <div id="buscarArea"></div>
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="Gerencia">Gerencia</label>
+                        <input type="text" name="Gerencia" id="Gerencia" placeholder="Geerencia" value="@(Model != null? Model.Gerencia : "")" maxlength="100" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="jefeDirecto">Jefe directo</label>
+                        <select id="jefeDirecto" name="jefeDirecto" disabled>
+                            <option value="@Model.Jefe">@(String.IsNullOrWhiteSpace(Model.Jefe) ? "-" : Model.Jefe)</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="grupoOcupacional">Categoría</label>
+                        <div id="buscarGrupoOcupacional"></div>
+                        @*<select id="jefeDirecto" name="IdJefe" onchange="loadAreaSuperior(this)" disabled>
+                                <option selected disabled>-- Seleccionar Grupo Ocupacional --</option>
+                                <option value="" title="">N1</option>
+                                <option value="" title="">N2</option>
+                                <option value="" title="">N3</option>
+                                <option value="" title="">N4</option>
+                            </select>*@
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="puesto">Puesto</label>
+                        <input type="text" name="puesto" id="puesto" placeholder="Puesto" value="@Model.Puesto" disabled />
+                    </div>
+                    @*<div class="form-field">
+                        <label class="label" for="areaSuperior">Área Superior</label>
+                        <input type="text" name="areaSuperior" id="areaSuperior" placeholder="Área superior" value="@Model.AreaSuperior" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="grupoOcupacional">Tipo de Contrato</label>
+                        <input type="text" name="tipoContrato" id="tipoContrato" placeholder="Tipo de contrato" value="@Model.TipoContrato" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="nivel">Nivel</label>
+                        <input type="text" name="nivel" id="nivel" placeholder="Nivel" value="@Model.Nivel" disabled />
+                    </div>*@
+                    <div class="form-field">
+                        <label class="label" for="rol">Rol</label>
+                        <input type="text" name="rol" id="rol" placeholder="Rol" value="@Model.Rol" disabled />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="compañia">Compañia</label>
+                        <input type="text" name="compañia" id="compañia" placeholder="Compañia" value="@Model.Compañia" disabled />
+                    </div>
+                </div>
+                <div class="h-line"></div>
+                <div>
+                    <h1 class="subtitle">Datos de la Cuenta</h1>
+                    <div class="form-field">
+                        <label class="label" for="nombreUsuario">Nombre de Usuario</label>
+                        <input type="text" name="nombreUsuario" id="nombreUsuario" placeholder="Nombre de usuario" value="@Model.Username" disabled />
+                    </div>
+                    <div class="form-field ">
+                        <label class="label" for="contraseña">Contraseña</label>
+                        <input type="password" name="contraseña" id="contraseña" placeholder="Contraseña" value="***********************" disabled />
+                        <a class="button btn-color01 btn-icon-right btn-icon-refresh btn-small change-pass" name="modificarContra" id="modificarContra" onclick="clearInputs(); popupGenerarContraNueva.show();">Modificar contraseña</a>
+                    </div>
+                </div>
+                @if (Model.Username != Constants.Usuario.MASTER_USER)
+                {
+                    if (lstGrupos.Count > 0)
+                    {
+                        <div class="h-line"></div>
+                        <div>
+                            <h1 class="subtitle">Gestión de grupos</h1>
+                            <ul class="list-group">
+                                @foreach (GrupoModel objGrupo in lstGrupos)
+                                {
+                                    <li>
+                                        <input type="checkbox" checked disabled value="true" />
+                                        <label class="label">@objGrupo.Nombre</label>
+                                    </li>
+                                }
+                                
+                            </ul>                            
+                        </div>
+                    }
+
+                }
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="popup" id="popupGuardarUsuario">
+    <div class="popup-container">
+        <h1>GENERAR NUEVA CONTRASEÑA</h1>
+        <div>
+            <input class="required icon-input ic-ojo-gris" type="password" name="contraseñaActual" id="passwordActual" placeholder="Contraseña actual*" maxlength="100" />
+            <input class="required icon-input ic-ojo-gris password" type="password" name="contraseñaNueva" id="passwordNueva" placeholder="Contraseña nueva*" maxlength="100" />
+            <input class="required icon-input ic-ojo-gris" type="password" name="confirmarContraseña" id="confirmarPassword" placeholder="Confirmar contraseña*" maxlength="100" />
+            <label class="error"></label>
+        </div>
+        <label id="error" class="error hidden"></label>
+        <div class="form-actions">
+            <a class="button btn-icon-cancelar btn-icon-left" id="cancelar" name="cancelar" onclick="popupGenerarContraNueva.hide();">Cancelar</a>
+            <a class="button btn-color02 btn-icon-left ic-confirmar" name="guardar" id="guardar" onclick="guardarPassword();">Confirmar</a>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+
+        var popupGenerarContraNueva = new Popup('popupGuardarUsuario');
+
+        var subirImagen = $('#ic-cargar');
+        var seleccionarImagen = $('#subir-imagen');
+        subirImagen.click(function () {
+            seleccionarImagen.click();
+        });
+
+        $(document).ready(function () {
+            $('#buscarArea input').val('@Html.Raw(Model != null ? Model.Area :"")');
+            $('#buscarArea input').css('width', '100%');
+            $('#buscarArea input').attr('disabled', 'true');
+        })
+        // LISTA AREAS
+        var searchInput = new SearchInput('buscarArea', function () { });
+
+        function clearInputs() {
+            document.getElementById("passwordActual").value = "";
+            document.getElementById("passwordNueva").value = "";
+            document.getElementById("confirmarPassword").value = "";
+            $('#error').addClass('hidden');
+            $('#passwordActual').css('border-color', '#e5e5e5');
+            $('#passwordNueva').css('border-color', '#e5e5e5');
+            $('#confirmarPassword').css('border-color', '#e5e5e5');
+        }
+
+        // LISTA GRUPO OCUPACIONAL
+        $(document).ready(function () {
+            $('#buscarGrupoOcupacional input').val('@Html.Raw(Model != null? Model.GrupoOcupacional:"")');
+            $('#buscarGrupoOcupacional input').css('width', '100%');
+            $('#buscarGrupoOcupacional input').attr('disabled', 'true');
+        });
+        var searchInput = new SearchInput('buscarGrupoOcupacional', function () { });
+
+        function guardarPassword() {
+            if (validateNotEmpty('required', '#e84d5c')) {
+                var passwordActual = $('#passwordActual').val();
+                var passwordNueva = $('#passwordNueva').val();
+                var repetirPassword = $('#confirmarPassword').val();
+
+                if (passwordNueva.length >= 8) {
+                    if (passwordNueva == repetirPassword) {
+                        startLoading();
+                        $.post('@Url.Action("ActualizarPassword","Usuarios")', {
+                            Password: passwordActual, NewPassword: passwordNueva,
+                            RepeatPassword: repetirPassword
+                        },
+                            function (data) {
+                                if (data.OK) {
+                                    showMessage('Contraseña actualizada correctamente', null);
+                                    popupGenerarContraNueva.hide();
+                                }
+                                else {
+                                    $('#error').removeClass('hidden');
+                                    $('#error').html(data.Message);
+                                }
+                                stopLoading();
+                            });
+                    }
+                    else {
+                        $('#error').removeClass('hidden');
+                        $('#error').html('Contraseña nueva y confirmar contraseña deben coincidir');
+                        $('#passwordNueva').css('border-color', '#e84d5c');
+                        $('#confirmarPassword').css('border-color', '#e84d5c');
+                    }
+                }
+                else {
+                    $('#error').removeClass('hidden');
+                    $('#error').html('La contraseña debe tener 8 caracteres como mínimo');
+                    $('#passwordNueva').css('border-color', '#e84d5c');
+                }
+            }
+            else {
+                $('#error').removeClass('hidden');
+                $('#error').html('Debes llenar correctamente todos los campos solicitados');
+            }
+        }
+    </script>
+    <script>
+        function subirImagen() {
+            $('#addImage').submit();
+        }
+    </script>
+    <script>
+        function AjaxPost(formData) {
+            var ajaxConfig = {
+                type: "POST",
+                url: "@Url.Action("SaveData", "Usuarios")",
+                data: new FormData(formData),
+                success: function (result) {
+                    stopLoading();
+                }
+            }
+            if ($(formData).attr('enctype') == "multipart/form-data") {
+                ajaxConfig["contentType"] = false;
+                ajaxConfig["processData"] = false;
+            }
+            startLoading();
+            $.ajax(ajaxConfig);
+            return false;
+        }
+    </script>
+    <script>
+
+        $(document).ready(function () {
+            @if (Model.Foto != null) {
+                <text>
+            $('#ic-cargar').attr('style', 'background-image: url("../Images/Usuarios/@Model.Foto");');
+            $('#ic-cargar .ic-cargar').addClass('hidden');
+            </text>
+            }
+        });
+    </script>
+    <script>
+        function mostrarfoto() {
+            var file = document.getElementById('subir-imagen').files[0];
+            var imageUrl = window.URL.createObjectURL(file);
+            $('#ic-cargar').attr('style', 'background-image: url("' + imageUrl + '");');
+            $('#ic-cargar .ic-cargar').addClass('hidden');
+        }
+    </script>
+    <script>
+        new ButtonInput('passwordActual', function () {
+            var tipo = document.getElementById("passwordActual");
+            if (tipo.type == "password") {
+                tipo.type = "text";
+                $('#passwordActual').addClass('inactive');
+            } else {
+                tipo.type = "password";
+                $('#passwordActual').removeClass('inactive');
+            }
+        });
+        new ButtonInput('passwordNueva', function () {
+            var tipo = document.getElementById("passwordNueva");
+            if (tipo.type == "password") {
+                tipo.type = "text";
+                $('#passwordNueva').addClass('inactive');
+            } else {
+                tipo.type = "password";
+                $('#passwordNueva').removeClass('inactive');
+            }
+
+        });
+        new ButtonInput('confirmarPassword', function () {
+            var tipo = document.getElementById("confirmarPassword");
+            if (tipo.type == "password") {
+                tipo.type = "text";
+                $('#confirmarPassword').addClass('inactive');
+            } else {
+                tipo.type = "password";
+                $('#confirmarPassword').removeClass('inactive');
+            }
+        });
+    </script>
+}

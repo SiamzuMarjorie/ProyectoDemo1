@@ -1,0 +1,27 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Error</title>
+    <link href="~/Content/Site.css" rel="stylesheet">
+    <link href="~/Content/Enhanced.css" rel="stylesheet" media="screen and (min-width: 65em)">
+</head>
+<body>
+    <div class="system-error">
+        <div class="detalle-sistema">
+            <h1>¡Ops!</h1>
+            <h2 class="title">Ocurrió un error en el sistema.</h2>
+            <p>
+                @(ViewBag.Msg == null ? "Ocurrió un error al realizar la operación." : ViewBag.Msg)
+                <span>Por favor inténtelo nuevamente.</span>
+            </p>
+            <a class="button btn-color01 btn-icon-left ic-volver" onclick="history.back();">Volver</a>
+        </div>
+        <div class="logo-empresa"></div>
+    </div>
+</body>
+</html>

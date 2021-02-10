@@ -1,0 +1,17 @@
+﻿@model ZP.SOOM.CursosVirtuales.PL.UI.Admin.Models.MaterialModel
+<tr>
+    <td class="align-center">
+        <input name="NombreMaterial" type="text" value="@Model.Nombre" maxlength="100" />
+        @if (Model.IdMaterial != 0)
+        {
+            <input type="file" class="hidden" name="Archivo" />
+        }
+        @if (Model.TipoMaterial == Constants.Cursos.Material.TipoMaterial.LINK)
+        {
+            <input type="text" value="@(Model.Archivo)" class="hidden" name="linkCurso">
+        }
+    </td>
+    <td class="align-center"><input class="hidden" name="TipoMaterial" value="@Model.TipoMaterial" />@Model.Archivo</td>
+    <td class="align-center"><input type="checkbox" name="Obligatorio" @(Model.Obligatorio == true ? "checked" : null) /></td>
+    <td class="align-center"><input type="hidden" name="IdMaterial" value="@Model.IdMaterial" /><a onclick="eliminarMaterial(this, '@Model.TipoMaterial')" class="ic-eliminar-green"></a></td>
+</tr>

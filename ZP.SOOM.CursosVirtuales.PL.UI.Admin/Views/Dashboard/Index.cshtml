@@ -1,0 +1,282 @@
+﻿@using ZP.SOOM.CursosVirtuales.Util
+@using System.Configuration
+@using ZP.SOOM.CursosVirtuales.PL.UI.Admin.Models
+@{
+    UsuarioModel objUsuarioLogueado = UsuarioModel.FromString(User.Identity.Name);
+    List<CursoModel> lstCursoModel = ViewBag.Cursos;
+
+    if (objUsuarioLogueado.Username != Constants.Usuario.MASTER_USER)
+    {
+        ViewBag.Title = "Dashboard de " + objUsuarioLogueado.Nombres + " " + objUsuarioLogueado.PrimerApellido;
+    }
+    else
+    {
+        ViewBag.Title = "Dashboard";
+    }
+    ViewBag.Section = "Dashboard";
+}
+
+<div class="dashboard-filtro-curso">
+    <label>Curso</label>
+    <select id="cboCurso" name="Cursos" onchange="avanceCurso('@Constants.Dashboard.Nivel.GERENCIA', null);avanceCursoFecha('@Constants.Dashboard.Nivel.AÑO', null);">
+        <option>Todos</option>
+        @foreach (CursoModel objCursoModel in lstCursoModel)
+        {
+            <option value="@objCursoModel.IdCurso" @(Request["Curso"] == objCursoModel.IdCurso.ToString() ? "selected" : "")>@objCursoModel.Titulo</option>
+        }
+    </select>
+</div>
+
+<div class="h-line"></div>
+
+<div class="dashboard">
+    <h1 class="title">Avance de cursos</h1>
+    <div class="windows-scroll">
+        <div id="cursosActivosAvance" style="text-align:center"></div>
+    </div>
+    <div id="btnAtrasAvanceCurso" class="windows-scroll align-left hidden">
+        <div class="button btn-color01 btn-icon-left ic-volver" onclick="avanceCurso('@Constants.Dashboard.Nivel.GERENCIA', null);;">Atrás</div>
+    </div>
+</div>
+<div class="dashboard">
+    <h1 class="title">Ingresos a curso</h1>
+    <div class="windows-scroll">
+        <div id="cursosActivosAvanceFecha" style="text-align:center;margin-top:15px;"></div>
+    </div>
+    <div id="btnAtrasAvanceCursoFecha" class="align-left hidden">
+        <div class="button btn-color01 btn-icon-left ic-volver" onclick="validarIrAtrasFechaCurso();">Atrás</div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        $(function () {
+            avanceCurso('@Constants.Dashboard.Nivel.GERENCIA', null);
+            avanceCursoFecha('@Constants.Dashboard.Nivel.AÑO');
+        });
+
+        var anoGrafico;
+        var mesGrafico;
+        var diaGrafico;
+        var horaGrafico;
+        var nivelActual = '@Constants.Dashboard.Nivel.AÑO';
+
+        function avanceCurso(nivel, gerencia) {
+            var idCurso = $('#cboCurso').val();
+            $.post('@Url.Action("DashboardAvanceCurso")', {
+                IdCurso: idCurso,
+                Nivel: nivel,
+                Gerencia: gerencia
+            }, function (data) {
+                if (data.OK) {
+
+                    $('#cursosActivosAvance').html('<div id="chartAvanceCurso" class="chart" style="width:100%;height:20rem;"></div>');
+
+                    var chart = AmCharts.makeChart("chartAvanceCurso", {
+                        "type": "serial",
+                        "theme": "none",
+                        "marginRight": 70,
+                        "dataProvider": data.Data,
+                        "valueAxes": [{
+                            "axisAlpha": 0,
+                            //"position": "left",
+                            //"minimun": 0,
+                            //"maximun": 100
+                            "offset": 0,
+                            "minimum": 0,
+                            "maximum": 100,
+                            "unit": "%",
+                            "unitPosition": "right",
+                            //"title": "Visitors from country"
+                        }],
+                        "startDuration": 1,
+                        "graphs": [{
+                            "fillAlphas": 0.9,
+                            "lineAlpha": 0.2,
+                            "type": "column",
+                            "precision": 0,
+                            "balloonText": "[[value]]%",
+                            "valueField": "Resultado",
+                            "colorField": "Color",
+                            "fixedColumnWidth": 100,
+                            "labelText": "[[value]]%",
+                            "labelPosition": "middle",
+                            "color": "#ffffff"
+                        }],
+                        "chartCursor": {
+                            "categoryBalloonEnabled": false,
+                            "cursorAlpha": 0,
+                            "zoomable": false,
+                            "listeners": [{
+                                "event": "changed",
+                                "method": function (ev) {
+                                    // Log last cursor position
+                                    ev.chart.lastCursorPosition = ev.index;
+                                }
+                            }]
+                        },
+                        "categoryField": "Nombre",
+                        "categoryAxis": {
+                            "axisColor": "#999999",
+                            "axisAlpha": 1,
+                            "autoWrap": true
+                        },
+                        "listeners": [{
+                            "event": "init",
+                            "method": function (ev) {
+                                // Set a jQuery click event on chart area
+                                jQuery(ev.chart.chartDiv).on("click", function (e) {
+                                    // Check if last cursor position is present
+                                    if (!isNaN(ev.chart.lastCursorPosition)) {
+                                        var dashboardModel = ev.chart.dataProvider[ev.chart.lastCursorPosition];
+                                        var nuevoNivel = null;
+                                        if (nivel == '@Constants.Dashboard.Nivel.GERENCIA') {
+                                            nuevoNivel = '@Constants.Dashboard.Nivel.AREA';
+                                        }
+
+                                        if (nuevoNivel !== null)
+                                            avanceCurso(nuevoNivel, dashboardModel.Nombre);
+                                    }
+                                })
+                            }
+                        }]
+                    });
+                    chart.validateNow(true, false);
+
+                    $('#cursosActivosAvance').css("min-width", (100 + (data.Data.length * 120) + 200) + "px");
+
+                    //Mostrar u ocultar botón para retroceder
+                    if (nivel == '@Constants.Dashboard.Nivel.AREA') {
+                        $('#btnAtrasAvanceCurso').removeClass('hidden');
+                    } else {
+                        $('#btnAtrasAvanceCurso').addClass('hidden');
+                    }
+                } else {
+                    $('#cursosActivosAvance').html('<br><span>' + data.Message + '</span>');
+                }
+            });
+        }
+
+
+        function avanceCursoFecha(nivel, ano, mes, dia) {
+
+            var idCurso = $('#cboCurso').val();
+            $('#cursosActivosAvanceFecha').html('<div id="chartAvanceCursoFecha" class="chart" style="width:100%;height:20rem;"></div>');
+            $.post("@Url.Action("DashboardIngresoCursoFecha", "Dashboard")", {
+                IdCurso: idCurso,
+                Nivel: nivel,
+                Ano: anoGrafico,
+                Mes: mesGrafico,
+                Dia: diaGrafico
+            }, function (data) {
+                if (data.OK) {
+
+                    var chart = AmCharts.makeChart("chartAvanceCursoFecha", {
+                        "type": "serial",
+                        "theme": "none",
+                        "marginRight": 80,
+                        "autoMarginOffset": 20,
+                        "marginTop": 7,
+                        "dataProvider": data.Data,
+                        "valueAxes": [{
+                            "axisAlpha": 0.2,
+                            "dashLength": 1,
+                            "position": "left"
+                        }],
+                        "graphs": [{
+                            "id": "g1",
+                            "balloonText": "[[value]]",
+                            "bullet": "round",
+                            "bulletBorderAlpha": 1,
+                            "bulletColor": "#FFFFFF",
+                            "hideBulletsCount": 50,
+                            "title": "red line",
+                            "valueField": "Resultado",
+                            "colorField": "Color",
+                            "useLineColorForBulletBorder": true,
+                            "balloon": {
+                                "drop": true
+                            }
+                        }],
+                        "chartCursor": {
+                            'zoomable': false,
+                            "listeners": [{
+                                "event": "changed",
+                                "method": function (ev) {
+                                    // Log last cursor position
+                                    ev.chart.lastCursorPosition = ev.index;
+                                }
+                            }]
+                        },
+                        "categoryField": "Nombre",
+                        "categoryAxis": {
+                            "axisColor": "#DADADA",
+                            "dashLength": 1,
+                            "minorGridEnabled": true
+                        },
+                        "listeners": [{
+                            "event": "init",
+                            "method": function (ev) {
+                                // Set a jQuery click event on chart area
+                                jQuery(ev.chart.chartDiv).on("click", function (e) {
+                                    // Check if last cursor position is present
+                                    if (!isNaN(ev.chart.lastCursorPosition)) {
+                                        var dashboardModel = ev.chart.dataProvider[ev.chart.lastCursorPosition];
+                                        var nuevoNivel = null;
+                                        if (nivel == '@Constants.Dashboard.Nivel.AÑO') {
+                                            nuevoNivel = '@Constants.Dashboard.Nivel.MES';
+                                            anoGrafico = dashboardModel.Value;
+                                        }
+
+                                        else if (nivel == '@Constants.Dashboard.Nivel.MES') {
+                                            nuevoNivel = '@Constants.Dashboard.Nivel.DIA';
+                                            mesGrafico = dashboardModel.Value;
+                                        }
+
+                                        else if (nivel == '@Constants.Dashboard.Nivel.DIA') {
+                                            nuevoNivel = '@Constants.Dashboard.Nivel.HORA';
+                                            diaGrafico = dashboardModel.Value;
+                                        }
+
+                                        if (nuevoNivel !== null)
+                                            avanceCursoFecha(nuevoNivel, anoGrafico, mesGrafico, diaGrafico);
+                                    }
+                                })
+                            }
+                        }]
+                    });
+
+                    nivelActual = nivel;
+
+                    $('#cursosActivosAvanceFecha').css("min-width", (100 + (data.Data.length * 120) + 200) + "px");
+
+                    //Mostrar u ocultar botón para retroceder
+                    if (nivel == '@Constants.Dashboard.Nivel.MES' || nivel == '@Constants.Dashboard.Nivel.DIA' || nivel == '@Constants.Dashboard.Nivel.HORA') {
+                        $('#btnAtrasAvanceCursoFecha').removeClass('hidden');
+                    } else {
+                        $('#btnAtrasAvanceCursoFecha').addClass('hidden');
+                    }
+                    //chart.addListener("rendered", zoomChart);
+                }
+            });
+
+        }
+
+        function validarIrAtrasFechaCurso() {
+            if (nivelActual == '@Constants.Dashboard.Nivel.HORA') {
+                avanceCursoFecha('@Constants.Dashboard.Nivel.DIA', anoGrafico, mesGrafico, null);
+            }
+
+            else if (nivelActual == '@Constants.Dashboard.Nivel.DIA') {
+                avanceCursoFecha('@Constants.Dashboard.Nivel.MES', anoGrafico, null, null);
+            }
+
+            else if (nivelActual == '@Constants.Dashboard.Nivel.MES') {
+                avanceCursoFecha('@Constants.Dashboard.Nivel.AÑO', null, null, null);
+            }
+        }
+
+
+    </script>
+}

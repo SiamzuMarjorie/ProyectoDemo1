@@ -1,0 +1,302 @@
+﻿@using System.Configuration
+@using ZP.SOOM.CursosVirtuales.PL.UI.Admin.Models
+@using ZP.SOOM.CursosVirtuales.PL.UI.Admin.Controllers
+@using ZP.SOOM.CursosVirtuales.Util
+@{
+    var Usuario = UsuarioModel.FromString(User.Identity.Name);
+    var BaseController = ViewContext.Controller as BaseController;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+
+
+    <link href="~/Content/style/multiselect.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet">
+    <link href="~/Content/Enhanced.css" rel="stylesheet" media="screen and (min-width: 65em)">
+    <link rel="stylesheet" href='~/Scripts/plugins/export/export.css' type='text/css' media='all' />
+    <link rel="apple-touch-icon" sizes="57x57" href="~/Favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="~/Favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="~/Favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/Favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="~/Favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="~/Favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="~/Favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="~/Favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/Favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="~/Favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/Favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="~/Favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Favicon/favicon-16x16.png">
+    <link rel="manifest" href="~/Favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="~/Favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+
+
+    <div class="menu" id="menu">
+        <header>
+            <a href="@Url.Action("Index", "Dashboard")"><img class="iso" src="~/Images/ic_app_circle.png" /></a>
+            <a href="@Url.Action("Index", "Dashboard")"><img class="logo" src="~/Images/logo_horizontal.svg" /></a>
+            <a class="ic-menu" id="btnMenu"></a>
+        </header>
+        <ul class="menu-list">
+            <li class="mobile-only">
+                <div class="menu-item user drop-down">
+                    <label>Hola, Usuario</label>
+
+                </div>
+                <ul class="submenu-list">
+                    <li>
+                        <a href="@Url.Action("MiCuenta", "Usuarios")" class="submenu-item">
+                            <label>MI CUENTA</label>
+                            <div class="submenu-icon ic-account"></div>
+                        </a>
+                        <a class="submenu-item add-home-screen hidden" onclick="addToHomeScreen();">
+                            <label>AGREGAR A PANTALLA PRINCIPAL</label>
+                            <div class="submenu-icon ic-download-service"></div>
+                        </a>
+                        <a class="submenu-item notifications-activate" onclick="subscribePush();">
+                            <label>ACTIVAR NOTIFICACIONES</label>
+                            <div class="submenu-icon ic-notification"></div>
+                        </a>
+                        <a class="submenu-item" href="@Url.Action("Logout", "Login")">
+                            <label>CERRAR SESIÓN</label>
+                            <div class="submenu-icon ic-exit"></div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+            @if (Usuario.Perfil == Constants.Usuario.Perfil.ADMINISTRADOR)
+            {
+                <li class="@(ViewBag.Section == "Dashboard" ? "active" : "")">
+                    <a class="menu-item" href="@Url.Action("Index", "Dashboard", new { id = "", IdSprint = "" })">
+                        <label>DASHBOARD</label>
+                    </a>
+                </li>
+                <li class="@(ViewBag.Section == "Usuarios" ? "active" : "")">
+                    <a href="@Url.Action("Index", "Usuarios")" class="menu-item">
+                        <label>USUARIOS</label>
+                    </a>
+                </li>
+                <li class="@(ViewBag.Section == "Grupos" ? "active" : "")">
+                    <a href="@Url.Action("Index", "Grupos")" class="menu-item">
+                        <label>GRUPOS</label>
+                    </a>
+                </li>
+                <li class="@(ViewBag.Section == "Cursos" ? "active" : "")">
+                    <a href="@Url.Action("Cursos", "Cursos")" class="menu-item">
+                        <label>CURSOS</label>
+                    </a>
+                </li>
+                <li class="@(ViewBag.Section == "Mapa" ? "active" : "")">
+                    <a href="@Url.Action("Mapa", "Mapa")" class="menu-item">
+                        <label>MAPA</label>
+                    </a>
+                </li>
+                <li class="@(ViewBag.Section == "Reportes" ? "active" : "")">
+                    <a href="@Url.Action("Index", "Reportes")" class="menu-item">
+                        <label>REPORTES</label>
+                    </a>
+                </li>
+                <li class="@(ViewBag.Section == "Certificados" ? "active" : "")">
+                    <a href="@Url.Action("Index", "Certificados")" class="menu-item">
+                        <label>CERTIFICADOS</label>
+                    </a>
+                </li>
+
+
+            }
+        </ul>
+    </div>
+    <div class="content">
+        <header>
+            <div class="info">
+                <h1 class="title">@ViewBag.Title</h1>
+                <ul class="breadcrumb">
+                    <li><a href="@Url.Action("Index", "Dashboard")">Inicio</a></li>
+                    @if (ViewBag.Breadcrumb != null)
+                    {
+                        foreach (String[] link in ViewBag.Breadcrumb)
+                        {
+                            if (!String.IsNullOrWhiteSpace(link[1]) && !String.IsNullOrWhiteSpace(link[2]))
+                            {
+                                <li><a href="@Url.Action(link[1], link[2])">@link[0]</a></li>
+                            }
+                            else
+                            {
+                                <li><a>@link[0]</a></li>
+                            }
+                        }
+                    }
+                    <li><a>@ViewBag.Title</a></li>
+                </ul>
+            </div>
+            <div class="actions desktop-only">
+                <div class="user-options">
+                    <div class="user" id="btnUser">
+                        <label>Hola, @Usuario.Nombres</label>
+                        <span class="menu-icon @(Usuario.Foto!=null ? "ic-user-foto":"ic-user")"
+                              @if (Usuario.Foto != null) { <text>
+                              style="background-image:url('@ConfigurationManager.AppSettings["UrlSOOM"]/Images/Usuarios/@Usuario.Foto')"
+                              </text> }></span>
+                    </div>
+                    <ul class="submenu-list" id="userOptions">
+                        <li>
+                            <a href="@Url.Action("MiCuenta", "Usuarios")" class="submenu-item">
+                                <label>MI CUENTA</label>
+                                <div class="submenu-icon ic-account"></div>
+                            </a>
+                            <a class="submenu-item add-home-screen hidden" onclick="addToHomeScreen();">
+                                <label>AGREGAR A PANTALLA PRINCIPAL</label>
+                                <div class="submenu-icon ic-download-service"></div>
+                            </a>
+                            <a class="submenu-item notifications-activate" onclick="subscribePush();">
+                                <label>ACTIVAR NOTIFICACIONES</label>
+                                <div class="submenu-icon ic-notification"></div>
+                            </a>
+                            <a class="submenu-item" href="@Url.Action("Logout", "Login")">
+                                <label>CERRAR SESIÓN</label>
+                                <div class="submenu-icon ic-exit"></div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <div class="centered" id="ContenedorConfiguracion">
+            @RenderBody()
+        </div>
+    </div>
+    <div class="footer">
+        <div class="h-line mobile-only"></div>
+        <div class="create-by">
+            <div class="power-by"></div>
+            <div class="info-by">
+                <label class="name-power">Powered by SOOM</label>
+                @*<a target="_blank" href="https://zp.com.pe/" class="name-developed">Desarrollado por ZP Technology</a>*@
+            </div>
+        </div>
+    </div>
+    @RenderSection("popups", required: false)
+    <div class="popup" id="popupMessage">
+        <div class="popup-container">
+            <h1></h1>
+            <div class="form-actions">
+                <a class="button btn-color02 btn-icon-left btn-icon-ok">Aceptar</a>
+            </div>
+        </div>
+    </div>
+    <div class="popup" id="popupConfirmation">
+        <div class="popup-container">
+            <h1></h1>
+            <div class="form-actions">
+                <a class="button btn-icon-left btn-icon-cancelar">Cancelar</a>
+                <a class="button btn-color02 btn-icon-left btn-icon-ok">Aceptar</a>
+            </div>
+        </div>
+    </div>
+    <div class="popup" id="popupMapa">
+        <div class="popup-container">
+            <h1></h1>
+            <div class="form-actions">
+                <a class="button btn-icon-left btn-icon-cancelar">Cancelar</a>
+                <a class="button btn-color02 btn-icon-left btn-icon-ok">Aceptar</a>
+            </div>
+        </div>
+    </div>
+    <div class="loading">
+        <div class="loading-container" id="LoadingEspera">
+            <label class="progress"></label>
+            <svg viewBox="0 0 38 38">
+                <path d="M19 3.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" />
+                <path d="M19 3.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" />
+            </svg>
+            <label>CARGANDO...</label>
+        </div>
+    </div>
+
+
+
+    @Scripts.Render("~/bundles/jquery")
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/Scripts/optikoud.pushmanager.js"></script>
+    <script src="~/Scripts/optikoud.popup.js"></script>
+    <script src="~/Scripts/optikoud.message.js"></script>
+    <script src="~/Scripts/optikoud.validator.js"></script>
+    <script src="~/Scripts/optikoud.datepicker.js"></script>
+    <script src="~/Scripts/optikoud.timepicker.js"></script>
+    <script src="~/Scripts/optikoud.buttoninput.js"></script>
+    <script src="~/Scripts/optikoud.ringchart.js"></script>
+    <script src="~/Scripts/optikoud.ratingchart.js"></script>
+    <script src="~/Scripts/optikoud.loading.js"></script>
+    <script src="~/Scripts/optikoud.taginput.js"></script>
+    <script src="~/Scripts/optikoud.progressBar.js"></script>
+    <script src="~/Scripts/optikoud.searchinput.js"></script>
+    <script src="~/Scripts/optikoud.typetaginput.js"></script>
+    <script src="~/Scripts/amcharts.js"></script>
+    <script src="~/Scripts/serial.js"></script>
+    <script src="~/Scripts/plugins/export/export.min.js"></script>
+    <script src="~/Scripts/themes/light.js"></script>
+    <script src="https://unpkg.com/multiple-select@1.3.1/dist/multiple-select.min.js"></script>
+    @RenderSection("scripts", required: false)
+    <script>
+
+        $('#btnMenu').click(function () {
+            if ($('#menu').hasClass('active'))
+                $('#menu').removeClass('active');
+            else
+                $('#menu').addClass('active');
+        });
+        $('#menu .menu-list > li .drop-down').click(function () {
+            if ($(this).parent().hasClass('active'))
+                $(this).parent().removeClass('active');
+            else {
+                $('#menu .menu-list > li').removeClass('active');
+                $(this).parent().addClass('active');
+            }
+        });
+        $('#btnUser').click(function () {
+            if ($('#userOptions').hasClass('active'))
+                $('#userOptions').removeClass('active');
+            else {
+                setTimeout(function () {
+                    $('#userOptions').addClass('active');
+                }, 50);
+            }
+        });
+
+        $(document).click(function () {
+            if ($('#userOptions').hasClass('active')) {
+                $('#userOptions').removeClass('active');
+            }
+        });
+    </script>
+    <script>
+        var installPromptEvent;
+
+        window.addEventListener('beforeinstallprompt', function () {
+            event.preventDefault();
+            installPromptEvent = event;
+            showAddToHomeScreen();
+        });
+
+        function showAddToHomeScreen() {
+            $('.add-home-screen').removeClass('hidden');
+        }
+
+        function addToHomeScreen() {
+            installPromptEvent.prompt();
+            installPromptEvent = null;
+        }
+    </script>
+</body>
+</html>

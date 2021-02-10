@@ -1,0 +1,50 @@
+﻿@model List<CursoModel>
+<div class="table paged">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Título</th>
+                    <th>Horas</th>
+                    <th>Puntaje</th>
+                    <th>Última Publicación</th>
+                    <th>Estado</th>
+                    <th>Slot</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (Model != null && Model.Count > 0)
+                {
+                    foreach (CursoModel objCursoModel in Model)
+                    {
+                        <tr>
+                            <td>@objCursoModel.Codigo</td>
+                            <td>@objCursoModel.Titulo</td>
+                            <td>@objCursoModel.Horas</td>
+                            <td>@objCursoModel.Puntos</td>
+                            <td>@objCursoModel.UltimaPublicacion</td>
+                            <td>@(objCursoModel.Estado == Constants.Cursos.Estado.INACTIVO ? "Inactivo" : "Activo")</td>
+                            <td>@objCursoModel.Slot</td>
+                            <td class="separacion-items">
+                                <a href="@Url.Action("Detalle", "Cursos", new { IdCurso = objCursoModel.IdCurso })" class="ic-ojo-gris"></a>
+                                @if (!string.IsNullOrEmpty(objCursoModel.Estado) && objCursoModel.Estado != Constants.Cursos.Estado.ACTIVO)
+                                {
+                                    <a onclick="activarCurso(@objCursoModel.IdCurso)" class="ic-confirmar2"></a>
+                                }
+                                <a onclick="eliminarCurso(@objCursoModel.IdCurso)" class="ic-eliminar-green"></a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="8" class="align-center">No hay datos</td></tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>

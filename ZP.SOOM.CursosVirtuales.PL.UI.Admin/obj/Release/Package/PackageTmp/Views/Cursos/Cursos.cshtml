@@ -1,0 +1,122 @@
+﻿@{
+    ViewBag.Title = "Cursos";
+    ViewBag.Section = "Cursos";
+}
+
+<div class="cursos">
+    <div class="cabecera-cursos">
+        <div class="opciones-cursos">
+            <a id="cursos" onclick="datosCursos(this);" class="btn-cursos active">Cursos</a>
+            <a id="archivados" onclick="datosCursos(this);" class="btn-cursos">Archivados</a>
+            <a id="historialCurso" onclick="datosCursos(this);" class="btn-cursos">Historial</a>
+        </div>
+    </div>
+    <div id="datos-cursos">
+
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var popupArchivado = new Popup('popupArchivado');
+
+        $(function () {
+            startLoading();
+            $.get('@Url.Action("SeccionDatosCursos","Cursos")',
+               function (data) {
+                   $('#datos-cursos').html(data);
+                   stopLoading();
+               });
+
+        })
+        function datosCursos(opcion) {
+            startLoading();
+            if (opcion.id == 'cursos') {
+                $.get('@Url.Action("SeccionDatosCursos","Cursos")',
+                function (data) {
+                    $('#datos-cursos').html(data);
+                    stopLoading();
+                });
+                $('#historialCurso').removeClass('active');
+                $('#archivados').removeClass('active');
+                $(opcion).addClass('active');
+            }
+            else if (opcion.id == 'archivados') {
+                $.get('@Url.Action("SeccionDatosCursos","Cursos")', { opcion: '@Constants.Cursos.Secciones.ARCHIVADOS' },
+                function (data) {
+                    $('#datos-cursos').html(data);
+                    stopLoading();
+                });
+                $('#historialCurso').removeClass('active');
+                $('#cursos').removeClass('active');
+                $(opcion).addClass('active');
+            }
+            else {
+                $.get('@Url.Action("SeccionDatosCursos","Cursos")', { opcion: '@Constants.Cursos.Secciones.HISTORIAL' },
+                    function (data) {
+                        $('#datos-cursos').html(data);
+                        stopLoading();
+                    });
+                $('#cursos').removeClass('active');
+                $('#archivados').removeClass('active');
+                $(opcion).addClass('active');
+            }
+
+        };
+
+        function eliminarCurso(idCurso) {
+            showConfirmation('¿Estás seguro(a) de que deseas eliminar el curso seleccionado? Se desasociará el curso del mapa (en caso aplique). El historial del curso se mantendrá.', 'Eliminar', 'btn-color01', function () {
+                startLoading();
+                $.post('@Url.Action("EliminarCurso", "Cursos")', { IdCurso: idCurso },
+                    function (data) {
+                        if (data.OK) {
+                            showMessage('¡El curso ha sido eliminado satisfactoriamente!', function () {
+                                window.location.reload();
+                            });
+                        }
+                        else {
+                            showMessage('Ocurrió un error al eliminar el curso, inténtelo nuevamente.', null);
+                        }
+                        stopLoading();
+                    });
+            });
+        }
+
+        function archivarCurso(idCurso) {
+            showConfirmation('¿Estás seguro(a) de que deseas archivar el curso?', 'Archivar', 'btn-color01', function () {
+                startLoading();
+                $.post("@Url.Action("ArchivarCurso", "Cursos")", { IdCurso: idCurso },
+                    function (data) {
+                        stopLoading();
+                        if (data.OK) {
+                            showMessage('¡El curso ha sido archivado satisfactoriamente!', function () {
+                                window.location.reload();
+                            });
+                        }
+                        else {
+                            showMessage(data.Message, null);
+                        }
+                    });
+            });
+        }
+
+        function activarCurso(idCurso) {
+            showConfirmation('¿Estás seguro(a) de que deseas reactivar el curso?', 'Activar', 'btn-color01', function () {
+                startLoading();
+                $.post("@Url.Action("ReactivarCurso", "Cursos")", { IdCurso: idCurso },
+                    function (data) {
+                        stopLoading();
+                        if (data.OK) {
+                            showMessage('¡El curso ha sido reactivado satisfactoriamente!', function () {
+                                window.location.reload();
+                            });
+                        }
+                        else {
+                            showMessage(data.Message, null);
+                        }
+                    });
+            });
+        }
+
+    </script>
+}

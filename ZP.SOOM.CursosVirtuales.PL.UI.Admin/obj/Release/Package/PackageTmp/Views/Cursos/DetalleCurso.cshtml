@@ -1,0 +1,628 @@
+﻿@model CursoModel
+@{
+    if (Model == null)
+    {
+        ViewBag.Title = "Nuevo Curso";
+    }
+    else
+    {
+        ViewBag.Title = "Detalle Curso";
+    }
+    ViewBag.Section = "Cursos";
+    List<GrupoModel> lstGrupos = ViewBag.Grupos;
+}
+
+<div>
+    <div class="h-line"></div>
+    <div class="detalle-curso" style="position:relative;">
+        <div>
+
+        </div>
+        <form id="frmGuardarCurso" method="post" enctype="multipart/form-data" action="@Url.Action("GuardarCurso", "Cursos")" onsubmit="return ajaxPost(this);">
+
+            @if (Model == null)
+            {
+                <h1 class="subtitle">Nuevo curso</h1>
+            }
+            else
+            {
+                <h1 class="subtitle">Datos del curso</h1>
+
+            }
+            
+            <input type="text" name="IdCurso" value="@(Model != null ? Model.IdCurso : 0)" class="hidden" />
+            <div class="columns columns-2">
+                <div class="col col-1">
+                    <div class="form-field">
+                        <label class="label" for="titulo">Título</label>
+                        <input type="text" name="Titulo" value="@(Model != null ? Model.Titulo : null)" class="required-curso" id="titulo" placeholder="Título" maxlength="50" />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="codigo">Código</label>
+                        <input type="text" name="Codigo" value="@(Model != null ? Model.Codigo : null)" class="required-curso" id="codigo" placeholder="Código" maxlength="100" />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="horas">Horas</label>
+                        <input type="text" name="Horas" value="@(Model != null ? Model.Horas : null)" class="required-curso only-numbers" id="horas" placeholder="Horas" maxlength="5" />
+                    </div>
+                    <div class="form-field">
+                        <label class="label" for="puntos">Puntaje máximo</label>
+                        <input type="text" name="Puntos" value="@(Model != null ? Model.Puntos : null)" class="required-curso only-numbers" id="puntos" placeholder="Puntos" maxlength="5" />
+                    </div>
+                    
+                </div>
+                <div class="col col-1">
+                    <div class="descripcion-curso" style="position:relative;">
+                        <label class="label" for="descripcion">Descripción</label>
+                        <textarea class="textarea-curso" id="descripcion" name="Descripcion" placeholder="Descripción del curso" maxlength="1000">@(Model != null ? Model.Descripcion : null)</textarea>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="columns columns-2">
+                <div class="col col-1">
+                    <div class="detalle-curso" style="margin-top:8px;">
+                        <label class="label" for="descripcion">Imagen</label>
+                        <div id="ic-cargar" onclick="subirImagenCurso();" class="cargar-imagen" style="border: 1px solid #989898; margin-top: -5px;">
+                            <div class="ic-cargar cargar-width position-center"></div>
+                        </div>
+                        <input type="file" id="subir-imagen" accept="image/*" style="display: none;" value="" onchange="mostrarFoto();" name="ImagenUploadCurso">
+                    </div>
+                </div>
+                <div class="col col-1">
+                    <div class="grupos">
+                        <label class="label" style="margin-top:10px; display:inline-block">Grupos</label>
+                        <ul class="list-group">
+                            @foreach (GrupoModel objGrupoTodos in lstGrupos.Where(g => g.Nombre == "Todos"))
+                            {
+                                <li>
+                                    <input type="checkbox" value="@objGrupoTodos.IdGrupo" class="option-group" @(objGrupoTodos.GrupoCurso == true ? "checked" : "") name="IdGrupo" />
+                                    <label class="label">@objGrupoTodos.Nombre</label>
+                                </li>
+                            }
+                            @foreach (GrupoModel objGrupo in lstGrupos.Where(g => g.Nombre != "Todos"))
+                            {
+                                <li>
+                                    <input type="checkbox" value="@objGrupo.IdGrupo" class="option-group" @(objGrupo.GrupoCurso == true ? "checked" : "") name="IdGrupo" />
+                                    <label class="label">@objGrupo.Nombre</label>
+                                </li>
+                            }
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!--SECCIÓN DE CERTIFICADO-->
+            <h1 class="subtitle">Certificado del curso</h1>
+            <div class="content-exam" style="margin:10px 0px; position:relative;">
+                <div class="certificado">
+                    <label>Emite certificado</label><input type="checkbox" class="switch" name="EmiteCertificado" @(Model != null && (Model.EmiteCertificado != true || Model.Certificado == null) ? "" : "checked") value="true" onchange="changeStateCertificate();" />
+                </div>
+                <div id="certificados" class="align-right">
+                    <a id="Plantilla" onclick="subirPlantillaCertificado();" class="button btn-color01 btn-icon-left ic-carga-masiva @(Model != null && Model.EmiteCertificado == false ? "disabled" : "")">Subir plantilla de certificado</a>
+                    <input id="plantillaCertificado" accept=".pptx" type="file" class="hidden" onchange="agregarCertificado(this);" />
+                </div>
+            </div>
+            <div class="table paged">
+                <div class="table-container">
+                    <table id="tablaCertificado">
+                        <thead>
+                            <tr>
+                                <th class="align-center">Nombre de la plantilla de certificado</th>
+                                <th class="align-center">Descargar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                if (Model.Certificado != null)
+                                {
+                                    Html.RenderPartial("_Certificado", Model);
+                                }
+                                else
+                                {
+                                    <tr><td colspan="4" class="align-center">No hay plantilla</td></tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="4" class="align-center">No hay plantilla</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!--SECCIÓN DE MATERIALES-->
+            <div class="h-line"></div>
+            <h1 class="subtitle">Materiales del curso</h1>
+            <label>Peso recomendado para los archivos:<span class="subtitle">  10MB</span></label>
+            <div id="archivos" class="align-right" style="margin:10px 0px;">
+                <a id="btnArchivoVideo" onclick="subirVideo();" class="button btn-color01 btn-icon-left ic-carga-masiva">Subir Video</a>
+                <input id="archivoVideo" accept="video/*" type="file" class="hidden" onchange="agregarMaterial(this);" />
+                <a onclick="subirDescargable();" class="button btn-color01 btn-icon-left ic-carga-masiva">Subir Descargables</a>
+                <input id="archivoDescargable" accept="application/msword, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel,application/pdf,application/vnd.ms-powerpoint,.txt" type="file" class="hidden" onchange="agregarMaterial(this);" />
+                <a onclick="subirLink();" class="button btn-color01 btn-icon-left ic-carga-masiva">Subir Link</a>
+            </div>
+           
+            <div class="table paged">
+                <div class="table-container">
+                    <table id="tablaMateriales">
+                        <thead>
+                            <tr>
+                                <th class="align-center">Recurso</th>
+                                <th class="align-center">Archivo</th>
+                                <th class="align-center">Obligatorio</th>
+                                <th class="align-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Materiales != null)
+                            {
+                                if (Model.Materiales.Count > 0)
+                                {
+                                    foreach (MaterialModel objMaterialModel in Model.Materiales)
+                                    {
+                                        Html.RenderPartial("Material", objMaterialModel);
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="4" class="align-center">No hay archivos</td></tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="4" class="align-center">No hay archivos</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--SECCIÓN DE CONTENIDOS-->
+            <div class="h-line"></div>
+            <h1 class="subtitle">Contenido del curso</h1>
+            <label>Peso recomendado para los archivos:<span class="subtitle">  10MB</span></label>
+            <div id="contenidos" class="align-right" style="margin:10px 0px;">
+                <a id="contenidoVideo" onclick="subirContenidoVideo();" class="button btn-color01 btn-icon-left ic-carga-masiva @(Model != null && (Model.ContenidoCurso.Any(cc => cc.TipoArchivo == Constants.Cursos.ContenidoCurso.SCORM)) ? "disabled" : "")">Subir Video</a>
+                <input id="contenidoVideoExplorer" accept="video/mp4" type="file" class="hidden" onchange="agregarContenido(this);" />
+                <a id="contenidoPDF" onclick="subirContenidoDescargable();" class="button btn-color01 btn-icon-left ic-carga-masiva @(Model != null && (Model.ContenidoCurso.Any(cc => cc.TipoArchivo == Constants.Cursos.ContenidoCurso.SCORM)) ? "disabled" : "")">Subir PDF</a>
+                <input id="archivoPDF" accept="application/pdf" type="file" class="hidden" onchange="agregarContenido(this);" />
+                <a id="contenidoScorm" onclick="subirContenidoScorm();" class="button btn-color01 btn-icon-left ic-carga-masiva @(Model != null && (Model.ContenidoCurso.Any(cc => cc.TipoArchivo == Constants.Cursos.ContenidoCurso.SCORM) || Model.ContenidoCurso.Any(cc => cc.TipoArchivo != Constants.Cursos.ContenidoCurso.SCORM)) ? "disabled" : "") ">Subir SCORM</a>
+                <input id="archivoScorm" accept=".zip" type="file" class="hidden" onchange="agregarContenido(this);" />
+            </div>
+            <div class="table paged">
+                <div class="table-container">
+                    <table id="tablaContenidos">
+                        <thead>
+                            <tr>
+                                <th class="align-center">Nombre del contenido</th>
+                                <th class="align-center">Nombre del archivo</th>
+                                <th class="align-center">Previsualizar</th>
+                                <th class="align-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.ContenidoCurso != null)
+                            {
+                                if (Model.ContenidoCurso.Count > 0)
+                                {
+                                    foreach (ContenidoCursoModel objContenidoCursoModel in Model.ContenidoCurso)
+                                    {
+                                        Html.RenderPartial("_ContenidoCurso", objContenidoCursoModel);
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="4" class="align-center">No hay archivos</td></tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="4" class="align-center">No hay archivos</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!--SECCIÓN DE EXAMEN-->
+            <div class="h-line"></div>
+            <h1 class="subtitle">Examen del curso</h1>
+            <label>Peso recomendado para los archivos:<span class="subtitle">  10MB</span></label>
+            <div class="cursos-criterios" style="margin:20px 0 10px 0;">
+                <a onclick="mostrarCriterios();" class="ic-ojo-gris" style="height:15px"></a>
+                <label onclick="mostrarCriterios();" style="cursor:pointer">Criterios de Programación</label>
+            </div>
+            <div class="content-exam" style="margin:10px 0px; position:relative;">
+                <div class="exam">
+                    <label>Tiene examen</label><input type="checkbox" class="switch" name="TieneExamen" @(Model != null && (Model.TieneExamen != true || Model.UrlExamen == null) ? "" : "checked") value="true" onchange="changeStateExam();" />
+                </div>
+                <div id="examenes" class="align-right">
+                    <a id="ExamenScorm" onclick="subirExamenScorm();" class="button btn-color01 btn-icon-left ic-carga-masiva @(Model != null && Model.TieneExamen == false ? "disabled" : "")">Subir examen</a>
+                    <input id="examenScorm" accept=".zip" type="file" class="hidden" onchange="agregarExamen(this);" />
+                </div>
+            </div>
+            <div class="table paged">
+                <div class="table-container">
+                    <table id="tablaExamen">
+                        <thead>
+                            <tr>
+                                <th class="align-center">Nombre del examen HTML</th>
+                                <th class="align-center">Previsualizar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                if (Model.UrlExamen != null)
+                                {
+                                    Html.RenderPartial("_Examen", Model);
+                                }
+                                else
+                                {
+                                    <tr><td colspan="4" class="align-center">No hay archivos</td></tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="4" class="align-center">No hay archivos</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </form>
+        <div class="screen-actions-flex">
+            <a href="@Url.Action("Cursos","Cursos")" class="align-left button btn-color01 btn-icon-left ic-volver">Volver</a>
+            <a onclick="guardarCurso();" class="button btn-color02 btn-icon-right ic-confirmar">Guardar</a>
+        </div>
+    </div>
+    <!--      POPUP CURSO        -->
+    <div class="popup" id="popupLink">
+        <div class="popup-container">
+            <h1>LINK</h1>
+            <div>
+                <input class="required" name="linkCurso" type="text" id="linkCurso" placeholder="http://ejemplo.com.pe*" maxlength="100"/>
+            </div>
+            <div class="form-actions">
+                <a class="button btn-icon-cancelar btn-icon-left definicion-popup" onclick="popupLink.hide();">Cancelar</a>
+                <a class="button btn-color02 btn-icon-left btn-icon-agregar definicion-popup" onclick="agregarLink();">Agregar</a>
+            </div>
+        </div>
+    </div>
+
+    <!--      POPUP Criterios de Programación        -->
+    <div class="popup" id="popupCriterios">
+        <div class="popup-container">
+            <h1 class="subtitle">Copia las siguientes líneas en el script del curso, reemplazando los campos indicados.</h1>
+            <div class="line-criterios" style="background-color: #fff; height: 3px; border-radius: 5px; margin: -20px 0 20px 0; border: 0.5px solid #ff6c36"></div>
+            <div>
+                <h1 class="subtitle" style="white-space:pre-line;">
+                    Para registrar el resultado del curso.
+                    Campos a modificar: NOTA (número), NOTA_MAXIMA (número) y APROBADO (true / false)
+                </h1>
+                <textarea style="font-family:Consolas;color:white!important; padding: 9px 20px 5px 20px;" disabled>parent.registrarResultadoCurso('@(Model != null ? Model.Codigo : null)',NOTA,NOTA_MAXIMA,APROBADO);</textarea>
+            </div>
+            
+            <div>
+                <h1 class="subtitle" style="white-space:pre-line;">
+                    Para registrar una respuesta de un usuario.
+                    Campos a modificar: PREGUNTA (texto), RESPUESTA (texto) y CORRECTO (true / false)
+                </h1>
+                <textarea style="font-family:Consolas;color:white!important; padding: 9px 20px 5px 20px;" disabled>parent.registrarRespuesta('@(Model != null ? Model.Codigo : null)','PREGUNTA','RESPUESTA',CORRECTO);</textarea>
+            </div>
+
+            <div>
+                <h1 class="subtitle" style="white-space:pre-line;">
+                    Para registrar un reintento.
+                    Campos a modificar: CÓDIGO DEL CURSO
+                </h1>
+                <textarea style="font-family:Consolas;color:white!important; height:40px; padding: 9px 20px 5px 20px;" disabled>parent.reintentarExamen('@(Model != null ? Model.Codigo : null)');</textarea>
+            </div>
+
+            <div class="form-actions">
+                <a class="button btn-icon-cancelar btn-icon-left definicion-popup" onclick="popupCriterios.hide();">Cerrar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+    $(function () {
+        @if (Model!=null && !string.IsNullOrEmpty(Model.ImagenCurso))
+	        {
+                string rutaImagen = ConfigurationManager.AppSettings["UrlSOOM"]+"Images/Cursos/"+Model.ImagenCurso;
+               
+		        <text>$('#ic-cargar').attr("style", "background-image: url('@Html.Raw(rutaImagen)');margin-top: -5px;")</text>
+                <text> $('#ic-cargar .ic-cargar').addClass('hidden');</text>
+	        }
+
+    })
+
+    var fila = 1;
+
+    var popupLink = new Popup('popupLink');
+    var popupCriterios = new Popup('popupCriterios');
+    var ajaxConfig = null;
+    var mensajeTipoMaterial;
+
+    /*VISUALIZAR POPUP PARA AGREGAR LINK'S*/
+    function subirLink() {
+        popupLink.show();
+        $('#linkCurso').focus();
+    }
+
+    function mostrarCriterios() {
+        popupCriterios.show();
+        //$('#popupCriterios').focus();
+    }
+
+    /*AGREGAR UN LINK A LA TABLA DE MATERIALES*/
+    function agregarLink() {
+        var link = $('#linkCurso').val();
+        if (link != "") {
+            agregarMaterial('link');
+            popupLink.hide();
+        }
+    }
+     
+    function mostrarFoto() {
+        var file = document.getElementById('subir-imagen').files[0];
+        var imageUrl = window.URL.createObjectURL(file);
+        $('#ic-cargar').attr('style', 'background-image: url("' + imageUrl + '");border:none; margin-top: -5px;');
+        $('#ic-cargar .ic-cargar').addClass('hidden');
+    }
+
+    /*SELECCIONAR IMAGEN CURSO*/
+    function subirImagenCurso() {
+        $('#subir-imagen').click();
+    }
+
+
+    /*SUBIR ARCHIVOS PARA EL MATERIAL*/
+    function subirVideo() {
+        $('#archivoVideo').click();
+    }
+
+    function subirDescargable() {
+        $('#archivoDescargable').click();
+    }
+
+    /*ELIMINAR MATERIAL DEL CURSO*/
+    function eliminarMaterial(element, tipoArchivo) {
+        if (tipoArchivo == '@Constants.Cursos.Material.TipoMaterial.VIDEO') {
+            $('#btnArchivoVideo').removeClass('disabled');
+        }
+        $(element).parent().parent().remove();
+        if ($('#tablaMateriales tbody tr').length == 0) {
+            $('#tablaMateriales tbody').html('<tr><td colspan="4" class="align-center">No hay archivos</td></tr>');
+        }
+    }
+
+    /*AGREGAR MATERIAL*/
+    function agregarMaterial(element) {
+
+        if (element == 'link') {
+            //Setearlo como "LINK"
+            var nombreArchivo = $('#linkCurso').val();
+            var tipoMaterial = "@Constants.Cursos.Material.TipoMaterial.LINK";
+
+            //Mostrar el material en una nueva fila
+            $.post('@Url.Action("Material", "Cursos")', { Nombre: nombreArchivo, TipoMaterial: tipoMaterial, Archivo: nombreArchivo, Obligatorio: false },
+            function (data) {
+                if ($('#tablaMateriales tbody tr td').eq(0).html() == "No hay archivos") {
+                    $('#tablaMateriales tbody tr').remove();
+                }
+                $('#tablaMateriales').append(data);
+                $('#tablaMateriales').find('tr:last-child td:first-child').append('<input type="file" class="hidden" name="Archivo">');
+            });
+            return;
+        }
+        if (element.files.length == 1) {
+
+            var archivo = $(element).clone().val('');
+            //Obtener datos del archivo subido
+            var nombreArchivo = element.files[0].name;
+            var tipoMaterial = '@Constants.Cursos.Material.TipoMaterial.DOCUMENTO';
+
+            //Setearlo como "Video"
+            if (element.id == "archivoVideo") {
+                tipoMaterial = "@Constants.Cursos.Material.TipoMaterial.VIDEO";
+                //$('#btnArchivoVideo').addClass('disabled');
+            }
+            //Mostrar el material en una nueva fila
+            $.post('@Url.Action("Material", "Cursos")', { Nombre: nombreArchivo, TipoMaterial: tipoMaterial, Archivo: nombreArchivo, Obligatorio: false },
+            function (data) {
+                if ($('#tablaMateriales tbody tr td').eq(0).html() == "No hay archivos") {
+                    $('#tablaMateriales tbody tr').remove();
+                }
+                $('#tablaMateriales').append(data);
+                $('#tablaMateriales').find('tr:last-child td:first-child').append($(element).removeAttr('id').removeAttr('onchange').attr('name', 'Archivo'));
+            });
+
+            $('#archivos').append(archivo);
+
+        } else if (element[0].files.length > 1) {
+            showMessage("Solo puedes seleccionar un archivo por material");
+        }
+        else {
+            console.log('No hay archivos');
+        }
+    }
+
+    /*INSERTAR CURSO*/
+    function guardarCurso() {
+        if (validateNotEmpty('required-curso', '#e84d5c')) {
+
+            $('input[name="Obligatorio"]').each(function (i, item) {
+                $(item).val(i);
+            });
+
+            $('#frmGuardarCurso').submit();
+        }
+        else {
+            showMessage('Debe completar todos los campos');
+        }
+    }
+
+    function ajaxPost(formData) {
+        ajaxConfig={
+            type: "POST",
+            url: formData.action,
+            data: new FormData(formData),
+            contentType: false,
+            processData: false,
+            xhr: function() {
+                var myXhr = $.ajaxSettings.xhr();
+                if(myXhr.upload){
+                    myXhr.upload.addEventListener('progress',progress, false);
+                }
+                return myXhr;
+            },
+            success: function (data) {
+                stopLoading();
+                if (data.OK) {
+                    showMessage(data.Message, function () {
+                        window.location = '@Url.Action("Cursos","Cursos")';
+                    });
+                } else {
+                    showMessage('Error: ' + data.Message);
+                }
+            }
+        };
+        startLoading();
+        $.ajax(ajaxConfig);
+        return false;
+    }
+
+    function progress(e){
+        if(e.lengthComputable){
+            var max = e.total;
+            var current = e.loaded;
+            var Porcentaje = (current * 100)/max;
+            setLoadingProgress(Math.round(Porcentaje));
+        }
+    }
+       /*==================== CONTENIDOS ==========================*/
+
+    /*SUBIR VIDEO PARA EL CONTENIDO*/
+    function subirContenidoVideo() {
+        $('#contenidoVideoExplorer').click();
+    }
+    function subirContenidoDescargable() {
+        $('#archivoPDF').click();
+    }
+    function subirContenidoScorm() {
+        $('#archivoScorm').click();
+    }
+
+    /*AGREGAR CONTENIDO*/
+    function agregarContenido(element){
+        var contenido = $(element).clone().val('');
+        var nombreContenido = element.files[0].name;
+        //Setearlo como "Video"
+        if (element.id == "contenidoVideoExplorer") {
+            tipoContenido = "@Constants.Cursos.ContenidoCurso.VIDEO";
+            $('#contenidoScorm').addClass('disabled');
+        }
+        if (element.id == "archivoPDF") {
+            tipoContenido = "@Constants.Cursos.ContenidoCurso.PDF";
+            $('#contenidoScorm').addClass('disabled');
+        }
+        if (element.id == "archivoScorm") {
+            tipoContenido = "@Constants.Cursos.ContenidoCurso.SCORM";
+            $('#contenidoScorm').addClass('disabled');
+            $('#contenidoPDF').addClass('disabled');
+            $('#contenidoVideo').addClass('disabled');
+        }
+
+        $.post('@Url.Action("ContenidoCurso", "Cursos")', { Nombre: nombreContenido, Archivo: nombreContenido, TipoArchivo: tipoContenido},
+        function (data) {
+            if ($('#tablaContenidos tbody tr td').eq(0).html() == "No hay archivos") {
+                $('#tablaContenidos tbody tr').remove();
+            }
+            $('#tablaContenidos').append(data);
+            $('#tablaContenidos').find('tr:last-child td:first-child').append($(element).removeAttr('id').removeAttr('onchange').attr('name', 'Contenido'));
+            $('.prev-view-contenido').addClass('disabled');
+        });
+
+        $('#contenidos').append(contenido);
+    }
+
+    /*ELIMINAR MATERIAL DEL CURSO*/
+    function eliminarContenido(element, tipoArchivo) {
+        $(element).parent().parent().remove();
+        if ($('#tablaContenidos tbody tr').length == 0) {
+            $('#tablaContenidos tbody').html('<tr><td colspan="4" class="align-center">No hay archivos</td></tr>');
+            $('#contenidoScorm').removeClass('disabled');
+            $('#contenidoPDF').removeClass('disabled');
+            $('#contenidoVideo').removeClass('disabled');
+        }
+    }
+
+        /*==================== EXAMEN ==========================*/
+    function changeStateExam(){
+        if($('.exam input').is(':checked'))
+            $('#ExamenScorm').removeClass('disabled');
+        else
+            $('#ExamenScorm').addClass('disabled');
+    }
+
+    function subirExamenScorm() {
+        $('#examenScorm').click();
+    }
+
+    function agregarExamen(element){
+        $('#tablaExamen tbody tr').remove();
+        var examen = $(element).clone().val('');
+        var nombreContenido = "story.html";
+        
+        $.post('@Url.Action("Examen", "Cursos")', { UrlExamen: nombreContenido},
+        function (data) {
+            if ($('#tablaExamen tbody tr td').eq(0).html() == "No hay archivos") {
+                $('#tablaExamen tbody tr').remove();
+            }
+            $('#tablaExamen').append(data);
+            $('#tablaExamen').find('tr:last-child td:first-child').append($(element).removeAttr('id').removeAttr('onchange').attr('name', 'Examen'));
+            $('.prev-view-exam').addClass('disabled');
+        });
+        $('#examenes').append(examen);
+    }
+
+        /*==================== CERTIFICADO ==========================*/
+        function changeStateCertificate(){
+            if($('.certificado input').is(':checked'))
+                $('#Plantilla').removeClass('disabled');
+            else
+                $('#Plantilla').addClass('disabled');
+        }
+
+        function subirPlantillaCertificado() {
+            $('#plantillaCertificado').click();
+        }
+
+        function agregarCertificado(element){
+            $('#tablaCertificado tbody tr').remove();
+            var certificado = $(element).clone().val('');
+            var nombrePlantilla = element.files[0].name;
+        
+            $.post('@Url.Action("Certificado", "Cursos")', { Certificado: nombrePlantilla},
+            function (data) {
+                if ($('#tablaCertificado tbody tr td').eq(0).html() == "No hay plantilla") {
+                    $('#tablaCertificado tbody tr').remove();
+                }
+                $('#tablaCertificado').append(data);
+                $('#tablaCertificado').find('tr:last-child td:first-child').append($(element).removeAttr('id').removeAttr('onchange').attr('name', 'Certificado'));
+                $('.download-certificate').addClass('disabled');
+            });
+            $('#certificados').append(certificado);
+        }
+
+
+</script>
+}

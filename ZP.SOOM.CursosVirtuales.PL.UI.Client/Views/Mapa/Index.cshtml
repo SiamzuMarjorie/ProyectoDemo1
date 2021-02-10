@@ -1,0 +1,739 @@
+﻿@using ZP.SOOM.CursosVirtuales.Util
+@using ZP.SOOM.CursosVirtuales.PL.UI.Client.Models
+@model PersonajeModel
+@{
+    ViewBag.Title = "Juego";
+
+    List<CursoModel> lstCursosActivos = ViewBag.CursosActivos;
+    List<SlotModel> lstSlot = ViewBag.Slots;
+    UsuarioModel objUsuarioModel = UsuarioModel.FromString(User.Identity.Name);
+}
+
+
+<section class="content-mapa">
+    <div class="mapa-background"></div>
+    <div id="mapa" class="mapa"></div>
+    <div class="joystick">
+        <div id="joystickUp" class="joystick-arrow-up icon"></div>
+        <div id="joystickDown" class="joystick-arrow-down icon"></div>
+        <div id="joystickLeft" class="joystick-arrow-left icon"></div>
+        <div id="joystickRight" class="joystick-arrow-right icon"></div>
+    </div>
+</section>
+
+<form action="@Url.Action("ObtenerListaCursos", "Mapa")" id="frmGetTopicList" method="post" enctype="multipart/form-data" onsubmit="return getTopicList(this);">
+    <input type="hidden" id="IdSlot" name="IdSlot" />
+    <section class="lista-cursos">
+        <!--ENTRAR A LISTA DE CURSOS-->
+        <div class="popup popup-lista-cursos" id="popupTopicList">
+            <div class="popup-box">
+                <div class="left-up point"></div>
+                <div class="right-up point"></div>
+                <div class="ic-welcome"></div>
+                <a onclick="closeTopicList();" class="close-popup" title="Cerrar lista de cursos"></a>
+                <div class="ic-campana"></div>
+                <h2>¿A qué piso deseas ir?</h2>
+                <div class="topic-list">
+
+                </div>
+                <div class="platform">
+                    <a class="up flecha" onmousedown="startScrollTopicsListTop();" onmouseup="stopScrollTopicsListTop();"></a>
+                    <a class="down flecha" onmousedown="startScrollTopicsListBottom();" onmouseup="stopScrollTopicsListBottom();"></a>
+                    <div class="ic-platform"></div>
+                </div>
+                <div class="left-down point"></div>
+                <div class="right-down point"></div>
+            </div>
+        </div>
+    </section>
+</form>
+
+<section class="cursos">
+    <!--ENTRAR AL CURSO-->
+    <div class="popup popup-topic" id="popupActiveTopic">
+        <div class="popup-box">
+            <a onclick="closeTopic(); cerrarDetalleCurso();" class="close-popup" id="closeTopic" title="Cerrar curso"></a>
+            <div id="descripcionDelCurso" class="content-inputs">
+                <div class="header-popup">
+                    <div id="score" class="score">
+                        <label class="puntaje">Puntaje: ---/200</label>
+                        <div class="star-score"><div class="ic-star"></div></div>
+                    </div>
+                </div>
+                <h1 id="title" class="title">Seguridad y Salud en el trabajo</h1>
+                <div class="topic-info">
+                    <div class="end-topic">
+                        <div class="ic-calendar"></div>
+                        <label id="endTopic">Finaliza el 31/10/2019</label>
+                    </div>
+                    <div class="topic-state"><label id="estado"> </label></div>
+                </div>
+                <div class="body-topic">
+                    <div class="recursos">
+                        <div class="topic-multimedia"><div id="fileTopic" class="file-topic"></div></div>
+
+                        <div class="actions-topic">
+                            <a id="ingresarCursoshtml5" class="button btn-color02 go-topic hidden" target="iframe_curso" onclick="ObtenerElementosCurso();registrarFechasCurso();">Ingresar</a>
+                            <a id="ingresarAlExamen" class="button btn-color02 go-topic hidden" target="iframe_exam" onclick="registrarIntento();">Examen</a>
+                        </div>
+
+                    </div>
+                    <div class="topic-option recursos">
+                        <div class="tabs">
+                            <a id="description" class="active">Descripción</a>
+                            <a id="download">Material del curso</a>
+                        </div>
+                        <div class="description">
+                            <p id="descriptionTopic">La Seguridad y Salud en el Trabajo (SST) es un derecho fundamental de todos los trabajadores y tiene como objetivo, prevenir los accidentes de trabajo y enfermedades ocupacionales.</p>
+                        </div>
+                        <div id="files" class="download-files hidden">
+
+                        </div>
+                    </div>
+                </div>
+                <div id="footer" class="footer-topic">
+                    <a id="downloadCertificate" class="certificate" onclick="descargarCertificado();">
+                        <label>Descargar certicado</label>
+                        <div class="ic-certificate"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="lot-topic">
+    <!--ENTRAR A VARIOS CURSOS-->
+    <div class="popup popup-lot-topic" id="popupLotTopic">
+        <input id="idCurso" type="hidden"/>
+        <div class="cinta"></div>
+        <div class="content">
+            <div class="title-topic">
+                <h2>Bienvenido al curso de</h2>
+                <h2 id="nombreCursoSeleccionado" class="topic-name">Accidentes Laborales</h2>
+            </div>
+            <div class="content-topic">
+                <p>A continuación deberás revisar los siguientes materiales para lograr un excelente desempeño en el curso.</p>
+                <div class="topics">
+                    <div id="contenidoCurso" class="list-topic">
+                        
+                    </div>
+                </div>
+                <a class="button btn-icon-cancelar btn-icon-left close-lot-topic" onclick="closeLotTopic(); cerrarListaCurso();">Volver</a>
+            </div>
+        </div>
+        <div class="desktop-only person-contenido-curso"></div>
+    </div>
+</section>
+
+<section class="informes">
+    <!--ENTRAR A INFORMES-->
+    <div class="popup popup-informes" id="popupActiveInformes">
+        <div class="popup-box">
+            <a onclick="closeInformes();" class="close-popup" title="Cerrar informes"></a>
+            <h1 class="title">Caseta de información</h1>
+            <div class="content-inputs">
+                <h2>Preguntas frecuentes</h2>
+                <div class="elements">
+                    <div id="contentInfo" class="content-info">
+                        <a onclick="popupContentInformes1.show();">¿Cómo encuentro un curso?</a>
+                        <a onclick="popupContentInformes2.show();">¿Por qué no puedo ingresar a algunos edificios?</a>
+                        <a onclick="popupContentInformes3.show();">¿Qué pasa si se cuelga o cierra el sistema y estoy realizando el curso?</a>
+                        <a onclick="popupContentInformes4.show();">¿Cuál es el puntaje mínimo para aprobar los cursos?</a>
+                        <a onclick="popupContentInformes5.show();">Si no puedo descargar mi certificado ¿Qué puedo hacer?</a>
+                        <a onclick="popupContentInformes6.show();">¿Puedo volver a revisar los contenidos de los cursos?</a>
+                        <a onclick="popupContentInformes7.show();">¿Puedo acceder a la Ciudad Positiva desde cualquier dispositivo?</a>
+                    </div>
+                </div>
+            </div>
+            <div class="inform-person desktop-only"></div>
+        </div>
+    </div>
+</section>
+
+<section class="content-informes">
+    <!--MOSTRAR EL CONTENIDO DE INFORMES 1-->
+    <div class="popup popup-content-informes" id="popupContentInformes1">
+        <div class="popup-box">
+            <a onclick="popupContentInformes1.hide();" class="close-popup" title="Cerrar"></a>
+            <h1 class="title">¿Cómo encuentro un curso?</h1>
+            <div class="content-inputs">
+                <p>Busca el letrero con el nombre del curso que desees completar en alguno de los edificios de nuestra Ciudad Positiva.</p>
+            </div>
+        </div>
+    </div>
+    <!--MOSTRAR EL CONTENIDO DE INFORMES 2-->
+    <div class="popup popup-content-informes" id="popupContentInformes2">
+        <div class="popup-box">
+            <a onclick="popupContentInformes2.hide();" class="close-popup" title="Cerrar"></a>
+            <h1 class="title">¿Por qué no puedo ingresar a algunos edificios?</h1>
+            <div class="content-inputs">
+                <p>Porque el edificio no cuenta con un curso asignado.</p>
+            </div>
+        </div>
+    </div>
+    <!--MOSTRAR EL CONTENIDO DE INFORMES 3-->
+    <div class="popup popup-content-informes" id="popupContentInformes3">
+        <div class="popup-box">
+            <a onclick="popupContentInformes3.hide();" class="close-popup" title="Cerrar"></a>
+            <h1 class="title">¿Qué pasa si se cuelga o cierra el sistema y estoy realizando el curso?</h1>
+            <div class="content-inputs">
+                <p>La plataforma guarda las acciones del usuario cada 5 segundos. Si estás dentro de un curso, al ingresar nuevamente, este se reanudará desde donde te quedaste.</p>
+            </div>
+        </div>
+    </div>
+    <!--MOSTRAR EL CONTENIDO DE INFORMES 4-->
+    <div class="popup popup-content-informes" id="popupContentInformes4">
+        <div class="popup-box">
+            <a onclick="popupContentInformes4.hide();" class="close-popup" title="Cerrar"></a>
+            <h1 class="title">¿Cuál es el puntaje mínimo para aprobar los cursos?</h1>
+            <div class="content-inputs">
+                <p>En el caso de los cursos normativos, estos contarán con 10 preguntas de dos puntos cada una. Para aprobarlos, deberás obtener como mínimo 14 puntos.</p>
+            </div>
+        </div>
+    </div>
+    <!--MOSTRAR EL CONTENIDO DE INFORMES 5-->
+    <div class="popup popup-content-informes" id="popupContentInformes5">
+        <div class="popup-box">
+            <a onclick="popupContentInformes5.hide();" class="close-popup" title="Cerrar"></a>
+            <h1 class="title">Si no puedo descargar mi certificado ¿Qué puedo hacer?</h1>
+            <div class="content-inputs">
+                <p>Puedes comunicarte con el área de Formación y Desarrollo al correo formacionydesarrollo@lapositiva.com.pe para que te ayuden con el certificado.</p>
+            </div>
+        </div>
+    </div>
+    <!--MOSTRAR EL CONTENIDO DE INFORMES 6-->
+    <div class="popup popup-content-informes" id="popupContentInformes6">
+        <div class="popup-box">
+            <a onclick="popupContentInformes6.hide();" class="close-popup" title="Cerrar"></a>
+            <h1 class="title">¿Puedo volver a revisar el contenido de los cursos?</h1>
+            <div class="content-inputs">
+                <p>Sí, una vez culminado el curso, tendrás acceso para descargar el material y ver los vídeos o enlaces.</p>
+            </div>
+        </div>
+    </div>
+    <!--MOSTRAR EL CONTENIDO DE INFORMES 7-->
+    <div class="popup popup-content-informes" id="popupContentInformes7">
+        <div class="popup-box">
+            <a onclick="popupContentInformes7.hide();" class="close-popup" title="Cerrar"></a>
+            <h1 class="title">¿Puedo acceder a la Ciudad Positiva desde cualquier dispositivo?</h1>
+            <div class="content-inputs">
+                <p>Sí, puedes ingresar a la Ciudad Positiva desde cualquier equipo o dispositivo con acceso a internet. Para ello, solo necesitas la dirección web https://ciudadpositiva.lapositiva.com.pe</p>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<section class="video">
+    <!--ENTRAR AL VIDEO MATERIAL-->
+    <div class="popup popup-video" id="popupShowVideo">
+        <div id="popupVideo" class="popup-box">
+            <a onclick="popupShowVideo.hide(); closeVideo();" class="close-popup" title="Cerrar video"></a>
+        </div>
+    </div>
+</section>
+
+<div class="curso-html5" id="cursoHtml5">
+    <a class="close-iframe" onclick="closeIframe();"></a>
+    <iframe name="iframe_curso"></iframe>
+</div>
+
+<div class="curso-html5" id="examenHtml5">
+    <a class="close-iframe" onclick="closeExam();"></a>
+    <iframe name="iframe_exam"></iframe>
+</div>
+
+
+<form action="@Url.Action("ObtenerSlot", "Mapa")" id="frmGetTopic" method="post" enctype="multipart/form-data" onsubmit="return getTopic(this);">
+    <input type="hidden" id="IdCursoSlot" name="IdCursoSlot" />
+</form>
+
+
+
+@section scripts {
+
+    <script>
+        var posX = @(Model==null?61: Model.PosicionX);
+        var posY = @(Model==null?43: Model.PosicionY);
+
+    </script>
+    <script src="~/Scripts/soomcursos.elemento.js"></script>
+    <script src="~/Scripts/soomcursos.elementoanimado.js"></script>
+    <script src="~/Scripts/soomcursos.elementonombre.js"></script>
+    <script src="~/Scripts/soomcursos.mapa.js"></script>
+    <script src="~/Scripts/soomcursos.personaje.js"></script>
+    <script src="~/Scripts/soomcursos.juego.js"></script>
+    <script src="~/Scripts/soomcursos.api.js"></script>
+
+    <script>
+
+    idTrabajadorLogueado = @objUsuarioModel.IdTrabajador;
+
+    $( document ).ready(function() {
+        $('.section-content').css('opacity', '0');
+        startLoading();
+    });
+
+    $(window).load(function () {
+        $('.section-content').css('opacity', '1');
+        stopLoading();
+    });
+
+    var popupTopicList = new Popup('popupTopicList');
+    var popupActiveTopic = new Popup('popupActiveTopic');
+    var popupLotTopic = new Popup('popupLotTopic');
+    var popupActiveInformes = new Popup('popupActiveInformes');
+
+    var popupContentInformes1 = new Popup('popupContentInformes1');
+    var popupContentInformes2 = new Popup('popupContentInformes2');
+    var popupContentInformes3 = new Popup('popupContentInformes3');
+    var popupContentInformes4 = new Popup('popupContentInformes4');
+    var popupContentInformes5 = new Popup('popupContentInformes5');
+    var popupContentInformes6 = new Popup('popupContentInformes6');
+    var popupContentInformes7 = new Popup('popupContentInformes7');
+    var popupContentInformes = new Popup('popupContentInformes');
+    var popupContentInformes = new Popup('popupContentInformes');
+    var popupShowVideo = new Popup('popupShowVideo');
+    var popupShowVideoCurso = new Popup('popupShowVideoCurso');
+
+    var dowloadCerticado = "";
+    var idInscripcion;
+
+    //TABS
+    $('#description').click(function () {
+        $(this).addClass('active');
+        $('#download').removeClass('active');
+        $('.description').removeClass('hidden');
+        $('.download-files').addClass('hidden');
+    });
+
+    $('#download').click(function () {
+        $(this).addClass('active');
+        $('#description').removeClass('active');
+        $('.download-files').removeClass('hidden');
+        $('.description').addClass('hidden');
+    });
+
+
+    //SCROLL LISTA CURSOS
+    var scrollTopicsList = null;
+
+    function startScrollTopicsListTop() {
+        scrollTopicsList = setInterval(function () {
+            $('.topic-list').scrollTop($('.topic-list').scrollTop() - 1);
+        }, 1);
+    }
+
+    function stopScrollTopicsListTop() {
+        clearInterval(scrollTopicsList);
+    }
+
+    function startScrollTopicsListBottom() {
+        scrollTopicsList = setInterval(function () {
+            $('.topic-list').scrollTop($('.topic-list').scrollTop() + 1);
+        }, 1);
+    }
+
+    function stopScrollTopicsListBottom() {
+        clearInterval(scrollTopicsList);
+    }
+
+    var popupAbierto = false;
+    var codigoSlotAbierto = null;
+    var codigoListaCursos = null;
+    function startGetTopic(IdCursoSlot) {
+        codigoSlotAbierto = IdCursoSlot;
+        if (!$('#popupActiveTopic').hasClass('active') && !popupAbierto) {
+            popupAbierto = true;
+            $('#IdCursoSlot').val(IdCursoSlot);
+            $('#frmGetTopic').submit();
+        }
+    }
+
+    function startGetTopicList(IdSlot) {
+        codigoListaCursos = IdSlot;
+        if (!$('#popupTopicList').hasClass('active') && !popupAbierto && $('.popup.active').size() == 0) {
+            popupAbierto = true;
+            $('#IdSlot').val(IdSlot);
+            $('#frmGetTopicList').submit();
+        }
+    }
+    function getTopicList(formData) {
+        return ajaxPost(formData, function (data){
+            var lstCurso = data.Data;
+            var curso = '';
+            $('#popupTopicList .topic-list').html('');
+            for(var l = 0;  l < lstCurso.length; l++){
+                curso += '<div class="topic" onclick="startGetTopic('+lstCurso[l].IdCursoSlot+')">'+
+                            '<label class="number-topic">'+ (l+1) +'</label>'+
+                            '<label class="name-topic">'+lstCurso[l].Titulo+'</label>'+
+                            '<div class="state-topic '+lstCurso[l].EstadoCurso+'"></div>'+
+                         '</div>';
+            }
+            $('#popupTopicList .topic-list').append(curso);
+
+            popupTopicList.show();
+            popupAbierto = false;
+
+        }, function (data) {
+            pararMovimiento();
+            showMessage(data.Message, null);
+            popupAbierto = false;
+        });
+    }
+
+    function limpiarMateriales(){
+        $('#files').html('');
+    }
+
+    function cerrarDetalleCurso() {
+        $('#frmGetTopicList').submit();
+        ObtenerSumaPuntajeTrabajador(); 
+        ObtenerEstadoSlot();
+        
+    }
+    var tipoContenidoCurso = null;
+
+    function getTopic(formData) {
+        return ajaxPost(formData, function (data) {
+            $('#idCurso').val(data.Data.IdCurso);
+            $('#nombreCursoSeleccionado').html(data.Data.Titulo);
+            tipoContenidoCurso = data.Data.TipoContenidoCurso
+
+            //PUNTAJE
+            if (data.Data.Terminado == true)
+                $('#score .puntaje').html((data.Data.Puntaje==null?'---':data.Data.Puntaje.toFixed(0)) + '/' + data.Data.PuntajeMaximo);
+            else if ((data.Data.Terminado == false) || (data.Data.Puntaje == null))
+                $('#score .puntaje').html('---/' + data.Data.PuntajeMaximo);
+
+            //TITULO
+            $('#title').html(data.Data.Titulo);
+
+            //ESTADO CURSO
+            if(data.Data.EmiteCertificado == true){
+                $('#endTopic').parent().removeClass('state');
+                if (data.Data.Estado == '@Constants.Cursos.Estado.ENCURSO') {
+                    $('#estado').html('En curso');
+                    $('.topic-state').css('background', '#00CEC5');
+                    $('#endTopic').html('Finaliza el ' + data.Data.FechaFin);
+                }
+                else if (data.Data.Estado == '@Constants.Cursos.Estado.TERMINADO') {
+                    $('#estado').html('Terminado');
+                    $('.topic-state').css('background', '#7a7a87');
+                    $('#endTopic').html('Finaliza el ' + data.Data.FechaFin);
+                }
+            }
+            else{
+                $('.topic-state').css('background', '#fff');
+                $('#endTopic').parent().addClass('state');
+            }
+            
+            $('#endTopic').css('font-size', '0.9em');
+
+            //IMAGEN DEL CURSO
+            $('#fileTopic').css('background-image', 'url(\'' + getRootUrl() + 'Pictures/Cursos/' + data.Data.ImagenCurso + '\')');
+
+            //DESCRIPCION DEL CURSO
+            if((data.Data.Descripcion == null) || (data.Data.Descripcion == ''))
+                $('#descriptionTopic').html('No hay descripción del curso.');
+            else
+                $('#descriptionTopic').html(data.Data.Descripcion);
+
+            //LISTA DE MATERIALES
+            if(data.Data.Materiales.length > 0){
+                limpiarMateriales();
+                for (var i = 0; i < data.Data.Materiales.length; i++) {
+                    $.post('@Url.Action("Material")', { Nombre: data.Data.Materiales[i].Nombre, TipoMaterial: data.Data.Materiales[i].TipoMaterial, UrlArchivo: data.Data.Materiales[i].UrlArchivo,Idmaterial:data.Data.Materiales[i].IdMaterial,Archivo:data.Data.Materiales[i].Archivo }, function (response) {
+                        $('#files').append(response);
+                    });
+                }
+            }
+            else{
+                $('#files').html('No hay materiales para este curso.');
+            }
+
+
+            //INGRESAR AL IFRAME
+            if (data.Data.IntentosPermitidos == null || data.Data.CantidadIntentos < data.Data.IntentosPermitidos){
+                $('#ingresarCursoshtml5').removeClass('hidden');
+                $('#ingresarAlExamen').removeClass('hidden');
+            }else{
+                $('#ingresarCursoshtml5').addClass('hidden');
+                $('#ingresarAlExamen').addClass('hidden');
+            }
+
+            if ((data.Data.Estado == '@Constants.Cursos.Estado.NOINICIADO') || (data.Data.Estado == '@Constants.Cursos.Estado.EXPIRADO') || (data.Data.UrlExamen == null || data.Data.UrlExamen=='')){
+                $('#ingresarCursoshtml5').addClass('hidden');
+                $('#ingresarAlExamen').addClass('hidden');
+            }
+
+            if(data.Data.TieneExamen == true){
+                $('#ingresarAlExamen').attr('href', getRootUrl() +'Cursos/' + data.Data.Codigo + '/ExamenHtml5/' + data.Data.UrlExamen + '?ts=' + Date.now());
+                $('#ingresarAlExamen').removeClass('hidden');
+            }else{
+                $('#ingresarAlExamen').addClass('hidden');
+            }
+
+
+            if(data.Data.CantidadContenidoCurso == 0){
+                $('#ingresarCursoshtml5').addClass('hidden');
+            }else{
+                $('#ingresarCursoshtml5').removeClass('hidden');
+                if(data.Data.TipoContenidoCurso != '@Constants.Cursos.ContenidoCurso.VIDEO')
+                    $('#ingresarCursoshtml5').attr('href', getRootUrl() +'Cursos/' + data.Data.Codigo + '/ContenidoCurso/' + data.Data.UrlContenidoCurso + '?ts=' + Date.now());
+            }
+
+            //CERTIFICADO
+            if (data.Data.Certificado != null)
+                $('#footer').removeClass('hidden');
+            else
+                $('#footer').addClass('hidden');
+
+            dowloadCerticado = data.Data.IdCurso;
+            idInscripcion=data.Data.IdInscripcion;
+
+            popupActiveTopic.show();
+            popupAbierto = false;
+
+        }, function (data) {
+            pararMovimiento();
+            showMessage(data.Message, null);
+            popupAbierto = false;
+        });
+    }
+
+    function closeTopic() {
+        popupActiveTopic.hide();
+        limpiarMateriales();
+
+    }
+
+    function closeTopicList() {
+        popupTopicList.hide();
+        closeTopic();
+        closeLotTopic();
+    }
+
+
+    //POPUP INFORMES
+    function openInformes() {
+        popupActiveInformes.show();
+    }
+    function closeInformes() {
+        popupActiveInformes.hide();
+    }
+
+    //MOSTRAR IFRAME
+    function openIframe() {
+        preventLoading();
+        $('#cursoHtml5').addClass('active');
+    }
+    function closeIframe() {
+        $('#cursoHtml5').removeClass('active');
+        $('#cursoHtml5 iframe').remove();
+        var frame = '<iframe name="iframe_curso"></iframe>';
+        $('#cursoHtml5').append(frame);
+        if($('#audio').hasClass('inactive'))
+            document.getElementById("backgroundAudio").pause();
+
+        $('#closeTopic').click();
+        startGetTopic(codigoSlotAbierto);
+    }
+
+    //MOSTRAR IFRAME
+    function openExam() {
+        preventLoading();
+        $('#examenHtml5').addClass('active');
+    }
+    function closeExam() {
+        $('#examenHtml5').removeClass('active');
+        $('#examenHtml5 iframe').remove();
+        var frame = '<iframe name="iframe_exam"></iframe>';
+        $('#examenHtml5').append(frame);
+        if($('#audio').hasClass('inactive'))
+            document.getElementById("backgroundAudio").pause();
+
+        $('#closeTopic').click();
+        startGetTopic(codigoSlotAbierto);
+        ObtenerEstadoSlot();
+    }
+
+
+
+    function cerrarListaCurso(){
+        $('#closeTopic').click();
+        startGetTopic(codigoSlotAbierto);
+        ObtenerEstadoSlot();
+    }
+    function closeLotTopic(){
+        popupLotTopic.hide();
+    }
+    //VIDEO POPUP CURSO
+    function openVideo(src) {
+        var video = '<video class="video-plataforma" controls autoplay>'+
+                        '<source src="' + src + '" type="video/mp4">'+
+                    '</video>';
+        $('#popupVideo').append(video);
+        popupShowVideo.show();
+        $('#audio').addClass('inactive');
+        document.getElementById("backgroundAudio").pause();
+    }
+    function closeVideo(){
+        $('video').remove();
+        if($('#audio').hasClass('inactive')){
+            document.getElementById("backgroundAudio").pause();
+        }
+        else{
+            $('#audio').removeClass('inactive');
+            document.getElementById("backgroundAudio").play();
+        }
+
+        if(tipoContenidoCurso == '@Constants.Cursos.ContenidoCurso.VIDEO' ){
+            $('#closeTopic').click();
+            startGetTopic(codigoSlotAbierto);
+            ObtenerEstadoSlot();
+        }
+    }
+    //DESCARGAR CERTIFICADO
+    function descargarCertificado() {
+        if (dowloadCerticado != "") {
+            $.post('@Url.Action("ObtenerCertificado", "Mapa")', { IdCurso: dowloadCerticado }, function (response) {
+                if (response.Code == 0) {
+                    window.open(response.Data, "_blank");
+                }
+            });
+        }
+    }
+
+    //REGISTRAR LAS FECHAS DE LOS CURSOS
+    function registrarFechasCurso() {
+        $('#audio').addClass('inactive');
+        document.getElementById("backgroundAudio").pause();
+        $.post('@Url.Action("RegistrarFechaIngresoCurso", "Mapa")', { IdCursoSlot: $('#IdCursoSlot').val(),  IdInscripcion:idInscripcion  }, function (response) {
+            if (response.Code != 0) {
+                showMessage(response.Message, null);
+            }
+            //else
+            //    openIframe();
+        });
+    }
+
+    //REGISTRAR INTENTOS
+    function registrarIntento() {
+        $('#audio').addClass('inactive');
+        document.getElementById("backgroundAudio").pause();
+        $.post('@Url.Action("RegistrarIntento", "Mapa")', { IdInscripcion : idInscripcion, IdCursoSlot: $('#IdCursoSlot').val() }, function (response) {
+            if (response.Code !== 0) {
+                showMessage(response.Message, null);
+            }
+            else
+                openExam();
+        });
+    }
+
+    function ObtenerEstadoSlot() {
+        $.post('@Url.Action("ObtenerEstadoSlot", "Mapa")', { IdSlot : $('#IdSlot').val()}, function (data) {
+            if (data.Code !== 0) {
+                showMessage(data.Message, null);
+            }
+            else{
+                $('#bolita-'+data.Data.IdSlot).removeClass('verde');
+                $('#bolita-'+data.Data.IdSlot).removeClass('plomo');
+                $('#bolita-'+data.Data.IdSlot).addClass(data.Data.EstadoSlot);
+            }
+        });
+    }
+
+    function registrarVista(idMaterial) {
+        $.post('@Url.Action("ObtenerMaterialInscripcion", "Mapa")', { IdMaterial : idMaterial, IdInscripcion : idInscripcion }, function (response) {
+            if (response.Code !== 0) {
+                showMessage(data.Message, null);
+            }
+        });
+    }
+    function registrarVistaContenidoCurso(idContenidoCurso) {
+        $.post('@Url.Action("RegistrarVistaContenidoCurso", "Mapa")', { IdContenidoCurso: idContenidoCurso, IdCurso: $('#idCurso').val() }, function (response) {
+            if (response.Code !== 0) {
+                showMessage(data.Message, null);
+            }
+        });
+    }
+
+        function ObtenerSumaPuntajeTrabajador() {
+            $.post('@Url.Action("ObtenerSumaPuntajeTrabajador", "Base")', { }, function (response) {
+                $('#maximunScore').html(response);
+            });
+        }
+
+    function ObtenerElementosCurso() {
+        $.post('@Url.Action("ObtenerListaContenidoCurso", "Mapa")', { IdCurso: $('#idCurso').val() }, function (data) {
+            if (data.Code != 0) {
+                showMessage(data.Message, null);
+            }
+            else{
+                var lstCantidadCurso = data.Data;
+                if(lstCantidadCurso.length > 1){
+                    var contenidoCurso = '';
+                    $('#popupLotTopic #contenidoCurso').html(contenidoCurso);
+                    for (var i = 0; i < lstCantidadCurso.length; i++) {
+                        contenidoCurso += '<a class="topic" onclick="openFileTopic(\''+ lstCantidadCurso[i].TipoArchivo +'\',\''+ lstCantidadCurso[i].UrlArchivo +'\', this); registrarVistaContenidoCurso('+ lstCantidadCurso[i].IdContenidoCurso +');">';
+                        if(lstCantidadCurso[i].TipoArchivo == '@Constants.Cursos.ContenidoCurso.PDF'){
+                            contenidoCurso += '<span class="icon ic-pdf"></span>';
+                        }
+                        else if(lstCantidadCurso[i].TipoArchivo == '@Constants.Cursos.ContenidoCurso.VIDEO'){contenidoCurso +='<span class="icon ic-video-black"></span>';}
+                        contenidoCurso += '<label>'+lstCantidadCurso[i].Nombre+'</label>';
+                        if(lstCantidadCurso[i].Visto == true){
+                            contenidoCurso +='<span class="icon ic-check"></span>';
+                        }
+                        else if(lstCantidadCurso[i].Visto == false){
+                            contenidoCurso +='<span class="icon ic-play go"></span>';
+                        }
+                        contenidoCurso +='</a>';
+                    }
+
+                    $('#popupLotTopic #contenidoCurso').append(contenidoCurso);
+                    popupLotTopic.show();
+
+                }
+                else{
+                    openFileTopic(lstCantidadCurso[0].TipoArchivo, lstCantidadCurso[0].UrlArchivo);
+                    registrarVistaContenidoCurso(lstCantidadCurso[0].IdContenidoCurso);
+                    if(tipoContenidoCurso == '@Constants.Cursos.ContenidoCurso.PDF' ){
+                        $('#closeTopic').click();
+                        startGetTopic(codigoSlotAbierto);
+                        ObtenerEstadoSlot();
+                    }
+                }
+
+            }
+        });
+    }
+    function openFileTopic(tipoArchivo, urlArchivo, item){
+        if(tipoArchivo == '@Constants.Cursos.ContenidoCurso.VIDEO'){
+            openVideo(urlArchivo);
+            $(item).find('.go').removeClass('ic-play');
+            $(item).find('.go').addClass('ic-check');
+        }
+        else if(tipoArchivo == '@Constants.Cursos.ContenidoCurso.PDF'){
+            window.open(urlArchivo,"Archivo","width=700,height=700,scrollbars=YES");
+            $(item).find('.go').removeClass('ic-play');
+            $(item).find('.go').addClass('ic-check');
+        }
+        else if(tipoArchivo == '@Constants.Cursos.ContenidoCurso.SCORM'){
+            openIframe();
+        }
+    }
+
+    //NOMBRE DE LOS SLOT
+    @foreach (SlotModel objSlotModel in lstSlot)
+    {
+    <text>
+        var cartel@(objSlotModel.IdSlot) = new ElementoNombre(parseInt(@objSlotModel.X), parseInt(@objSlotModel.Y), @objSlotModel.W, 1.5, mapa, '@objSlotModel.NombreSlot', '@objSlotModel.ColorBackground', '@objSlotModel.ColorText', '@objSlotModel.EstadoSlot', @objSlotModel.IdSlot);
+    </text>
+    }
+
+    personaje.setGenero('@Model.Avatar');
+
+</script>
+}
